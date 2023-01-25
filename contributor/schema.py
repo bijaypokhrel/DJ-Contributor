@@ -2,6 +2,9 @@ from .models_bank_schema import *
 from .models_registration_schema import *
 from .models_claim_schema import *
 from .models_employer_schema import *
+from .models_contributor_schema import *
+from .models_loan_schema import *
+from .models_account_schema import *
 
 
 class Query(graphene.ObjectType):
@@ -101,6 +104,73 @@ class Query(graphene.ObjectType):
     def resolve_ctb_emp_officials(self, info, **kwargs):
         return Ctb_Emp_Official.objects.all()
 
+    # Contributor
+
+    stb_coll_voucher_infos = graphene.List(Stb_Coll_Voucher_InfoType)
+
+    def resolve_stb_coll_voucher_infos(self, info, **kwargs):
+        return Stb_Coll_Voucher_Info.objects.all()
+
+    stb_contributor_sal_dets = graphene.List(Stb_Contributor_Sal_DetType)
+
+    def resolve_stb_contributor_sal_dets(self, info, **kwargs):
+        return Stb_Contributor_Sal_Det.objects.all()
+
+    stb_collection_tran_heads = graphene.List(Stb_Collection_Tran_HeadType)
+
+    def resolve_stb_collection_tran_heads(self, info, **kwargs):
+        return Stb_Collection_Tran_Head.objects.all()
+
+    stb_coll_tran_details = graphene.List(Stb_Coll_Tran_DetailsType)
+
+    def resolve_stb_coll_tran_details(self, info, **kwargs):
+        return Stb_Coll_Tran_Details.objects.all()
+
+    stb_scheme_applications = graphene.List(Stb_Scheme_ApplicationType)
+
+    def resolve_stb_scheme_applications(self, info, **kwargs):
+        return Stb_Scheme_Application.objects.all()
+
+    # Loan
+
+    ctb_special_loans = graphene.List(Ctb_Special_LoanType)
+
+    def resolve_ctb_special_loans(self, info, **kwargs):
+        return Ctb_Special_Loan.objects.all()
+
+    ctb_user_tran_verifications = graphene.List(
+        Ctb_User_Tran_VerificationsType)
+
+    def resolve_ctb_user_tran_verifications(self, info, **kwargs):
+        return Ctb_User_Tran_Verifications.objects.all()
+
+    dctb_submissions = graphene.List(Dctb_SubmissionType)
+
+    def resolve_dctb_submissions(self, info, **kwargs):
+        return Dctb_Submission.objects.all()
+
+    atb_disbursement_processes = graphene.List(Atb_Disbursement_ProcessType)
+
+    def resolve_atb_disbursement_processes(self, info, **kwargs):
+        return Atb_Disbursement_Process.objects.all()
+
+    # Account
+
+    atb_gltran_masts = graphene.List(Atb_Gltran_MastType)
+
+    def resolve_atb_gltran_masts(self, info, **kwargs):
+        return Atb_Gltran_Mast.objects.all()
+
+    atb_gltran_detls = graphene.List(Atb_Gltran_DetlType)
+
+    def resolve_atb_gltran_detls(self, info, **kwargs):
+        return Atb_Gltran_Detl.objects.all()
+
+    atb_account_ledgers = graphene.List(Atb_Account_LedgerType)
+
+    def resolve_atb_account_ledgers(self, info, **kwargs):
+        return Atb_Account_Ledger.objects.all()
+
 
 class Mutation(graphene.ObjectType):
     # Bank
@@ -125,6 +195,23 @@ class Mutation(graphene.ObjectType):
     create_ctb_emp_doc = CreateCtb_Emp_DocMutation.Field()
     create_ctb_emp_address = CreateCtb_Emp_AddressMutation.Field()
     create_ctb_emp_official = CreateCtb_Emp_OfficialMutation.Field()
+    # Contributor
+    create_stb_coll_voucher_info = CreateStb_Coll_Voucher_InfoMutation.Field()
+    create_stb_contributor_sal_det = CreateStb_Contributor_Sal_DetMutation.Field()
+    create_stb_collection_tran_head = CreateStb_Collection_Tran_HeadMutation.Field()
+    create_stb_coll_tran_detail = CreateStb_Coll_Tran_DetailsMutation.Field()
+    create_stb_scheme_application = CreateStb_Scheme_ApplicationMutation.Field()
+
+    # Loan
+    create_ctb_special_loan = CreateCtb_Special_LoanMutation.Field()
+    create_ctb_user_tran_verification = CreateCtb_User_Tran_VerificationsMutation.Field()
+    create_dctb_submission = CreateDctb_SubmissionMutation.Field()
+    create_atb_disbursement_process = CreateAtb_Disbursement_ProcessMutation.Field()
+
+    # Account
+    create_atb_gltran_mast = CreateAtb_Gltran_MastMutation.Field()
+    create_atb_gltran_detl = CreateAtb_Gltran_DetlMutation.Field()
+    create_atb_account_ledger = CreateAtb_Account_LedgerMutation.Field()
 
 
 schema = graphene.Schema(query=Query, mutation=Mutation)
