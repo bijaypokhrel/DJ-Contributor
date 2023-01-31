@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8" />
+		<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<title>Claim Booking</title>
+	</head>
+	<body>
+		<h3>Welcome to claim booking</h3>
+		<form action="/claimbooking" method="post">
+			{% csrf_token %}
+			<label for="">Id</label>
+			<input type="number" id="id" name="id" placeholder="Enter id" required />
+			<br />
+			<label for="">Chfid</label>
+			<input
+				type="text"
+				id="chfid"
+				name="chfid"
+				placeholder="Enter Chfid"
+				required
+			/>
+			<br />
+
+			<label for="">Insureeid</label>
+			<input
+				type="text"
+				id="insureeid"
+				name="insureeid"
+				placeholder="Enter Insureeid"
+				required
+			/>
+
+			<br />
+
+			<label for="">Item Id</label>
+			<input
+				type="text"
+				id="itemid"
+				name="itemid"
+				placeholder="Enter Item Id"
+				required
+			/>
+			<br />
+			<label for="">Service Id</label>
+			<input
+				type="text"
+				id="serviceid"
+				name="serviceid"
+				placeholder="Enter Service Id"
+				required
+			/>
+			<br />
+			<label for="">Quantity</label>
+			<input
+				type="number"
+				id="quantity"
+				name="quantity"
+				placeholder="Enter Quantity"
+				required
+			/>
+			<br />
+
+			<label for="">Price</label>
+			<input
+				type="number"
+				id="price"
+				name="price"
+				placeholder="Enter Price"
+				required
+			/>
+			<br />
+			<label for="">Claimed Date</label>
+			<input
+				type="date"
+				id="claimeddate"
+				name="claimeddate"
+				placeholder="Enter Claimed Date"
+				required
+			/>
+			<br />
+			<label for="">Claim id</label>
+			<input
+				type="text"
+				id="claimid"
+				name="claimid"
+				placeholder="Enter Claim Id"
+				required
+			/>
+			<br />
+			<label for="">Claim Amount</label>
+			<input
+				type="number"
+				id="claimamount"
+				name="claimamount"
+				placeholder="Enter Claim Amount"
+				required
+			/>
+			<br />
+			<button type="submit">Enter</button>
+		</form>
+	</body>
+</html>

@@ -6,5 +6,6 @@ from .models_loan import *
 from .models_account import *
 from .models_registration import *
 from .models_bank import *
+from .models_claim_booking import *
 
 # Create your models here.
