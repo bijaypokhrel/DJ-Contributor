@@ -1,5 +1,7 @@
 from django.shortcuts import render, redirect
 from .models import Claim_Booking
+import json
+from django.http import JsonResponse
 
 # Create your views here.
 
@@ -28,3 +30,44 @@ def claim_booking(request):
         # my_instance.save()
         return redirect("home")
     return render(request, 'contributor/claim_booking.html')
+
+# def claim_booking_json(request):
+
+
+def claim_booking_json(request):
+
+    if request.method == 'POST':
+
+        data = json.loads(request.body)
+
+        chfid = data.get('chfid')
+
+        insureeid = data.get('insureeid')
+
+        item_id = data.get('item_id')
+
+        service_id = data.get('service_id')
+
+        quantity = data.get('quantity')
+
+        price = data.get('price')
+
+        claimed_date = data.get('claimed_date')
+
+        claim_id = data.get('claim_id')
+
+        claim_amount = data.get('claim_amount')
+
+        claim_booking = Claim_Booking(chfid=chfid, insureeid=insureeid, item_id=item_id, service_id=service_id,
+
+                                      quantity=quantity, price=price, claimed_date=claimed_date,
+
+                                      claim_id=claim_id, claim_amount=claim_amount)
+
+        claim_booking.save()
+
+        return JsonResponse({'message': 'Claim Booking successfully created'})
+
+    else:
+
+        return JsonResponse({'error': 'Invalid request method'}, status=400)
