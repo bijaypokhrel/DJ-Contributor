@@ -9,6 +9,9 @@ urlpatterns = [
     path('claimbooking', views.claim_booking, name="claimbooking"),
     path('claimbookingjson', csrf_exempt(views.claim_booking_json),
          name="claimbookingjson"),
-    # path('claimbookingfhir', csrf_exempt(views.claim_booking_fhir),
-    #      name="claimbookingfhir"),
+    path('claimbookingfhir', csrf_exempt(views.claim_booking_fhir),
+         name="claimbookingfhir"),
+    path('fhirbookingclaim/<int:claim_id>', csrf_exempt(views.get_claim),
+         name="fhirbookingclaim"),
+
 ]
