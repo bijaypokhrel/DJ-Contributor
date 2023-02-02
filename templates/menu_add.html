@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<script
+			crossorigin
+			src="https://unpkg.com/react@17/umd/react.development.js"
+		></script>
+		<script
+			crossorigin
+			src="https://unpkg.com/react-dom@17/umd/react-dom.development.js"
+		></script>
+		<script src="https://unpkg.com/babel-standalone@6.15.0/babel.min.js"></script>
+	</head>
+	<body>
+		<div id="root"></div>
+		<script type="text/babel">
+			class App extends React.Component {
+				constructor(props) {
+					super(props);
+					this.state = {
+						menus: [],
+						newMenuText: '',
+						newMenuLink: '',
+						editingMenu: null,
+					};
+					this.handleAddMenu = this.handleAddMenu.bind(this);
+					this.handleInputChange = this.handleInputChange.bind(this);
+					this.handleEditingMenuChange =
+						this.handleEditingMenuChange.bind(this);
+				}
+
+				componentDidMount() {
+					this.fetchMenus();
+				}
+
+				fetchMenus() {
+					fetch('/app-menus')
+						.then((response) => response.json())
+						.then((data) => {
+							this.setState({ menus: data });
+						});
+				}
+
+				handleAddMenu(e) {
+					e.preventDefault();
+					const { newMenuText, newMenuLink } = this.state;
+					if (!newMenuText || !newMenuLink) {
+						return;
+					}
+					fetch('/app-menus', {
+						method: 'POST',
+						headers: { 'Content-Type': 'application/json' },
+						body: JSON.stringify({
+							menu_text: newMenuText,
+							menu_link: newMenuLink,
+						}),
+					})
+						.then((response) => response.json())
+						.then((data) => {
+							this.fetchMenus();
+							this.setState({ newMenuText: '', newMenuLink: '' });
+						});
+				}
+
+				handleInputChange(e) {
+					this.setState({ [e.target.name]: e.target.value });
+				}
+
+				handleEditingMenuChange(e) {
+					const { editingMenu } = this.state;
+					this.setState({
+						editingMenu: { ...editingMenu, [e.target.name]: e.target.value },
+					});
+				}
+
+				render() {
+					const { menus, newMenuText, newMenuLink, editingMenu } = this.state;
+					return (
+						<div>
+							<h1>App Menus</h1>
+							<form onSubmit={this.handleAddMenu}>
+								<input
+									type='text'
+									name='newMenuText'
+									placeholder='Menu Text'
+									value={newMenuText}
+									onChange={this.handleInputChange}
+								/>
+								<input
+									type='text'
+									name='newMenuLink'
+									placeholder='Menu Link'
+									value={newMenuLink}
+									onChange={this.handleInputChange}
+								/>
+								<button type='submit'>Add Menu</button>
+							</form>
+							<ul>
+								{menus.map((menu) => (
+									<li key={menu.id}>
+										{menu.menu_text} - {menu.menu_link}
+										<button onClick={() => this.handleEditMenu(menu)}>
+											Edit
+										</button>
+										<button onClick={() => this.handleDeleteMenu(menu)}>
+											Delete
+										</button>
+									</li>
+								))}
+							</ul>
+							{editingMenu && (
+								<form onSubmit={this.handleUpdateMenu}>
+									<input
+										type='text'
+										name='menu_text'
+										placeholder='Menu Text'
+										value={editingMenu.menu_text}
+										onChange={this.handleEditingMenuChange}
+									/>
+									<input
+										type='text'
+										name='menu_link'
+										placeholder='Menu Link'
+										value={editingMenu.menu_link}
+										onChange={this.handleEditingMenuChange}
+									/>
+									<button type='submit'>Update Menu</button>
+									<button onClick={() => this.setState({ editingMenu: null })}>
+										Cancel
+									</button>
+								</form>
+							)}
+						</div>
+					);
+				}
+			}
+
+			ReactDOM.render(<App />, document.getElementById('root'));
+		</script>
+	</body>
+</html>

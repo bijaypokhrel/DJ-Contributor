@@ -3,6 +3,7 @@ from .models import Claim_Booking
 import json
 from django.http import JsonResponse
 import datetime
+from .models_menu_views import *
 
 # Create your views here.
 
@@ -82,8 +83,9 @@ def parse_fhir_claim(fhir_data):
         claim = Claim_Booking(chfid=chfid, insureeid=patient_id, item_id=service_id,
                               service_id=service_id, quantity=quantity, price=price,
                               claimed_date=claimed_date, claim_id=claim_id, claim_amount=claim_amount)
-        claims.append(claim)
-        Claim_Booking.objects.bulk_create(claims)
+        claim.save()
+        # claims.append(claim)
+        # Claim_Booking.objects.bulk_create(claims)
 
 
 def convert_to_fhir_claim(claim_booking):
@@ -118,7 +120,7 @@ def convert_to_fhir_claim(claim_booking):
 
 def get_claim(request, claim_id):
     try:
-        claim_booking = Claim_Booking.objects.get(chfid=claim_id)
+        claim_booking = Claim_Booking.objects.get(pk=claim_id)
     except Claim_Booking.DoesNotExist:
         return JsonResponse({"error": "Claim not found"})
 

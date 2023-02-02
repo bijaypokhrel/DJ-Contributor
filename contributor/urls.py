@@ -13,5 +13,9 @@ urlpatterns = [
          name="claimbookingfhir"),
     path('fhirbookingclaim/<int:claim_id>', csrf_exempt(views.get_claim),
          name="fhirbookingclaim"),
-
+    path('menu', views.menu, name="menu"),
+    path('app-menus', csrf_exempt(views.app_menus),
+         name="app-menus"),
+    path('menu_add', csrf_exempt(views.menu_add),
+         name="menu_add"),
 ]
