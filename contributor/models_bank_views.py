@@ -57,3 +57,7 @@ def bank_edit(request):
 
 def bank_delete(request):
     return render(request, 'bank_delete.html')
+
+
+def bank_graphql(request):
+    return render(request, 'bank_graphql.html')

@@ -38,4 +38,8 @@ urlpatterns = [
     path('bank_delete', csrf_exempt(views.bank_delete),
          name="bank_delete"),
 
+    # Graphql
+
+    path('bank_graphql', views.bank_graphql, name="bank_graphql"),
+
 ]
