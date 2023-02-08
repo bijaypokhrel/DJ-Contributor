@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<script
+			crossorigin
+			src="https://unpkg.com/react@17/umd/react.development.js"
+		></script>
+		<script
+			crossorigin
+			src="https://unpkg.com/react-dom@17/umd/react-dom.development.js"
+		></script>
+		<script src="https://unpkg.com/babel-standalone@6.15.0/babel.min.js"></script>
+	</head>
+	<body>
+		<div id="root"></div>
+		<script type="text/babel">
+			class App extends React.Component {
+				constructor(props) {
+					super(props);
+					this.state = {
+						menus: [],
+						newMenuText: '',
+						newMenuLink: '',
+						editingMenu: null,
+					};
+
+					this.handleDeleteMenu = this.handleDeleteMenu.bind(this);
+				}
+
+				componentDidMount() {
+					this.fetchMenus();
+				}
+
+				fetchMenus() {
+					fetch('/app-menus')
+						.then((response) => response.json())
+						.then((data) => {
+							this.setState({ menus: data });
+						});
+				}
+
+				handleDeleteMenu(menu) {
+					fetch(`/app-menus/${menu.id}`, {
+						method: 'DELETE',
+					})
+						.then((response) => response.json())
+						.then((data) => {
+							this.fetchMenus();
+						});
+				}
+
+				render() {
+					const { menus, newMenuText, newMenuLink, editingMenu } = this.state;
+					return (
+						<div>
+							<h1>App Menus</h1>
+
+							<ul>
+								{menus.map((menu) => (
+									<li key={menu.id}>
+										{menu.menu_text} - {menu.menu_link}
+										<button onClick={() => this.handleDeleteMenu(menu)}>
+											Delete
+										</button>
+									</li>
+								))}
+							</ul>
+						</div>
+					);
+				}
+			}
+
+			ReactDOM.render(<App />, document.getElementById('root'));
+		</script>
+	</body>
+</html>

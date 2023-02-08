@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<script
+			crossorigin
+			src="https://unpkg.com/react@17/umd/react.development.js"
+		></script>
+		<script
+			crossorigin
+			src="https://unpkg.com/react-dom@17/umd/react-dom.development.js"
+		></script>
+		<script src="https://unpkg.com/babel-standalone@6.15.0/babel.min.js"></script>
+	</head>
+	<body>
+		<div id="root"></div>
+		<script type="text/babel">
+			class App extends React.Component {
+				constructor(props) {
+					super(props);
+					this.state = {
+						banks: [],
+						newName: '',
+						newCapital: '',
+						editingBank: null,
+					};
+					this.handleAddBank = this.handleAddBank.bind(this);
+					this.handleInputChange = this.handleInputChange.bind(this);
+					this.handleEditingBankChange =
+						this.handleEditingBankChange.bind(this);
+				}
+
+				componentDidMount() {
+					this.fetchBanks();
+				}
+
+				fetchBanks() {
+					fetch('/app-banks')
+						.then((response) => response.json())
+						.then((data) => {
+							this.setState({ banks: data });
+						});
+				}
+
+				handleAddBank(e) {
+					e.preventDefault();
+					const { newName, newCapital } = this.state;
+					if (!newName || !newCapital) {
+						return;
+					}
+					fetch('/app-banks', {
+						method: 'POST',
+						headers: { 'Content-Type': 'application/json' },
+						body: JSON.stringify({
+							name: newName,
+							capital: newCapital,
+						}),
+					})
+						.then((response) => response.json())
+						.then((data) => {
+							this.fetchBanks();
+							this.setState({ newName: '', newCapital: '' });
+						});
+				}
+
+				handleInputChange(e) {
+					this.setState({ [e.target.name]: e.target.value });
+				}
+
+				handleEditingBankChange(e) {
+					const { editingBank } = this.state;
+					this.setState({
+						editingBank: { ...editingBank, [e.target.name]: e.target.value },
+					});
+				}
+
+				render() {
+					const { banks, newName, newCapital, editingBank } = this.state;
+					return (
+						<div>
+							<h1>App Banks</h1>
+							<form onSubmit={this.handleAddBank}>
+								<input
+									type='text'
+									name='newName'
+									placeholder='Name'
+									value={newName}
+									onChange={this.handleInputChange}
+								/>
+								<input
+									type='text'
+									name='newCapital'
+									placeholder='Capital'
+									value={newCapital}
+									onChange={this.handleInputChange}
+								/>
+								<button type='submit'>Add Bank</button>
+							</form>
+							<ul>
+								{banks.map((bank) => (
+									<li key={bank.id}>
+										{bank.name} - {bank.capital}
+									</li>
+								))}
+							</ul>
+							{editingBank && (
+								<form onSubmit={this.handleUpdateBank}>
+									<input
+										type='text'
+										name='name'
+										placeholder='Name'
+										value={editingBank.name}
+										onChange={this.handleEditingBankChange}
+									/>
+									<input
+										type='text'
+										name='capital'
+										placeholder='Capital'
+										value={editingBank.capital}
+										onChange={this.handleEditingBankChange}
+									/>
+									<button type='submit'>Update Bank</button>
+									<button onClick={() => this.setState({ editingBank: null })}>
+										Cancel
+									</button>
+								</form>
+							)}
+						</div>
+					);
+				}
+			}
+
+			ReactDOM.render(<App />, document.getElementById('root'));
+		</script>
+	</body>
+</html>

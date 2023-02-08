@@ -13,9 +13,29 @@ urlpatterns = [
          name="claimbookingfhir"),
     path('fhirbookingclaim/<int:claim_id>', csrf_exempt(views.get_claim),
          name="fhirbookingclaim"),
+
+    # Menu
     path('menu', views.menu, name="menu"),
     path('app-menus', csrf_exempt(views.app_menus),
          name="app-menus"),
+    path('app_menus/<int:menu_id>', csrf_exempt(views.app_menus)),
     path('menu_add', csrf_exempt(views.menu_add),
          name="menu_add"),
+    path('menu_edit', csrf_exempt(views.menu_edit),
+         name="menu_edit"),
+    path('menu_delete', csrf_exempt(views.menu_delete),
+         name="menu_delete"),
+
+    # Bank
+    path('bank', views.bank, name="bank"),
+    path('app-banks', csrf_exempt(views.app_banks),
+         name="app-banks"),
+    path('app-banks/<int:bank_id>', csrf_exempt(views.app_banks)),
+    path('bank_add', csrf_exempt(views.bank_add),
+         name="bank_add"),
+    path('bank_edit', csrf_exempt(views.bank_edit),
+         name="bank_edit"),
+    path('bank_delete', csrf_exempt(views.bank_delete),
+         name="bank_delete"),
+
 ]

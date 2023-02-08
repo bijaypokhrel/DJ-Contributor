@@ -99,12 +99,6 @@
 								{menus.map((menu) => (
 									<li key={menu.id}>
 										{menu.menu_text} - {menu.menu_link}
-										<button onClick={() => this.handleEditMenu(menu)}>
-											Edit
-										</button>
-										<button onClick={() => this.handleDeleteMenu(menu)}>
-											Delete
-										</button>
 									</li>
 								))}
 							</ul>

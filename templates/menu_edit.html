@@ -23,11 +23,9 @@
 						newMenuLink: '',
 						editingMenu: null,
 					};
-					this.handleAddMenu = this.handleAddMenu.bind(this);
 					this.handleEditMenu = this.handleEditMenu.bind(this);
 					this.handleUpdateMenu = this.handleUpdateMenu.bind(this);
-					this.handleDeleteMenu = this.handleDeleteMenu.bind(this);
-					this.handleInputChange = this.handleInputChange.bind(this);
+					// this.handleInputChange = this.handleInputChange.bind(this);
 					this.handleEditingMenuChange =
 						this.handleEditingMenuChange.bind(this);
 				}
@@ -41,27 +39,6 @@
 						.then((response) => response.json())
 						.then((data) => {
 							this.setState({ menus: data });
-						});
-				}
-
-				handleAddMenu(e) {
-					e.preventDefault();
-					const { newMenuText, newMenuLink } = this.state;
-					if (!newMenuText || !newMenuLink) {
-						return;
-					}
-					fetch('/app-menus', {
-						method: 'POST',
-						headers: { 'Content-Type': 'application/json' },
-						body: JSON.stringify({
-							menu_text: newMenuText,
-							menu_link: newMenuLink,
-						}),
-					})
-						.then((response) => response.json())
-						.then((data) => {
-							this.fetchMenus();
-							this.setState({ newMenuText: '', newMenuLink: '' });
 						});
 				}
 
@@ -90,19 +67,9 @@
 						});
 				}
 
-				handleDeleteMenu(menu) {
-					fetch(`/app-menus/${menu.id}`, {
-						method: 'DELETE',
-					})
-						.then((response) => response.json())
-						.then((data) => {
-							this.fetchMenus();
-						});
-				}
-
-				handleInputChange(e) {
-					this.setState({ [e.target.name]: e.target.value });
-				}
+				// handleInputChange(e) {
+				// 	this.setState({ [e.target.name]: e.target.value });
+				// }
 
 				handleEditingMenuChange(e) {
 					const { editingMenu } = this.state;
@@ -116,32 +83,12 @@
 					return (
 						<div>
 							<h1>App Menus</h1>
-							<form onSubmit={this.handleAddMenu}>
-								<input
-									type='text'
-									name='newMenuText'
-									placeholder='Menu Text'
-									value={newMenuText}
-									onChange={this.handleInputChange}
-								/>
-								<input
-									type='text'
-									name='newMenuLink'
-									placeholder='Menu Link'
-									value={newMenuLink}
-									onChange={this.handleInputChange}
-								/>
-								<button type='submit'>Add Menu</button>
-							</form>
 							<ul>
 								{menus.map((menu) => (
 									<li key={menu.id}>
 										{menu.menu_text} - {menu.menu_link}
 										<button onClick={() => this.handleEditMenu(menu)}>
 											Edit
-										</button>
-										<button onClick={() => this.handleDeleteMenu(menu)}>
-											Delete
 										</button>
 									</li>
 								))}

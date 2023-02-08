@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<script
+			crossorigin
+			src="https://unpkg.com/react@17/umd/react.development.js"
+		></script>
+		<script
+			crossorigin
+			src="https://unpkg.com/react-dom@17/umd/react-dom.development.js"
+		></script>
+		<script src="https://unpkg.com/babel-standalone@6.15.0/babel.min.js"></script>
+	</head>
+	<body>
+		<div id="root"></div>
+		<script type="text/babel">
+			class App extends React.Component {
+				constructor(props) {
+					super(props);
+					this.state = {
+						banks: [],
+						newName: '',
+						newCapital: '',
+						editingBank: null,
+					};
+					this.handleDeleteBank = this.handleDeleteBank.bind(this);
+				}
+
+				componentDidMount() {
+					this.fetchBanks();
+				}
+
+				fetchBanks() {
+					fetch('/app-banks')
+						.then((response) => response.json())
+						.then((data) => {
+							this.setState({ banks: data });
+						});
+				}
+
+				handleEditBank(bank) {
+					this.setState({ editingBank: bank });
+				}
+
+				handleDeleteBank(bank) {
+					fetch(`/app-banks/${bank.id}`, {
+						method: 'DELETE',
+					})
+						.then((response) => response.json())
+						.then((data) => {
+							this.fetchBanks();
+						});
+				}
+
+				render() {
+					const { banks, newName, newCapital, editingBank } = this.state;
+					return (
+						<div>
+							<h1>App Banks</h1>
+
+							<ul>
+								{banks.map((bank) => (
+									<li key={bank.id}>
+										{bank.name} - {bank.capital}
+										<button onClick={() => this.handleDeleteBank(bank)}>
+											Delete
+										</button>
+									</li>
+								))}
+							</ul>
+						</div>
+					);
+				}
+			}
+
+			ReactDOM.render(<App />, document.getElementById('root'));
+		</script>
+	</body>
+</html>
