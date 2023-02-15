@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<script
+			crossorigin
+			src="https://unpkg.com/react@17/umd/react.development.js"
+		></script>
+		<script
+			crossorigin
+			src="https://unpkg.com/react-dom@17/umd/react-dom.development.js"
+		></script>
+		<script src="https://unpkg.com/babel-standalone@6.15.0/babel.min.js"></script>
+	</head>
+	<body>
+		<div id="root"></div>
+		<script type="text/babel">
+			class CtbAddressList extends React.Component {
+				constructor(props) {
+					super(props);
+					this.state = {
+						ctbaddresses: [],
+					};
+				}
+
+				componentDidMount() {
+					this.fetchCtbAddresses();
+				}
+
+				fetchCtbAddresses() {
+					var query_request = `
+						query {
+							ctbAddresses{
+								districtCd,
+								vdcCd
+							}
+						}`;
+					fetch('/graphql', {
+						method: 'POST',
+						headers: { 'Content-Type': 'application/json' },
+						body: JSON.stringify({
+							query: query_request,
+						}),
+					})
+						.then((response) => response.json())
+						.then((res) => {
+							this.setState({ ctbAddresses: res.data.ctbAddresses });
+						});
+				}
+
+				render() {
+					const { ctbaddresses } = this.state;
+					return (
+						<div>
+							<h1>App Menus</h1>
+							<ul>
+								{ctbaddresses.map((ctbAddress) => (
+									<li key={ctbAddress.id}>
+										{ctbAddress.districtCd} - {menu.vdcCd}
+									</li>
+								))}
+							</ul>
+						</div>
+					);
+				}
+			}
+
+			ReactDOM.render(<CtbAddressList />, document.getElementById('root'));
+		</script>
+	</body>
+</html>

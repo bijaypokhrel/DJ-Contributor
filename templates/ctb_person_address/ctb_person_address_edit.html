@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<script
+			crossorigin
+			src="https://unpkg.com/react@17/umd/react.development.js"
+		></script>
+		<script
+			crossorigin
+			src="https://unpkg.com/react-dom@17/umd/react-dom.development.js"
+		></script>
+		<script src="https://unpkg.com/babel-standalone@6.15.0/babel.min.js"></script>
+	</head>
+	<body>
+		<div id="root"></div>
+		<script type="text/babel">
+			class CtbPersonAddressList extends React.Component {
+				constructor(props) {
+					super(props);
+					this.state = {
+						ctbPersonAddresses: [],
+						editingCtbPersonAddress: null,
+					};
+					this.handleUiEditCtbPersonAddress =
+						this.handleUiEditCtbPersonAddress.bind(this);
+					this.handleApiUpdateCtbPersonAddress =
+						this.handleApiUpdateCtbPersonAddress.bind(this);
+					this.handleHumanEditingCtbPersonAddressStateChange =
+						this.handleHumanEditingCtbPersonAddressStateChange.bind(this);
+				}
+
+				componentDidMount() {
+					this.fetchCtbPersonAddresses();
+				}
+
+				fetchCtbPersonAddresses() {
+					var query_request = `
+						query {
+						ctbPersonAddresses{
+							id,
+							fromDate,
+							toDate
+						}
+					}`;
+					fetch('/graphql', {
+						method: 'POST',
+						headers: { 'Content-Type': 'application/json' },
+						body: JSON.stringify({
+							query: query_request,
+						}),
+					})
+						.then((response) => response.json())
+						.then((res) => {
+							this.setState({
+								ctbPersonAddresses: res.data.ctbPersonAddresses,
+							});
+						});
+				}
+
+				handleApiUpdateCtbPersonAddress(e) {
+					console.log('handleApiUpdateCtbPersonAddress', this.state);
+					e.preventDefault();
+					const { editingCtbPersonAddress } = this.state;
+					if (!editingCtbPersonAddress) {
+						return;
+					}
+					var query_request = `
+						mutation {
+							createCtbPersonAddress(fromDate:"${editingCtbPersonAddress.fromDate}", toDate:"${editingCtbPersonAddress.toDate}"){
+								ctbPersonAddress{
+									fromDate,
+									toDate
+								}
+						}
+					}`;
+					fetch('/graphql', {
+						method: 'POST',
+						headers: { 'Content-Type': 'application/json' },
+						body: JSON.stringify({
+							query: query_request,
+						}),
+					})
+						.then((response) => response.json())
+						.then((data) => {
+							this.fetchCtbPersonAddresses();
+							this.setState({ newFromDate: '', newToDate: '' });
+							this.setState({ editingCtbPersonAddress: null });
+						});
+				}
+
+				handleUiEditCtbPersonAddress(ctbPersonAddress) {
+					this.setState({ editingCtbPersonAddress: ctbPersonAddress });
+				}
+
+				handleHumanEditingCtbPersonAddressStateChange(e) {
+					const { editingCtbPersonAddress } = this.state;
+					this.setState({
+						editingCtbPersonAddress: {
+							...editingCtbPersonAddress,
+							[e.target.name]: e.target.value,
+						},
+					});
+				}
+
+				render() {
+					const { ctbPersonAddresses, editingCtbPersonAddress } = this.state;
+					return (
+						<div>
+							<h1>App Ctb Person </h1>
+							<div>{JSON.stringify(this.state)}</div>
+							<ul>
+								{ctbPersonAddresses.map((ctbPersonAddress) => (
+									<li key={ctbPersonAddress.id}>
+										{ctbPersonAddress.fromDate} - {ctbPersonAddress.toDate}
+										<button
+											onClick={() =>
+												this.handleUiEditCtbPersonAddress(ctbPersonAddress)
+											}
+										>
+											Edit
+										</button>
+									</li>
+								))}
+							</ul>
+							{editingCtbPersonAddress && (
+								<div>
+									Text: {this.state.editingCtbPersonAddress.fromDate} <br />
+									Link: {this.state.editingCtbPersonAddress.toDate}
+								</div>
+							)}
+							{editingCtbPersonAddress && (
+								<form onSubmit={this.handleApiUpdateCtbPersonAddress}>
+									<input
+										type='text'
+										name='fromDate'
+										placeholder='fromDate'
+										value={editingCtbPersonAddress.fromDate}
+										onChange={
+											this.handleHumanEditingCtbPersonAddressStateChange
+										}
+									/>
+									<input
+										type='text'
+										name='toDate'
+										placeholder='toDate'
+										value={editingCtbPersonAddress.toDate}
+										onChange={
+											this.handleHumanEditingCtbPersonAddressStateChange
+										}
+									/>
+									<button type='submit'>Update Ctb Person Address</button>
+									<button
+										onClick={() =>
+											this.setState({ editingCtbPersonAddress: null })
+										}
+									>
+										Cancel
+									</button>
+								</form>
+							)}
+						</div>
+					);
+				}
+			}
+
+			ReactDOM.render(
+				<CtbPersonAddressList />,
+				document.getElementById('root')
+			);
+		</script>
+	</body>
+</html>

@@ -43,12 +43,20 @@ def app_menus(request, menu_id=None):
 
 
 def menu_add(request):
-    return render(request, 'menu_add.html')
+    return render(request, 'menu/menu_add.html')
 
 
 def menu_edit(request):
-    return render(request, 'menu_edit.html')
+    return render(request, 'menu/menu_edit.html')
 
 
 def menu_delete(request):
-    return render(request, 'menu_delete.html')
+    return render(request, 'menu/menu_delete.html')
+
+
+def menu_list(request):
+    return render(request, 'menu/menu_list.html')
+
+
+def menu_list_edit(request):
+    return render(request, 'menu/menu_list_edit.html')

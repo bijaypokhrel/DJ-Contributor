@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<script
+			crossorigin
+			src="https://unpkg.com/react@17/umd/react.development.js"
+		></script>
+		<script
+			crossorigin
+			src="https://unpkg.com/react-dom@17/umd/react-dom.development.js"
+		></script>
+		<script src="https://unpkg.com/babel-standalone@6.15.0/babel.min.js"></script>
+	</head>
+	<body>
+		<div id="root"></div>
+		<script type="text/babel">
+			class CtbPersonNomineeList extends React.Component {
+				constructor(props) {
+					super(props);
+					this.state = {
+						ctbPersonNominees: [],
+						editingCtbPersonNominee: null,
+					};
+					this.handleUiEditCtbPersonNominee =
+						this.handleUiEditCtbPersonNominee.bind(this);
+					this.handleApiUpdateCtbPersonNominee =
+						this.handleApiUpdateCtbPersonNominee.bind(this);
+					this.handleHumanEditingCtbPersonNomineeStateChange =
+						this.handleHumanEditingCtbPersonNomineeStateChange.bind(this);
+				}
+
+				componentDidMount() {
+					this.fetchCtbPersonNominees();
+				}
+
+				fetchCtbPersonNominees() {
+					var query_request = `
+						query {
+							ctbPersonNominees {
+								id,
+								fromDate,
+								toDate
+							}
+						}`;
+					fetch('/graphql', {
+						method: 'POST',
+						headers: { 'Content-Type': 'application/json' },
+						body: JSON.stringify({
+							query: query_request,
+						}),
+					})
+						.then((response) => response.json())
+						.then((res) => {
+							this.setState({
+								ctbPersonNominees: res.data.ctbPersonNominees,
+							});
+						});
+				}
+
+				handleApiUpdateCtbPersonNominee(e) {
+					console.log('handleApiUpdateCtbPersonNominee', this.state);
+					e.preventDefault();
+					const { editingCtbPersonNominee } = this.state;
+					if (!editingCtbPersonNominee) {
+						return;
+					}
+					var query_request = `
+						mutation {
+							createCtbPersonNominee(fromDate:"${editingCtbPersonNominee.fromDate}", toDate:"${editingCtbPersonNominee.toDate}"){
+								ctbPersonNominee{
+								id,
+								fromDate, 
+								toDate
+								}
+							}
+						}`;
+					fetch('/graphql', {
+						method: 'POST',
+						headers: { 'Content-Type': 'application/json' },
+						body: JSON.stringify({
+							query: query_request,
+						}),
+					})
+						.then((response) => response.json())
+						.then((data) => {
+							this.fetchCtbPersonNominees();
+							this.setState({ newFromDate: '', newToDate: '' });
+							this.setState({ editingCtbPersonNominee: null });
+						});
+				}
+
+				handleUiEditCtbPersonNominee(ctbPersonNominee) {
+					this.setState({ editingCtbPersonNominee: ctbPersonNominee });
+				}
+
+				handleHumanEditingCtbPersonNomineeStateChange(e) {
+					const { editingCtbPersonNominee } = this.state;
+					this.setState({
+						editingCtbPersonNominee: {
+							...editingCtbPersonNominee,
+							[e.target.name]: e.target.value,
+						},
+					});
+				}
+
+				render() {
+					const { ctbPersonNominees, editingCtbPersonNominee } = this.state;
+					return (
+						<div>
+							<h1>App Ctb Person Nominee </h1>
+							<div>{JSON.stringify(this.state)}</div>
+							<ul>
+								{ctbPersonNominees.map((ctbPersonNominee) => (
+									<li key={ctbPersonNominee.id}>
+										{ctbPersonNominee.fromDate} - {ctbPersonNominee.toDate}
+										<button
+											onClick={() =>
+												this.handleUiEditCtbPersonNominee(ctbPersonNominee)
+											}
+										>
+											Edit
+										</button>
+									</li>
+								))}
+							</ul>
+							{editingCtbPersonNominee && (
+								<div>
+									Text: {this.state.editingCtbPersonNominee.fromDate} <br />
+									Link: {this.state.editingCtbPersonNominee.toDate}
+								</div>
+							)}
+							{editingCtbPersonNominee && (
+								<form onSubmit={this.handleApiUpdateCtbPersonNominee}>
+									<input
+										type='text'
+										name='fromDate'
+										placeholder='fromDate'
+										value={editingCtbPersonNominee.fromDate}
+										onChange={
+											this.handleHumanEditingCtbPersonNomineeStateChange
+										}
+									/>
+									<input
+										type='text'
+										name='toDate'
+										placeholder='toDate'
+										value={editingCtbPersonNominee.toDate}
+										onChange={
+											this.handleHumanEditingCtbPersonNomineeStateChange
+										}
+									/>
+									<button type='submit'>Update Ctb Person Nominee</button>
+									<button
+										onClick={() =>
+											this.setState({ editingCtbPersonNominee: null })
+										}
+									>
+										Cancel
+									</button>
+								</form>
+							)}
+						</div>
+					);
+				}
+			}
+
+			ReactDOM.render(
+				<CtbPersonNomineeList />,
+				document.getElementById('root')
+			);
+		</script>
+	</body>
+</html>

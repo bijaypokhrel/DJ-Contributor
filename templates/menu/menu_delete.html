@@ -19,9 +19,6 @@
 					super(props);
 					this.state = {
 						menus: [],
-						newMenuText: '',
-						newMenuLink: '',
-						editingMenu: null,
 					};
 
 					this.handleDeleteMenu = this.handleDeleteMenu.bind(this);
@@ -40,7 +37,7 @@
 				}
 
 				handleDeleteMenu(menu) {
-					fetch(`/app-menus/${menu.id}`, {
+					fetch(`/app_menus/${menu.id}`, {
 						method: 'DELETE',
 					})
 						.then((response) => response.json())
@@ -50,7 +47,7 @@
 				}
 
 				render() {
-					const { menus, newMenuText, newMenuLink, editingMenu } = this.state;
+					const { menus } = this.state;
 					return (
 						<div>
 							<h1>App Menus</h1>

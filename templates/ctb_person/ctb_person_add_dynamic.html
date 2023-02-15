@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<script
+			crossorigin
+			src="https://unpkg.com/react@17/umd/react.development.js"
+		></script>
+		<script
+			crossorigin
+			src="https://unpkg.com/react-dom@17/umd/react-dom.development.js"
+		></script>
+		<script src="https://unpkg.com/babel-standalone@6.15.0/babel.min.js"></script>
+	</head>
+	<body>
+		<div id="root"></div>
+		<script type="text/babel">
+			class CtbPersonAdd extends React.Component {
+				constructor(props) {
+					super(props);
+					this.state = {
+						newFnameNep: '',
+						newMnameNep: '',
+					};
+					this.handleApiAddCtbPerson = this.handleApiAddCtbPerson.bind(this);
+					this.handleHumanInputChange = this.handleHumanInputChange.bind(this);
+				}
+
+				componentDidMount() {}
+
+				fetchCtbPersons() {
+					console.log('fetchCtbPersons', this.state);
+				}
+
+				handleApiAddCtbPerson(e) {
+					e.preventDefault();
+					const { newFnameNep, newMnameNep } = this.state;
+					if (!newFnameNep || !newMnameNep) {
+						return;
+					}
+					var query_request = `
+						mutation{createCtbPerson(fnameNep:"${newFnameNep}",mnameNep:"${newFnameNep}"){
+							ctbPerson{
+								fnameNep,
+								mnameNep
+							}
+						}
+					}`;
+					fetch('/graphql', {
+						method: 'POST',
+						headers: { 'Content-Type': 'application/json' },
+						body: JSON.stringify({
+							query: query_request,
+						}),
+					})
+						.then((response) => response.json())
+						.then((data) => {
+							this.fetchCtbPersons();
+							this.setState({ newFnameNep: '', newMnameNep: '' });
+						});
+				}
+
+				handleHumanInputChange(e) {
+					console.log('handleHumanInputChange', this.state, 'e', e);
+					this.setState({ [e.target.name]: e.target.value });
+				}
+
+				render() {
+					const { newFnameNep, newMnameNep } = this.state;
+					return (
+						<div>
+							<h1>App Ctb Person Add</h1>
+							<div>{JSON.stringify(this.state)}</div>
+							<form onSubmit={this.handleApiAddCtbPerson}>
+								<input
+									type='text'
+									name='newFnameNep'
+									placeholder='Fname Nep'
+									value={newFnameNep}
+									onChange={this.handleHumanInputChange}
+								/>
+								<input
+									type='text'
+									name='newMnameNep'
+									placeholder='Mname Nep'
+									value={newMnameNep}
+									onChange={this.handleHumanInputChange}
+								/>
+								<button type='submit'>Add Ctb Person</button>
+							</form>
+						</div>
+					);
+				}
+			}
+
+			ReactDOM.render(<CtbPersonAdd />, document.getElementById('root'));
+		</script>
+	</body>
+</html>

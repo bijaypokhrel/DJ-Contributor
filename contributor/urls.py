@@ -5,7 +5,12 @@ from . import views
 
 
 urlpatterns = [
-    path('', views.home, name="home"),
+
+
+    path('links', views.links, name="links"),
+
+    #     path('', views.home, name="home"),
+    path('', views.links, name="home"),
     path('claimbooking', views.claim_booking, name="claimbooking"),
     path('claimbookingjson', csrf_exempt(views.claim_booking_json),
          name="claimbookingjson"),
@@ -26,6 +31,9 @@ urlpatterns = [
     path('menu_delete', csrf_exempt(views.menu_delete),
          name="menu_delete"),
 
+    path('menu_list', views.menu_list, name="menu_list"),
+    path('menu_list_edit', views.menu_list_edit, name="menu_list_edit"),
+
     # Bank
     path('bank', views.bank, name="bank"),
     path('app-banks', csrf_exempt(views.app_banks),
@@ -39,7 +47,113 @@ urlpatterns = [
          name="bank_delete"),
 
     # Graphql
-
+    # Bank
     path('bank_graphql', views.bank_graphql, name="bank_graphql"),
+    # Ctb Address
+    path('ctb_address_graphql', views.ctb_address_graphql,
+         name="ctb_address_graphql"),
 
+    path('ctb_address_add', views.ctb_address_add,
+         name="ctb_address_add"),
+
+    path('ctb_address_add_static', views.ctb_address_add_static,
+         name="ctb_address_add_static"),
+
+    path('ctb_address_add_dynamic', views.ctb_address_add_dynamic,
+         name="ctb_address_add_dynamic"),
+
+    path('links', views.links, name="links"),
+
+
+    path('ctb_address_list_only', views.ctb_address_list_only,
+         name="ctb_address_list_only"),
+
+    path('ctb_address_list_edit', views.ctb_address_list_edit,
+         name="ctb_address_list_edit"),
+
+    path('ctb_address_edit', views.ctb_address_edit,
+         name="ctb_address_edit"),
+
+    path('ctb_address_delete', views.ctb_address_delete,
+         name="ctb_address_delete"),
+
+    #     Ctb Person
+
+    path('ctb_person_add_static', views.ctb_person_add_static,
+         name="ctb_person_add_static"),
+
+    path('ctb_person_add_dynamic', views.ctb_person_add_dynamic,
+         name="ctb_person_add_dynamic"),
+
+    path('ctb_person_list_only', views.ctb_person_list_only,
+         name="ctb_person_list_only"),
+
+    path('ctb_person_list_edit', views.ctb_person_list_edit,
+         name="ctb_person_list_edit"),
+
+    path('ctb_person_edit', views.ctb_person_edit,
+         name="ctb_person_edit"),
+
+    path('ctb_person_delete', views.ctb_person_delete,
+         name="ctb_person_delete"),
+
+
+    #     Ctb Person Address
+
+    path('ctb_person_address_add_static', views.ctb_person_address_add_static,
+         name="ctb_person_address_add_static"),
+
+    path('ctb_person_address_add_dynamic', views.ctb_person_address_add_dynamic,
+         name="ctb_person_address_add_dynamic"),
+
+    path('ctb_person_address_list_only', views.ctb_person_address_list_only,
+         name="ctb_person_address_list_only"),
+
+    path('ctb_person_address_list_edit', views.ctb_person_address_list_edit,
+         name="ctb_person_address_list_edit"),
+
+    path('ctb_person_address_edit', views.ctb_person_address_edit,
+         name="ctb_person_address_edit"),
+    path('ctb_person_address_delete', views.ctb_person_address_delete,
+         name="ctb_person_address_delete"),
+
+    #     Ctb Person Dependent
+
+    path('ctb_person_dependent_add_static', views.ctb_person_dependent_add_static,
+         name="ctb_person_dependent_add_static"),
+
+    path('ctb_person_dependent_add_dynamic', views.ctb_person_dependent_add_dynamic,
+         name="ctb_person_dependent_add_dynamic"),
+
+    path('ctb_person_dependent_list_only', views.ctb_person_dependent_list_only,
+         name="ctb_person_dependent_list_only"),
+
+    path('ctb_person_dependent_list_edit', views.ctb_person_dependent_list_edit,
+         name="ctb_person_dependent_list_edit"),
+
+    path('ctb_person_dependent_edit', views.ctb_person_dependent_edit,
+         name="ctb_person_dependent_edit"),
+
+    path('ctb_person_dependent_delete', views.ctb_person_dependent_delete,
+         name="ctb_person_dependent_delete"),
+
+    #     Ctb Person Nominee
+
+    path('ctb_person_nominee_add_static', views.ctb_person_nominee_add_static,
+         name="ctb_person_nominee_add_static"),
+
+    path('ctb_person_nominee_add_dynamic', views.ctb_person_nominee_add_dynamic,
+         name="ctb_person_nominee_add_dynamic"),
+
+    path('ctb_person_nominee_list_only', views.ctb_person_nominee_list_only,
+         name="ctb_person_nominee_list_only"),
+
+    path('ctb_person_nominee_list_edit', views.ctb_person_nominee_list_edit,
+         name="ctb_person_nominee_list_edit"),
+
+    path('ctb_person_nominee_edit', views.ctb_person_nominee_edit,
+         name="ctb_person_nominee_edit"),
+
+    path('ctb_person_nominee_delete', views.ctb_person_nominee_delete,
+         name="ctb_person_nominee_delete"),
 ]

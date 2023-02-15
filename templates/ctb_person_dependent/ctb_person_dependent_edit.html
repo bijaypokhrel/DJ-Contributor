@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<script
+			crossorigin
+			src="https://unpkg.com/react@17/umd/react.development.js"
+		></script>
+		<script
+			crossorigin
+			src="https://unpkg.com/react-dom@17/umd/react-dom.development.js"
+		></script>
+		<script src="https://unpkg.com/babel-standalone@6.15.0/babel.min.js"></script>
+	</head>
+	<body>
+		<div id="root"></div>
+		<script type="text/babel">
+			class CtbPersonDependentList extends React.Component {
+				constructor(props) {
+					super(props);
+					this.state = {
+						ctbPersonDependents: [],
+						editingCtbPersonDependent: null,
+					};
+					this.handleUiEditCtbPersonDependent =
+						this.handleUiEditCtbPersonDependent.bind(this);
+					this.handleApiUpdateCtbPersonDependent =
+						this.handleApiUpdateCtbPersonDependent.bind(this);
+					this.handleHumanEditingCtbPersonDependentStateChange =
+						this.handleHumanEditingCtbPersonDependentStateChange.bind(this);
+				}
+
+				componentDidMount() {
+					this.fetchCtbPersonDependents();
+				}
+
+				fetchCtbPersonDependents() {
+					var query_request = `
+						query{
+							ctbPersonDependents{
+								orderNo,
+								entryBy,
+								rStatus
+						}
+				}`;
+					fetch('/graphql', {
+						method: 'POST',
+						headers: { 'Content-Type': 'application/json' },
+						body: JSON.stringify({
+							query: query_request,
+						}),
+					})
+						.then((response) => response.json())
+						.then((res) => {
+							this.setState({
+								ctbPersonDependents: res.data.ctbPersonDependents,
+							});
+						});
+				}
+
+				handleApiUpdateCtbPersonDependent(e) {
+					console.log('handleApiUpdateCtbPersonDependent', this.state);
+					e.preventDefault();
+					const { editingCtbPersonDependent } = this.state;
+					if (!editingCtbPersonDependent) {
+						return;
+					}
+					var query_request = `
+						mutation {
+							createCtbPersonDependent(entryBy:"${editingCtbPersonDependent.entryBy}", rStatus:"${editingCtbPersonDependent.rStatus}"){
+								ctbPersonDependent{
+									entryBy,
+									rStatus,
+								}
+							}
+						}`;
+					fetch('/graphql', {
+						method: 'POST',
+						headers: { 'Content-Type': 'application/json' },
+						body: JSON.stringify({
+							query: query_request,
+						}),
+					})
+						.then((response) => response.json())
+						.then((data) => {
+							this.fetchCtbPersonDependents();
+							this.setState({ newEntryBy: '', newrStatus: '' });
+							this.setState({ editingCtbPersonDependent: null });
+						});
+				}
+
+				handleUiEditCtbPersonDependent(ctbPersonDependent) {
+					this.setState({ editingCtbPersonDependent: ctbPersonDependent });
+				}
+
+				handleHumanEditingCtbPersonDependentStateChange(e) {
+					const { editingCtbPersonDependent } = this.state;
+					this.setState({
+						editingCtbPersonDependent: {
+							...editingCtbPersonDependent,
+							[e.target.name]: e.target.value,
+						},
+					});
+				}
+
+				render() {
+					const { ctbPersonDependents, editingCtbPersonDependent } = this.state;
+					return (
+						<div>
+							<h1>App Ctb Person Dependent </h1>
+							<div>{JSON.stringify(this.state)}</div>
+							<ul>
+								{ctbPersonDependents.map((ctbPersonDependent) => (
+									<li key={ctbPersonDependent.orderNo}>
+										{ctbPersonDependent.entryBy} - {ctbPersonDependent.rStatus}
+										<button
+											onClick={() =>
+												this.handleUiEditCtbPersonDependent(ctbPersonDependent)
+											}
+										>
+											Edit
+										</button>
+									</li>
+								))}
+							</ul>
+							{editingCtbPersonDependent && (
+								<div>
+									Text: {this.state.editingCtbPersonDependent.entryBy} <br />
+									Link: {this.state.editingCtbPersonDependent.rStatus}
+								</div>
+							)}
+							{editingCtbPersonDependent && (
+								<form onSubmit={this.handleApiUpdateCtbPersonDependent}>
+									<input
+										type='text'
+										name='entryBy'
+										placeholder='entryBy'
+										value={editingCtbPersonDependent.entryBy}
+										onChange={
+											this.handleHumanEditingCtbPersonDependentStateChange
+										}
+									/>
+									<input
+										type='text'
+										name='rStatus'
+										placeholder='rStatus'
+										value={editingCtbPersonDependent.rStatus}
+										onChange={
+											this.handleHumanEditingCtbPersonDependentStateChange
+										}
+									/>
+									<button type='submit'>Update Ctb Person Dependent</button>
+									<button
+										onClick={() =>
+											this.setState({ editingCtbPersonDependent: null })
+										}
+									>
+										Cancel
+									</button>
+								</form>
+							)}
+						</div>
+					);
+				}
+			}
+
+			ReactDOM.render(
+				<CtbPersonDependentList />,
+				document.getElementById('root')
+			);
+		</script>
+	</body>
+</html>

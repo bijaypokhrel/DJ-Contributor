@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<script
+			crossorigin
+			src="https://unpkg.com/react@17/umd/react.development.js"
+		></script>
+		<script
+			crossorigin
+			src="https://unpkg.com/react-dom@17/umd/react-dom.development.js"
+		></script>
+		<script src="https://unpkg.com/babel-standalone@6.15.0/babel.min.js"></script>
+	</head>
+	<body>
+		<div id="root"></div>
+		<script type="text/babel">
+			class CtbAddressAdd extends React.Component {
+				constructor(props) {
+					super(props);
+					this.state = {
+						newDistrictCd: '',
+						newVdcCd: '',
+					};
+					this.handleAddCtbAddress = this.handleAddCtbAddress.bind(this);
+					this.handleInputChange = this.handleInputChange.bind(this);
+				}
+
+				componentDidMount() {}
+
+				fetchCtbAddresses() {
+					console.log('fetchCtbAddresses', this.state);
+				}
+
+				handleAddCtbAddress(e) {
+					e.preventDefault();
+					const { newDistrictCd, newVdcCd } = this.state;
+					if (!newDistrictCd || !newVdcCd) {
+						return;
+					}
+					var query_request = `
+						mutation {
+							createCtbAddress(districtCd:"1", vdcCd:"1"){
+								ctbAddress{
+									districtCd,
+									vdcCd
+								}
+							}
+						}`;
+					fetch('/graphql', {
+						method: 'POST',
+						headers: { 'Content-Type': 'application/json' },
+						body: JSON.stringify({
+							//query:'query {\n  banks{\n    id,\n    name,\n    capital\n  }\n}',variables: null,
+							query: query_request,
+						}),
+					})
+						.then((response) => response.json())
+						.then((data) => {
+							this.fetchCtbAddresses();
+							this.setState({ newDistrictCd: '', newVdcCd: '' });
+						});
+				}
+
+				handleInputChange(e) {
+					console.log('handleInputChange', this.state, 'e', e);
+					this.setState({ [e.target.name]: e.target.value });
+				}
+
+				render() {
+					const { newDistrictCd, newVdcCd } = this.state;
+					return (
+						<div>
+							<h1>App Ctb Address Add</h1>
+							<div>{JSON.stringify(this.state)}</div>
+							<form onSubmit={this.handleAddCtbAddress}>
+								<input
+									type='text'
+									name='newDistrictCd'
+									placeholder='District Cd'
+									value={newDistrictCd}
+									onChange={this.handleInputChange}
+								/>
+								<input
+									type='text'
+									name='newVdcCd'
+									placeholder='Vdc Cd'
+									value={newVdcCd}
+									onChange={this.handleInputChange}
+								/>
+								<button type='submit'>Add Ctb Address</button>
+							</form>
+						</div>
+					);
+				}
+			}
+
+			ReactDOM.render(<CtbAddressAdd />, document.getElementById('root'));
+		</script>
+	</body>
+</html>

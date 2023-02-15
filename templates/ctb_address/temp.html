@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<script
+			crossorigin
+			src="https://unpkg.com/react@17/umd/react.development.js"
+		></script>
+		<script
+			crossorigin
+			src="https://unpkg.com/react-dom@17/umd/react-dom.development.js"
+		></script>
+		<script src="https://unpkg.com/babel-standalone@6.15.0/babel.min.js"></script>
+	</head>
+	<body>
+		<div id="root"></div>
+		<script type="text/babel">
+			class CtbAddressList extends React.Component {
+				constructor(props) {
+					super(props);
+					this.state = {
+						ctbaddresses: [],
+					};
+					this.handleEditCtbAddress = this.handleEditCtbAddress.bind(this);
+				}
+
+				componentDidMount() {
+					this.fetchCtbAddresses();
+				}
+
+				fetchCtbAddresses() {
+					var query_request = `
+						query {
+							ctbAddresses{
+								districtCd,
+								vdcCd
+							}
+						}`;
+					fetch('/graphql', {
+						method: 'POST',
+						headers: { 'Content-Type': 'application/json' },
+						body: JSON.stringify({
+							//query:'query {\n  banks{\n    id,\n    name,\n    capital\n  }\n}',variables: null,
+							query: query_request,
+						}),
+					})
+						.then((response) => response.json())
+						.then((res) => {
+							this.setState({ ctbAddresses: res.data.ctbAddresses });
+						});
+				}
+
+				handleEditCtbAddress(menu) {
+					this.setState({ editingMenu: menu });
+				}
+
+				render() {
+					const { menus, editingMenu } = this.state;
+					return (
+						<div>
+							<h1>App Menus</h1>
+							<ul>
+								{menus.map((menu) => (
+									<li key={menu.id}>
+										{menu.menu_text} - {menu.menu_link}
+										<button onClick={() => this.handleEditMenu(menu)}>
+											Edit
+										</button>
+									</li>
+								))}
+							</ul>
+							{editingMenu && (
+								<div>
+									Text: {this.state.editingMenu.menu_text} <br />
+									Link: {this.state.editingMenu.menu_link}
+								</div>
+							)}
+						</div>
+					);
+				}
+			}
+
+			ReactDOM.render(<App />, document.getElementById('root'));
+		</script>
+	</body>
+</html>

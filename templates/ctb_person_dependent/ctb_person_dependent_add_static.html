@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<script
+			crossorigin
+			src="https://unpkg.com/react@17/umd/react.development.js"
+		></script>
+		<script
+			crossorigin
+			src="https://unpkg.com/react-dom@17/umd/react-dom.development.js"
+		></script>
+		<script src="https://unpkg.com/babel-standalone@6.15.0/babel.min.js"></script>
+	</head>
+	<body>
+		<div id="root"></div>
+		<script type="text/babel">
+			class CtbPersonDependentAdd extends React.Component {
+				constructor(props) {
+					super(props);
+					this.state = {
+						newEntryBy: '',
+						newrStatus: '',
+					};
+					this.handleAddCtbPersonDependent =
+						this.handleAddCtbPersonDependent.bind(this);
+					this.handleInputChange = this.handleInputChange.bind(this);
+				}
+
+				componentDidMount() {}
+
+				fetchCtbPersonDependents() {
+					console.log('fetchCtbPersonDependents', this.state);
+				}
+
+				handleAddCtbPersonDependent(e) {
+					e.preventDefault();
+					const { newEntryBy, newrStatus } = this.state;
+					if (!newEntryBy || !newrStatus) {
+						return;
+					}
+					var query_request = `
+						mutation {
+							createCtbPersonDependent(entryBy:"jjd", rStatus:"y"){
+								ctbPersonDependent{
+									entryBy,
+									rStatus,
+								}
+							}
+						}`;
+					fetch('/graphql', {
+						method: 'POST',
+						headers: { 'Content-Type': 'application/json' },
+						body: JSON.stringify({
+							query: query_request,
+						}),
+					})
+						.then((response) => response.json())
+						.then((data) => {
+							this.fetchCtbPersonDependents();
+							this.setState({ newEntryBy: '', newrStatus: '' });
+						});
+				}
+
+				handleInputChange(e) {
+					console.log('handleInputChange', this.state, 'e', e);
+					this.setState({ [e.target.name]: e.target.value });
+				}
+
+				render() {
+					const { newEntryBy, newrStatus } = this.state;
+					return (
+						<div>
+							<h1>App Ctb Person Dependent Add</h1>
+							<div>{JSON.stringify(this.state)}</div>
+							<form onSubmit={this.handleAddCtbPersonDependent}>
+								<input
+									type='text'
+									name='newEntryBy'
+									placeholder='newEntryBy'
+									value={newEntryBy}
+									onChange={this.handleInputChange}
+								/>
+								<input
+									type='text'
+									name='newrStatus'
+									placeholder='newrStatus'
+									value={newrStatus}
+									onChange={this.handleInputChange}
+								/>
+								<button type='submit'>Add Ctb Person Dependent</button>
+							</form>
+						</div>
+					);
+				}
+			}
+
+			ReactDOM.render(
+				<CtbPersonDependentAdd />,
+				document.getElementById('root')
+			);
+		</script>
+	</body>
+</html>

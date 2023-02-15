@@ -19,13 +19,11 @@
 					super(props);
 					this.state = {
 						menus: [],
-						newMenuText: '',
-						newMenuLink: '',
 						editingMenu: null,
 					};
 					this.handleEditMenu = this.handleEditMenu.bind(this);
 					this.handleUpdateMenu = this.handleUpdateMenu.bind(this);
-					// this.handleInputChange = this.handleInputChange.bind(this);
+					this.handleInputChange = this.handleInputChange.bind(this);
 					this.handleEditingMenuChange =
 						this.handleEditingMenuChange.bind(this);
 				}
@@ -52,7 +50,7 @@
 					if (!editingMenu) {
 						return;
 					}
-					fetch(`/app-menus/${editingMenu.id}`, {
+					fetch(`/app_menus/${editingMenu.id}`, {
 						method: 'PUT',
 						headers: { 'Content-Type': 'application/json' },
 						body: JSON.stringify({
@@ -67,9 +65,9 @@
 						});
 				}
 
-				// handleInputChange(e) {
-				// 	this.setState({ [e.target.name]: e.target.value });
-				// }
+				handleInputChange(e) {
+					this.setState({ [e.target.name]: e.target.value });
+				}
 
 				handleEditingMenuChange(e) {
 					const { editingMenu } = this.state;
@@ -79,10 +77,9 @@
 				}
 
 				render() {
-					const { menus, newMenuText, newMenuLink, editingMenu } = this.state;
+					const { menus, editingMenu } = this.state;
 					return (
 						<div>
-							<h1>App Menus</h1>
 							<ul>
 								{menus.map((menu) => (
 									<li key={menu.id}>

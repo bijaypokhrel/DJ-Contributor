@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<script
+			crossorigin
+			src="https://unpkg.com/react@17/umd/react.development.js"
+		></script>
+		<script
+			crossorigin
+			src="https://unpkg.com/react-dom@17/umd/react-dom.development.js"
+		></script>
+		<script src="https://unpkg.com/babel-standalone@6.15.0/babel.min.js"></script>
+	</head>
+	<body>
+		<div id="root"></div>
+		<script type="text/babel">
+			class CtbPersonAddressDelete extends React.Component {
+				constructor(props) {
+					super(props);
+					this.state = {
+						ctbPersonAddresses: [],
+					};
+					this.handleApiDeleteCtbPersonAddress =
+						this.handleApiDeleteCtbPersonAddress.bind(this);
+				}
+
+				componentDidMount() {
+					this.fetchCtbPersonAddresses();
+				}
+
+				fetchCtbPersonAddresses() {
+					var query_request = `
+						query {
+						ctbPersonAddresses{
+							id,
+							fromDate,
+							toDate
+						}
+					}`;
+					fetch('/graphql', {
+						method: 'POST',
+						headers: { 'Content-Type': 'application/json' },
+						body: JSON.stringify({
+							query: query_request,
+						}),
+					})
+						.then((response) => response.json())
+						.then((res) => {
+							this.setState({
+								ctbPersonAddresses: res.data.ctbPersonAddresses,
+							});
+						});
+				}
+
+				handleApiDeleteCtbPersonAddress(ctbPersonAddress) {
+					console.log('handleApiDeleteCtbPersonAddress', this.state);
+					var query_request = `
+						mutation {
+							createCtbPersonAddress(fromDate:"${ctbPersonAddress.fromDate}", toDate:"${ctbPersonAddress.toDate}"){
+								ctbPersonAddress{
+									fromDate,
+									toDate
+								}
+						}
+					}`;
+					fetch('/graphql', {
+						method: 'POST',
+						headers: { 'Content-Type': 'application/json' },
+						body: JSON.stringify({
+							query: query_request,
+						}),
+					})
+						.then((response) => response.json())
+						.then((data) => {
+							this.fetchCtbPersonAddresses();
+						});
+				}
+
+				render() {
+					const { ctbPersonAddresses, editingCtbPersonAddress } = this.state;
+					return (
+						<div>
+							<h1>App Ctb Person Addresses </h1>
+							<div>{JSON.stringify(this.state)}</div>
+							<ul>
+								{ctbPersonAddresses.map((ctbPersonAddress) => (
+									<li key={ctbPersonAddress.id}>
+										{ctbPersonAddress.fromDate} - {ctbPersonAddress.toDate}
+										<button
+											onClick={() =>
+												this.handleApiDeleteCtbPersonAddress(ctbPersonAddress)
+											}
+										>
+											Delete
+										</button>
+									</li>
+								))}
+							</ul>
+						</div>
+					);
+				}
+			}
+
+			ReactDOM.render(
+				<CtbPersonAddressDelete />,
+				document.getElementById('root')
+			);
+		</script>
+	</body>
+</html>

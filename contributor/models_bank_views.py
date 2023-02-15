@@ -44,11 +44,11 @@ def app_banks(request, bank_id=None):
 
 
 def bank_add(request):
-    return render(request, 'bank_add.html')
+    return render(request, 'bank/bank_add.html')
 
 
 def bank_edit(request):
-    return render(request, 'bank_edit.html')
+    return render(request, 'bank/bank_edit.html')
 
 
 # def bank_edit_api(request):
@@ -56,8 +56,8 @@ def bank_edit(request):
 
 
 def bank_delete(request):
-    return render(request, 'bank_delete.html')
+    return render(request, 'bank/bank_delete.html')
 
 
 def bank_graphql(request):
-    return render(request, 'bank_graphql.html')
+    return render(request, 'bank/bank_graphql.html')

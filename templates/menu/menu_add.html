@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<script
+			crossorigin
+			src="https://unpkg.com/react@17/umd/react.development.js"
+		></script>
+		<script
+			crossorigin
+			src="https://unpkg.com/react-dom@17/umd/react-dom.development.js"
+		></script>
+		<script src="https://unpkg.com/babel-standalone@6.15.0/babel.min.js"></script>
+	</head>
+	<body>
+		<div id="root"></div>
+		<script type="text/babel">
+			class App extends React.Component {
+				constructor(props) {
+					super(props);
+					this.state = {
+						newMenuText: '',
+						newMenuLink: '',
+					};
+					this.handleAddMenu = this.handleAddMenu.bind(this);
+					this.handleInputChange = this.handleInputChange.bind(this);
+				}
+
+				componentDidMount() {}
+
+				fetchMenus() {
+					console.log('fetchMenus', this.state);
+				}
+
+				handleAddMenu(e) {
+					e.preventDefault();
+					const { newMenuText, newMenuLink } = this.state;
+					if (!newMenuText || !newMenuLink) {
+						return;
+					}
+					fetch('/app-menus', {
+						method: 'POST',
+						headers: { 'Content-Type': 'application/json' },
+						body: JSON.stringify({
+							menu_text: newMenuText,
+							menu_link: newMenuLink,
+						}),
+					})
+						.then((response) => response.json())
+						.then((data) => {
+							this.fetchMenus();
+							this.setState({ newMenuText: '', newMenuLink: '' });
+						});
+				}
+
+				handleInputChange(e) {
+					console.log('handleInputChange', this.state, 'e', e);
+					this.setState({ [e.target.name]: e.target.value });
+				}
+
+				render() {
+					const { menus, newMenuText, newMenuLink, editingMenu } = this.state;
+					return (
+						<div>
+							<h1>App Menus</h1>
+							<form onSubmit={this.handleAddMenu}>
+								<input
+									type='text'
+									name='newMenuText'
+									placeholder='Menu Text'
+									value={newMenuText}
+									onChange={this.handleInputChange}
+								/>
+								<input
+									type='text'
+									name='newMenuLink'
+									placeholder='Menu Link'
+									value={newMenuLink}
+									onChange={this.handleInputChange}
+								/>
+								<button type='submit'>Add Menu</button>
+							</form>
+						</div>
+					);
+				}
+			}
+
+			ReactDOM.render(<App />, document.getElementById('root'));
+		</script>
+	</body>
+</html>

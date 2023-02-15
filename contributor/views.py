@@ -5,7 +5,12 @@ from django.http import JsonResponse
 import datetime
 from .models_menu_views import *
 from .models_bank_views import *
+from .models_registration_views import *
 # Create your views here.
+
+
+def links(request):
+    return render(request, 'links.html')
 
 
 def home(request):
