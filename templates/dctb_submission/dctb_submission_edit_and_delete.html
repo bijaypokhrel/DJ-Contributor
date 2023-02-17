@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<script
+			crossorigin
+			src="https://unpkg.com/react@17/umd/react.development.js"
+		></script>
+		<script
+			crossorigin
+			src="https://unpkg.com/react-dom@17/umd/react-dom.development.js"
+		></script>
+		<script src="https://unpkg.com/babel-standalone@6.15.0/babel.min.js"></script>
+	</head>
+	<body>
+		<div id="root"></div>
+		<script type="text/babel">
+			class DCtbSubmissionEditAndDelete extends React.Component {
+				constructor(props) {
+					super(props);
+					this.state = {
+						dctbSubmissions: [],
+						editingDCtbSubmission: null,
+					};
+					this.handleUiEditDCtbSubmission =
+						this.handleUiEditDCtbSubmission.bind(this);
+					this.handleApiUpdateDCtbSubmission =
+						this.handleApiUpdateDCtbSubmission.bind(this);
+					this.handleApiDeleteDCtbSubmission =
+						this.handleApiDeleteDCtbSubmission.bind(this);
+					this.handleHumanEditingdctbSubmissionstateChange =
+						this.handleHumanEditingdctbSubmissionstateChange.bind(this);
+				}
+
+				componentDidMount() {
+					this.fetchdctbSubmissions();
+				}
+
+				fetchdctbSubmissions() {
+					var query_request = `
+						query{
+							dctbSubmissions{
+								id,
+								email,
+								phoneNo
+							}
+						}`;
+					fetch('/graphql', {
+						method: 'POST',
+						headers: { 'Content-Type': 'application/json' },
+						body: JSON.stringify({
+							query: query_request,
+						}),
+					})
+						.then((response) => response.json())
+						.then((res) => {
+							this.setState({
+								dctbSubmissions: res.data.dctbSubmissions,
+							});
+						});
+				}
+
+				handleUiEditDCtbSubmission(dCtbSubmission) {
+					this.setState({ editingDCtbSubmission: dCtbSubmission });
+				}
+
+				handleApiUpdateDCtbSubmission(e) {
+					console.log('handleApiUpdateDCtbSubmission', this.state);
+					e.preventDefault();
+					const { editingDCtbSubmission } = this.state;
+					if (!editingDCtbSubmission) {
+						return;
+					}
+					var query_request = `
+						mutation {
+							createDctbSubmission(email:"${editingDCtbSubmission.email}", phoneNo:"${editingDCtbSubmission.phoneNo}"){
+								dctbSubmission{
+								id,
+								email,
+								phoneNo
+								}
+							}
+						}`;
+					fetch('/graphql', {
+						method: 'POST',
+						headers: { 'Content-Type': 'application/json' },
+						body: JSON.stringify({
+							query: query_request,
+						}),
+					})
+						.then((response) => response.json())
+						.then((data) => {
+							this.fetchdctbSubmissions();
+							this.setState({ newEmail: '', newPhoneNo: '' });
+							this.setState({ editingDCtbSubmission: null });
+						});
+				}
+
+				handleApiDeleteDCtbSubmission(dCtbSubmission) {
+					console.log('handleApiDeleteDCtbSubmission', this.state);
+					var query_request = `
+						mutation {
+							createDctbSubmission(email:"${dCtbSubmission.email}", phoneNo:"${dCtbSubmission.phoneNo}"){
+								dctbSubmission{
+								id,
+								email,
+								phoneNo
+								}
+							}
+						}`;
+					fetch('/graphql', {
+						method: 'POST',
+						headers: { 'Content-Type': 'application/json' },
+						body: JSON.stringify({
+							query: query_request,
+						}),
+					})
+						.then((response) => response.json())
+						.then((data) => {
+							this.fetchdctbSubmissions();
+						});
+				}
+
+				handleHumanEditingdctbSubmissionstateChange(e) {
+					const { editingDCtbSubmission } = this.state;
+					this.setState({
+						editingDCtbSubmission: {
+							...editingDCtbSubmission,
+							[e.target.name]: e.target.value,
+						},
+					});
+				}
+
+				render() {
+					const { dctbSubmissions, editingDCtbSubmission } = this.state;
+					return (
+						<div>
+							<h1>App DCtb Submission </h1>
+							<div>{JSON.stringify(this.state)}</div>
+							<ul>
+								{dctbSubmissions.map((dCtbSubmission) => (
+									<li key={dCtbSubmission.id}>
+										{dCtbSubmission.email} - {dCtbSubmission.phoneNo}
+										<button
+											onClick={() =>
+												this.handleUiEditDCtbSubmission(dCtbSubmission)
+											}
+										>
+											Edit
+										</button>
+										<button
+											onClick={() =>
+												this.handleApiDeleteDCtbSubmission(dCtbSubmission)
+											}
+										>
+											Delete
+										</button>
+									</li>
+								))}
+							</ul>
+							{editingDCtbSubmission && (
+								<div>
+									Text: {this.state.editingDCtbSubmission.email} <br />
+									Link: {this.state.editingDCtbSubmission.phoneNo}
+								</div>
+							)}
+							{editingDCtbSubmission && (
+								<form onSubmit={this.handleApiUpdateDCtbSubmission}>
+									<input
+										type='text'
+										name='email'
+										placeholder='email'
+										value={editingDCtbSubmission.email}
+										onChange={this.handleHumanEditingdctbSubmissionstateChange}
+									/>
+									<input
+										type='text'
+										name='phoneNo'
+										placeholder='phoneNo'
+										value={editingDCtbSubmission.phoneNo}
+										onChange={this.handleHumanEditingdctbSubmissionstateChange}
+									/>
+									<button type='submit'>Update DCtb Submission</button>
+									<button
+										onClick={() =>
+											this.setState({ editingDCtbSubmission: null })
+										}
+									>
+										Cancel
+									</button>
+								</form>
+							)}
+						</div>
+					);
+				}
+			}
+
+			ReactDOM.render(
+				<DCtbSubmissionEditAndDelete />,
+				document.getElementById('root')
+			);
+		</script>
+	</body>
+</html>

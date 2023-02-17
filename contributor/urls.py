@@ -156,4 +156,87 @@ urlpatterns = [
 
     path('ctb_person_nominee_delete', views.ctb_person_nominee_delete,
          name="ctb_person_nominee_delete"),
+
+    #     Ctb Person Contact
+
+    path('ctb_person_contact_add_dynamic', views.ctb_person_contact_add_dynamic,
+         name="ctb_person_contact_add_dynamic"),
+
+    path('ctb_person_contact_list_only', views.ctb_person_contact_list_only,
+         name="ctb_person_contact_list_only"),
+
+    path('ctb_person_contact_list_edit', views.ctb_person_contact_list_edit,
+         name="ctb_person_contact_list_edit"),
+
+    path('ctb_person_contact_edit', views.ctb_person_contact_edit,
+         name="ctb_person_contact_edit"),
+
+    path('ctb_person_contact_delete', views.ctb_person_contact_delete,
+         name="ctb_person_contact_delete"),
+
+    #     Ctb Person Doc
+
+    path('ctb_person_doc_add_dynamic', views.ctb_person_doc_add_dynamic,
+         name="ctb_person_doc_add_dynamic"),
+
+    path('ctb_person_doc_list_only', views.ctb_person_doc_list_only,
+         name="ctb_person_doc_list_only"),
+
+    path('ctb_person_doc_list_edit', views.ctb_person_doc_list_edit,
+         name="ctb_person_doc_list_edit"),
+
+    path('ctb_person_doc_edit', views.ctb_person_doc_edit,
+         name="ctb_person_doc_edit"),
+
+    path('ctb_person_doc_delete', views.ctb_person_doc_delete,
+         name="ctb_person_doc_delete"),
+
+    #     Ctb Contributor
+
+    path('ctb_contributor_add_dynamic', views.ctb_contributor_add_dynamic,
+         name="ctb_contributor_add_dynamic"),
+
+    path('ctb_contributor_list_only', views.ctb_contributor_list_only,
+         name="ctb_contributor_list_only"),
+
+    path('ctb_contributor_list_edit', views.ctb_contributor_list_edit,
+         name="ctb_contributor_list_edit"),
+
+    path('ctb_contributor_edit', views.ctb_contributor_edit,
+         name="ctb_contributor_edit"),
+
+    path('ctb_contributor_delete', views.ctb_contributor_delete,
+         name="ctb_contributor_delete"),
+
+    #     Ctb Special Loan
+
+    path('ctb_special_loan_add_dynamic', views.ctb_special_loan_add_dynamic,
+         name="ctb_special_loan_add_dynamic"),
+
+    path('ctb_special_loan_edit_and_delete', views.ctb_special_loan_edit_and_delete,
+         name="ctb_special_loan_edit_and_delete"),
+
+    #     Ctb User Tran Verifications
+
+    path('ctb_user_tran_verifications_add_dynamic', views.ctb_user_tran_verifications_add_dynamic,
+         name="ctb_user_tran_verifications_add_dynamic"),
+
+    path('ctb_user_tran_verifications_edit_and_delete', views.ctb_user_tran_verifications_edit_and_delete,
+         name="ctb_user_tran_verifications_edit_and_delete"),
+
+    #     DCtb Submission
+
+    path('dctb_submission_add_dynamic', views.dctb_submission_add_dynamic,
+         name="dctb_submission_add_dynamic"),
+
+    path('dctb_submission_edit_and_delete', views.dctb_submission_edit_and_delete,
+         name="dctb_submission_edit_and_delete"),
+
+    #     Atb disbursement Process
+
+    path('atb_disbursement_process_add_dynamic', views.atb_disbursement_process_add_dynamic,
+         name="atb_disbursement_process_add_dynamic"),
+
+    path('atb_disbursement_process_edit_and_delete', views.atb_disbursement_process_edit_and_delete,
+         name="atb_disbursement_process_edit_and_delete"),
 ]

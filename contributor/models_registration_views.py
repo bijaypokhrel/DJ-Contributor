@@ -137,3 +137,69 @@ def ctb_person_nominee_edit(request):
 
 def ctb_person_nominee_delete(request):
     return render(request, 'ctb_person_nominee/ctb_person_nominee_delete.html')
+
+# Ctb Person Contact
+
+
+def ctb_person_contact_add_dynamic(request):
+    return render(request, 'ctb_person_contact/ctb_person_contact_add_dynamic.html')
+
+
+def ctb_person_contact_list_only(request):
+    return render(request, 'ctb_person_contact/ctb_person_contact_list_only.html')
+
+
+def ctb_person_contact_list_edit(request):
+    return render(request, 'ctb_person_contact/ctb_person_contact_list_edit.html')
+
+
+def ctb_person_contact_edit(request):
+    return render(request, 'ctb_person_contact/ctb_person_contact_edit.html')
+
+
+def ctb_person_contact_delete(request):
+    return render(request, 'ctb_person_contact/ctb_person_contact_delete.html')
+
+# Ctb Person Doc
+
+
+def ctb_person_doc_add_dynamic(request):
+    return render(request, 'ctb_person_doc/ctb_person_doc_add_dynamic.html')
+
+
+def ctb_person_doc_list_only(request):
+    return render(request, 'ctb_person_doc/ctb_person_doc_list_only.html')
+
+
+def ctb_person_doc_list_edit(request):
+    return render(request, 'ctb_person_doc/ctb_person_doc_list_edit.html')
+
+
+def ctb_person_doc_edit(request):
+    return render(request, 'ctb_person_doc/ctb_person_doc_edit.html')
+
+
+def ctb_person_doc_delete(request):
+    return render(request, 'ctb_person_doc/ctb_person_doc_delete.html')
+
+# Ctb Contributor
+
+
+def ctb_contributor_add_dynamic(request):
+    return render(request, 'ctb_contributor/ctb_contributor_add_dynamic.html')
+
+
+def ctb_contributor_list_only(request):
+    return render(request, 'ctb_contributor/ctb_contributor_list_only.html')
+
+
+def ctb_contributor_list_edit(request):
+    return render(request, 'ctb_contributor/ctb_contributor_list_edit.html')
+
+
+def ctb_contributor_edit(request):
+    return render(request, 'ctb_contributor/ctb_contributor_edit.html')
+
+
+def ctb_contributor_delete(request):
+    return render(request, 'ctb_contributor/ctb_contributor_delete.html')

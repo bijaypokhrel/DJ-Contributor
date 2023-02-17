@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<script
+			crossorigin
+			src="https://unpkg.com/react@17/umd/react.development.js"
+		></script>
+		<script
+			crossorigin
+			src="https://unpkg.com/react-dom@17/umd/react-dom.development.js"
+		></script>
+		<script src="https://unpkg.com/babel-standalone@6.15.0/babel.min.js"></script>
+	</head>
+	<body>
+		<div id="root"></div>
+		<script type="text/babel">
+			class AtbDisbursementProcessAdd extends React.Component {
+				constructor(props) {
+					super(props);
+					this.state = {
+						newFromAccount: '',
+						newToAccount: '',
+					};
+					this.handleApiAddAtbDisbursementProcess =
+						this.handleApiAddAtbDisbursementProcess.bind(this);
+					this.handleHumanInputChange = this.handleHumanInputChange.bind(this);
+				}
+
+				componentDidMount() {}
+
+				fetchAtbDisbursementProcessess() {
+					console.log('fetchAtbDisbursementProcessess', this.state);
+				}
+
+				handleApiAddAtbDisbursementProcess(e) {
+					e.preventDefault();
+					const { newFromAccount, newToAccount } = this.state;
+					if (!newFromAccount || !newToAccount) {
+						return;
+					}
+					var query_request = `
+						mutation {
+							createAtbDisbursementProcess(fromAccount:"${newFromAccount}", toAccount:"${newToAccount}"){
+							atbDisbursementProcess{
+							id,
+							fromAccount,
+							toAccount
+							}
+						}
+					}`;
+					fetch('/graphql', {
+						method: 'POST',
+						headers: { 'Content-Type': 'application/json' },
+						body: JSON.stringify({
+							query: query_request,
+						}),
+					})
+						.then((response) => response.json())
+						.then((data) => {
+							this.fetchAtbDisbursementProcessess();
+							this.setState({ newFromAccount: '', newToAccount: '' });
+						});
+				}
+
+				handleHumanInputChange(e) {
+					console.log('handleHumanInputChange', this.state, 'e', e);
+					this.setState({ [e.target.name]: e.target.value });
+				}
+
+				render() {
+					const { newFromAccount, newToAccount } = this.state;
+					return (
+						<div>
+							<h1>App Atb Disbursement Process Add</h1>
+							<div>{JSON.stringify(this.state)}</div>
+
+							<input
+								type='text'
+								name='newFromAccount'
+								placeholder='newFromAccount'
+								value={newFromAccount}
+								onChange={this.handleHumanInputChange}
+							/>
+							<input
+								type='text'
+								name='newToAccount'
+								placeholder='newToAccount'
+								value={newToAccount}
+								onChange={this.handleHumanInputChange}
+							/>
+							<button
+								type='submit'
+								onClick={this.handleApiAddAtbDisbursementProcess}
+							>
+								Add Atb Disbursement Process
+							</button>
+						</div>
+					);
+				}
+			}
+
+			ReactDOM.render(
+				<AtbDisbursementProcessAdd />,
+				document.getElementById('root')
+			);
+		</script>
+	</body>
+</html>

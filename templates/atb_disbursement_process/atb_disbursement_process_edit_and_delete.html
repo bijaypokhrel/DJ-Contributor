@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<script
+			crossorigin
+			src="https://unpkg.com/react@17/umd/react.development.js"
+		></script>
+		<script
+			crossorigin
+			src="https://unpkg.com/react-dom@17/umd/react-dom.development.js"
+		></script>
+		<script src="https://unpkg.com/babel-standalone@6.15.0/babel.min.js"></script>
+	</head>
+	<body>
+		<div id="root"></div>
+		<script type="text/babel">
+			class AtbDisbursementProcessEditAndDelete extends React.Component {
+				constructor(props) {
+					super(props);
+					this.state = {
+						atbDisbursementProcesses: [],
+						editingAtbDisbursementProcess: null,
+					};
+					this.handleUiEditAtbDisbursementProcess =
+						this.handleUiEditAtbDisbursementProcess.bind(this);
+					this.handleApiUpdateAtbDisbursementProcess =
+						this.handleApiUpdateAtbDisbursementProcess.bind(this);
+					this.handleApiDeleteAtbDisbursementProcess =
+						this.handleApiDeleteAtbDisbursementProcess.bind(this);
+					this.handleHumanEditingAtbDisbursementProcessStateChange =
+						this.handleHumanEditingAtbDisbursementProcessStateChange.bind(this);
+				}
+
+				componentDidMount() {
+					this.fetchAtbDisbursementProcesses();
+				}
+
+				fetchAtbDisbursementProcesses() {
+					var query_request = `
+						query {
+							atbDisbursementProcesses{
+								id,
+								fromAccount,
+								toAccount
+							}
+						}`;
+					fetch('/graphql', {
+						method: 'POST',
+						headers: { 'Content-Type': 'application/json' },
+						body: JSON.stringify({
+							query: query_request,
+						}),
+					})
+						.then((response) => response.json())
+						.then((res) => {
+							this.setState({
+								atbDisbursementProcesses: res.data.atbDisbursementProcesses,
+							});
+						});
+				}
+
+				handleUiEditAtbDisbursementProcess(atbDisbursementProcess) {
+					this.setState({
+						editingAtbDisbursementProcess: atbDisbursementProcess,
+					});
+				}
+
+				handleApiUpdateAtbDisbursementProcess(e) {
+					console.log('handleApiUpdateAtbDisbursementProcess', this.state);
+					e.preventDefault();
+					const { editingAtbDisbursementProcess } = this.state;
+					if (!editingAtbDisbursementProcess) {
+						return;
+					}
+					var query_request = `
+						mutation {
+								createAtbDisbursementProcess(fromAccount:"${editingAtbDisbursementProcess.fromAccount}", toAccount:"${editingAtbDisbursementProcess.toAccount}"){
+								atbDisbursementProcess{
+								id,
+								fromAccount,
+								toAccount
+								}
+							}
+						}`;
+					fetch('/graphql', {
+						method: 'POST',
+						headers: { 'Content-Type': 'application/json' },
+						body: JSON.stringify({
+							query: query_request,
+						}),
+					})
+						.then((response) => response.json())
+						.then((data) => {
+							this.fetchAtbDisbursementProcesses();
+							this.setState({ newFromAccount: '', newToAccount: '' });
+							this.setState({ editingAtbDisbursementProcess: null });
+						});
+				}
+
+				handleApiDeleteAtbDisbursementProcess(atbDisbursementProcess) {
+					console.log('handleApiDeleteAtbDisbursementProcess', this.state);
+					var query_request = `
+						mutation {
+								createAtbDisbursementProcess(fromAccount:"${atbDisbursementProcess.fromAccount}", toAccount:"${atbDisbursementProcess.toAccount}"){
+								atbDisbursementProcess{
+								id,
+								fromAccount,
+								toAccount
+								}
+							}
+						}`;
+					fetch('/graphql', {
+						method: 'POST',
+						headers: { 'Content-Type': 'application/json' },
+						body: JSON.stringify({
+							query: query_request,
+						}),
+					})
+						.then((response) => response.json())
+						.then((data) => {
+							this.fetchAtbDisbursementProcesses();
+						});
+				}
+
+				handleHumanEditingAtbDisbursementProcessStateChange(e) {
+					const { editingAtbDisbursementProcess } = this.state;
+					this.setState({
+						editingAtbDisbursementProcess: {
+							...editingAtbDisbursementProcess,
+							[e.target.name]: e.target.value,
+						},
+					});
+				}
+
+				render() {
+					const { atbDisbursementProcesses, editingAtbDisbursementProcess } =
+						this.state;
+					return (
+						<div>
+							<h1>App Atb Disbursement Process </h1>
+							<div>{JSON.stringify(this.state)}</div>
+							<ul>
+								{atbDisbursementProcesses.map((atbDisbursementProcess) => (
+									<li key={atbDisbursementProcess.id}>
+										{atbDisbursementProcess.fromAccount} -{' '}
+										{atbDisbursementProcess.toAccount}
+										<button
+											onClick={() =>
+												this.handleUiEditAtbDisbursementProcess(
+													atbDisbursementProcess
+												)
+											}
+										>
+											Edit
+										</button>
+										<button
+											onClick={() =>
+												this.handleApiDeleteAtbDisbursementProcess(
+													atbDisbursementProcess
+												)
+											}
+										>
+											Delete
+										</button>
+									</li>
+								))}
+							</ul>
+							{editingAtbDisbursementProcess && (
+								<div>
+									Text: {this.state.editingAtbDisbursementProcess.fromAccount}{' '}
+									<br />
+									Link: {this.state.editingAtbDisbursementProcess.toAccount}
+								</div>
+							)}
+							{editingAtbDisbursementProcess && (
+								<form onSubmit={this.handleApiUpdateAtbDisbursementProcess}>
+									<input
+										type='text'
+										name='fromAccount'
+										placeholder='fromAccount'
+										value={editingAtbDisbursementProcess.fromAccount}
+										onChange={
+											this.handleHumanEditingAtbDisbursementProcessStateChange
+										}
+									/>
+									<input
+										type='text'
+										name='toAccount'
+										placeholder='toAccount'
+										value={editingAtbDisbursementProcess.toAccount}
+										onChange={
+											this.handleHumanEditingAtbDisbursementProcessStateChange
+										}
+									/>
+									<button type='submit'>
+										Update Atb Disbursement Process{' '}
+									</button>
+									<button
+										onClick={() =>
+											this.setState({ editingAtbDisbursementProcess: null })
+										}
+									>
+										Cancel
+									</button>
+								</form>
+							)}
+						</div>
+					);
+				}
+			}
+
+			ReactDOM.render(
+				<AtbDisbursementProcessEditAndDelete />,
+				document.getElementById('root')
+			);
+		</script>
+	</body>
+</html>

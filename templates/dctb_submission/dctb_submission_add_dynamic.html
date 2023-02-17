@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<script
+			crossorigin
+			src="https://unpkg.com/react@17/umd/react.development.js"
+		></script>
+		<script
+			crossorigin
+			src="https://unpkg.com/react-dom@17/umd/react-dom.development.js"
+		></script>
+		<script src="https://unpkg.com/babel-standalone@6.15.0/babel.min.js"></script>
+	</head>
+	<body>
+		<div id="root"></div>
+		<script type="text/babel">
+			class DCtbSubmissionAdd extends React.Component {
+				constructor(props) {
+					super(props);
+					this.state = {
+						newEmail: '',
+						newPhoneNo: '',
+					};
+					this.handleApiAddDCtbSubmission =
+						this.handleApiAddDCtbSubmission.bind(this);
+					this.handleHumanInputChange = this.handleHumanInputChange.bind(this);
+				}
+
+				componentDidMount() {}
+
+				fetchDCtbSubmissions() {
+					console.log('fetchDCtbSubmissions', this.state);
+				}
+
+				handleApiAddDCtbSubmission(e) {
+					e.preventDefault();
+					const { newEmail, newPhoneNo } = this.state;
+					if (!newEmail || !newPhoneNo) {
+						return;
+					}
+					var query_request = `
+						mutation {
+							createDctbSubmission(email:"${newEmail}", phoneNo:"${newPhoneNo}"){
+								dctbSubmission{
+								id,
+								email,
+								phoneNo
+								}
+							}
+						}`;
+					fetch('/graphql', {
+						method: 'POST',
+						headers: { 'Content-Type': 'application/json' },
+						body: JSON.stringify({
+							query: query_request,
+						}),
+					})
+						.then((response) => response.json())
+						.then((data) => {
+							this.fetchDCtbSubmissions();
+							this.setState({ newEmail: '', newPhoneNo: '' });
+						});
+				}
+
+				handleHumanInputChange(e) {
+					console.log('handleHumanInputChange', this.state, 'e', e);
+					this.setState({ [e.target.name]: e.target.value });
+				}
+
+				render() {
+					const { newEmail, newPhoneNo } = this.state;
+					return (
+						<div>
+							<h1>App DCtb Spubmission Add</h1>
+							<div>{JSON.stringify(this.state)}</div>
+
+							<input
+								type='text'
+								name='newEmail'
+								placeholder='newEmail'
+								value={newEmail}
+								onChange={this.handleHumanInputChange}
+							/>
+							<input
+								type='text'
+								name='newPhoneNo'
+								placeholder='newPhoneNo'
+								value={newPhoneNo}
+								onChange={this.handleHumanInputChange}
+							/>
+							<button type='submit' onClick={this.handleApiAddDCtbSubmission}>
+								Add Dctb Submission
+							</button>
+						</div>
+					);
+				}
+			}
+
+			ReactDOM.render(<DCtbSubmissionAdd />, document.getElementById('root'));
+		</script>
+	</body>
+</html>

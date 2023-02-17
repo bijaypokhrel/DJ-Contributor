@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<script
+			crossorigin
+			src="https://unpkg.com/react@17/umd/react.development.js"
+		></script>
+		<script
+			crossorigin
+			src="https://unpkg.com/react-dom@17/umd/react-dom.development.js"
+		></script>
+		<script src="https://unpkg.com/babel-standalone@6.15.0/babel.min.js"></script>
+	</head>
+	<body>
+		<div id="root"></div>
+		<script type="text/babel">
+			class CtbSpecialLoanAdd extends React.Component {
+				constructor(props) {
+					super(props);
+					this.state = {
+						newChequeDate: '',
+						newChequeNo: '',
+					};
+					this.handleApiAddCtbSpecialLoan =
+						this.handleApiAddCtbSpecialLoan.bind(this);
+					this.handleHumanInputChange = this.handleHumanInputChange.bind(this);
+				}
+
+				componentDidMount() {}
+
+				fetchCtbSpecialLoans() {
+					console.log('fetchCtbSpecialLoans', this.state);
+				}
+
+				handleApiAddCtbSpecialLoan(e) {
+					e.preventDefault();
+					const { newChequeDate, newChequeNo } = this.state;
+					if (!newChequeDate || !newChequeNo) {
+						return;
+					}
+					var query_request = `
+						mutation {
+							createCtbSpecialLoan(chequeDate:"${newChequeDate}", chequeNo:"${newChequeNo}"){
+								ctbSpecialLoan{
+									id,
+									chequeDate,
+									chequeNo
+								}
+							}
+							}`;
+					fetch('/graphql', {
+						method: 'POST',
+						headers: { 'Content-Type': 'application/json' },
+						body: JSON.stringify({
+							query: query_request,
+						}),
+					})
+						.then((response) => response.json())
+						.then((data) => {
+							this.fetchCtbSpecialLoans();
+							this.setState({ newChequeDate: '', newChequeNo: '' });
+						});
+				}
+
+				handleHumanInputChange(e) {
+					console.log('handleHumanInputChange', this.state, 'e', e);
+					this.setState({ [e.target.name]: e.target.value });
+				}
+
+				render() {
+					const { newChequeDate, newChequeNo } = this.state;
+					return (
+						<div>
+							<h1>App Ctb Special Loan Add</h1>
+							<div>{JSON.stringify(this.state)}</div>
+
+							<input
+								type='text'
+								name='newChequeDate'
+								placeholder='newChequeDate'
+								value={newChequeDate}
+								onChange={this.handleHumanInputChange}
+							/>
+							<input
+								type='text'
+								name='newChequeNo'
+								placeholder='newChequeNo'
+								value={newChequeNo}
+								onChange={this.handleHumanInputChange}
+							/>
+							<button type='submit' onClick={this.handleApiAddCtbSpecialLoan}>
+								Add Ctb Special Loan
+							</button>
+						</div>
+					);
+				}
+			}
+
+			ReactDOM.render(<CtbSpecialLoanAdd />, document.getElementById('root'));
+		</script>
+	</body>
+</html>

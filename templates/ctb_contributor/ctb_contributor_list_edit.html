@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<script
+			crossorigin
+			src="https://unpkg.com/react@17/umd/react.development.js"
+		></script>
+		<script
+			crossorigin
+			src="https://unpkg.com/react-dom@17/umd/react-dom.development.js"
+		></script>
+		<script src="https://unpkg.com/babel-standalone@6.15.0/babel.min.js"></script>
+	</head>
+	<body>
+		<div id="root"></div>
+		<script type="text/babel">
+			class CtbContributorList extends React.Component {
+				constructor(props) {
+					super(props);
+					this.state = {
+						ctbContributors: [],
+						editingCtbContributor: null,
+					};
+					this.handleUiEditCtbContributor =
+						this.handleUiEditCtbContributor.bind(this);
+				}
+
+				componentDidMount() {
+					this.fetchCtbContributors();
+				}
+
+				fetchCtbContributors() {
+					var query_request = `
+						query{
+							ctbContributors{
+								id,
+								fromDate,
+								toDate
+							}
+						}`;
+					fetch('/graphql', {
+						method: 'POST',
+						headers: { 'Content-Type': 'application/json' },
+						body: JSON.stringify({
+							query: query_request,
+						}),
+					})
+						.then((response) => response.json())
+						.then((res) => {
+							this.setState({
+								ctbContributors: res.data.ctbContributors,
+							});
+						});
+				}
+
+				handleUiEditCtbContributor(ctbContributor) {
+					this.setState({ editingCtbContributor: ctbContributor });
+				}
+
+				render() {
+					const { ctbContributors, editingCtbContributor } = this.state;
+					return (
+						<div>
+							<h1>App Ctb Contributor </h1>
+							<div>{JSON.stringify(this.state)}</div>
+							<ul>
+								{ctbContributors.map((ctbContributor) => (
+									<li key={ctbContributor.id}>
+										{ctbContributor.fromDate} - {ctbContributor.toDate}
+										<button
+											onClick={() =>
+												this.handleUiEditCtbContributor(ctbContributor)
+											}
+										>
+											Edit
+										</button>
+									</li>
+								))}
+							</ul>
+							{editingCtbContributor && (
+								<div>
+									Text: {this.state.editingCtbContributor.fromDate} <br />
+									Link: {this.state.editingCtbContributor.toDate}
+								</div>
+							)}
+						</div>
+					);
+				}
+			}
+
+			ReactDOM.render(<CtbContributorList />, document.getElementById('root'));
+		</script>
+	</body>
+</html>

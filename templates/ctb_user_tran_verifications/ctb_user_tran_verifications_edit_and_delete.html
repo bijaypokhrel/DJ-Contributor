@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<script
+			crossorigin
+			src="https://unpkg.com/react@17/umd/react.development.js"
+		></script>
+		<script
+			crossorigin
+			src="https://unpkg.com/react-dom@17/umd/react-dom.development.js"
+		></script>
+		<script src="https://unpkg.com/babel-standalone@6.15.0/babel.min.js"></script>
+	</head>
+	<body>
+		<div id="root"></div>
+		<script type="text/babel">
+			class CtbUserTranVerificationsEditAndDelete extends React.Component {
+				constructor(props) {
+					super(props);
+					this.state = {
+						ctbUserTranVerifications: [],
+						editingCtbUserTranVerification: null,
+					};
+					this.handleUiEditCtbUserTranVerifications =
+						this.handleUiEditCtbUserTranVerifications.bind(this);
+					this.handleApiUpdateCtbUserTranVerifications =
+						this.handleApiUpdateCtbUserTranVerifications.bind(this);
+					this.handleApiDeleteCtbUserTranVerifications =
+						this.handleApiDeleteCtbUserTranVerifications.bind(this);
+					this.handleHumanEditingCtbUserTranVerificationsStateChange =
+						this.handleHumanEditingCtbUserTranVerificationsStateChange.bind(
+							this
+						);
+				}
+
+				componentDidMount() {
+					this.fetchCtbUserTranVerifications();
+				}
+
+				fetchCtbUserTranVerifications() {
+					var query_request = `
+						query {
+							ctbUserTranVerifications{
+								id,
+								vStatus,
+								verifyDate
+							}
+						}`;
+					fetch('/graphql', {
+						method: 'POST',
+						headers: { 'Content-Type': 'application/json' },
+						body: JSON.stringify({
+							query: query_request,
+						}),
+					})
+						.then((response) => response.json())
+						.then((res) => {
+							this.setState({
+								ctbUserTranVerifications: res.data.ctbUserTranVerifications,
+							});
+						});
+				}
+
+				handleUiEditCtbUserTranVerifications(ctbUserTranVerification) {
+					this.setState({
+						editingCtbUserTranVerification: ctbUserTranVerification,
+					});
+				}
+
+				handleApiUpdateCtbUserTranVerifications(e) {
+					console.log('handleApiUpdateCtbUserTranVerifications', this.state);
+					e.preventDefault();
+					const { editingCtbUserTranVerification } = this.state;
+					if (!editingCtbUserTranVerification) {
+						return;
+					}
+					var query_request = `
+						mutation{
+							createCtbUserTranVerification(vStatus:"${editingCtbUserTranVerification.vStatus}", verifyDate:"${editingCtbUserTranVerification.verifyDate}"){
+								ctbUserTranVerification{
+								id,
+								vStatus,
+								verifyDate
+								}
+							}
+						}`;
+					fetch('/graphql', {
+						method: 'POST',
+						headers: { 'Content-Type': 'application/json' },
+						body: JSON.stringify({
+							query: query_request,
+						}),
+					})
+						.then((response) => response.json())
+						.then((data) => {
+							this.fetchCtbUserTranVerifications();
+							this.setState({ newvStatus: '', newVerifyDate: '' });
+							this.setState({ editingCtbUserTranVerification: null });
+						});
+				}
+
+				handleApiDeleteCtbUserTranVerifications(ctbUserTranVerification) {
+					console.log('handleApiDeleteCtbUserTranVerifications', this.state);
+					var query_request = `
+						mutation{
+							createCtbUserTranVerification(vStatus:"${ctbUserTranVerification.vStatus}", verifyDate:"${ctbUserTranVerification.verifyDate}"){
+								ctbUserTranVerification{
+								id,
+								vStatus,
+								verifyDate
+								}
+							}
+						}`;
+					fetch('/graphql', {
+						method: 'POST',
+						headers: { 'Content-Type': 'application/json' },
+						body: JSON.stringify({
+							query: query_request,
+						}),
+					})
+						.then((response) => response.json())
+						.then((data) => {
+							this.fetchCtbUserTranVerifications();
+						});
+				}
+
+				handleHumanEditingCtbUserTranVerificationsStateChange(e) {
+					const { editingCtbUserTranVerification } = this.state;
+					this.setState({
+						editingCtbUserTranVerification: {
+							...editingCtbUserTranVerification,
+							[e.target.name]: e.target.value,
+						},
+					});
+				}
+
+				render() {
+					const { ctbUserTranVerifications, editingCtbUserTranVerification } =
+						this.state;
+					return (
+						<div>
+							<h1>App Ctb User Tran Verifications </h1>
+							<div>{JSON.stringify(this.state)}</div>
+							<ul>
+								{ctbUserTranVerifications.map((ctbUserTranVerification) => (
+									<li key={ctbUserTranVerification.id}>
+										{ctbUserTranVerification.vStatus} -{' '}
+										{ctbUserTranVerification.verifyDate}
+										<button
+											onClick={() =>
+												this.handleUiEditCtbUserTranVerifications(
+													ctbUserTranVerification
+												)
+											}
+										>
+											Edit
+										</button>
+										<button
+											onClick={() =>
+												this.handleApiDeleteCtbUserTranVerifications(
+													ctbUserTranVerification
+												)
+											}
+										>
+											Delete
+										</button>
+									</li>
+								))}
+							</ul>
+							{editingCtbUserTranVerification && (
+								<div>
+									Text: {this.state.editingCtbUserTranVerification.vStatus}{' '}
+									<br />
+									Link: {this.state.editingCtbUserTranVerification.verifyDate}
+								</div>
+							)}
+							{editingCtbUserTranVerification && (
+								<form onSubmit={this.handleApiUpdateCtbUserTranVerifications}>
+									<input
+										type='text'
+										name='vStatus'
+										placeholder='vStatus'
+										value={editingCtbUserTranVerification.vStatus}
+										onChange={
+											this.handleHumanEditingCtbUserTranVerificationsStateChange
+										}
+									/>
+									<input
+										type='text'
+										name='verifyDate'
+										placeholder='verifyDate'
+										value={editingCtbUserTranVerification.verifyDate}
+										onChange={
+											this.handleHumanEditingCtbUserTranVerificationsStateChange
+										}
+									/>
+									<button type='submit'>
+										Update Ctb User Tran Verifications
+									</button>
+									<button
+										onClick={() =>
+											this.setState({ editingCtbUserTranVerification: null })
+										}
+									>
+										Cancel
+									</button>
+								</form>
+							)}
+						</div>
+					);
+				}
+			}
+
+			ReactDOM.render(
+				<CtbUserTranVerificationsEditAndDelete />,
+				document.getElementById('root')
+			);
+		</script>
+	</body>
+</html>

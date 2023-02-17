@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<script
+			crossorigin
+			src="https://unpkg.com/react@17/umd/react.development.js"
+		></script>
+		<script
+			crossorigin
+			src="https://unpkg.com/react-dom@17/umd/react-dom.development.js"
+		></script>
+		<script src="https://unpkg.com/babel-standalone@6.15.0/babel.min.js"></script>
+	</head>
+	<body>
+		<div id="root"></div>
+		<script type="text/babel">
+			class CtbPersonContactList extends React.Component {
+				constructor(props) {
+					super(props);
+					this.state = {
+						ctbPersonContacts: [],
+						editingCtbPersonContact: null,
+					};
+					this.handleUiEditCtbPersonContact =
+						this.handleUiEditCtbPersonContact.bind(this);
+					this.handleApiUpdateCtbPersonContact =
+						this.handleApiUpdateCtbPersonContact.bind(this);
+					this.handleHumanEditingCtbPersonContactStateChange =
+						this.handleHumanEditingCtbPersonContactStateChange.bind(this);
+				}
+
+				componentDidMount() {
+					this.fetchCtbPersonContacts();
+				}
+
+				fetchCtbPersonContacts() {
+					var query_request = `
+						query{
+							ctbPersonContacts{
+								id,
+								fromDate,
+								toDate
+							}
+						}`;
+					fetch('/graphql', {
+						method: 'POST',
+						headers: { 'Content-Type': 'application/json' },
+						body: JSON.stringify({
+							query: query_request,
+						}),
+					})
+						.then((response) => response.json())
+						.then((res) => {
+							this.setState({
+								ctbPersonContacts: res.data.ctbPersonContacts,
+							});
+						});
+				}
+
+				handleApiUpdateCtbPersonContact(e) {
+					console.log('handleApiUpdateCtbPersonContact', this.state);
+					e.preventDefault();
+					const { editingCtbPersonContact } = this.state;
+					if (!editingCtbPersonContact) {
+						return;
+					}
+					var query_request = `
+						mutation {
+							createCtbPersonContact(fromDate:"${editingCtbPersonContact.fromDate}", toDate:"${editingCtbPersonContact.toDate}"){
+								ctbPersonContact{
+								id,
+								fromDate, 
+								toDate
+								}
+							}
+						}`;
+					fetch('/graphql', {
+						method: 'POST',
+						headers: { 'Content-Type': 'application/json' },
+						body: JSON.stringify({
+							query: query_request,
+						}),
+					})
+						.then((response) => response.json())
+						.then((data) => {
+							this.fetchCtbPersonContacts();
+							this.setState({ newFromDate: '', newToDate: '' });
+							this.setState({ editingCtbPersonContact: null });
+						});
+				}
+
+				handleUiEditCtbPersonContact(ctbPersonContact) {
+					this.setState({ editingCtbPersonContact: ctbPersonContact });
+				}
+
+				handleHumanEditingCtbPersonContactStateChange(e) {
+					const { editingCtbPersonContact } = this.state;
+					this.setState({
+						editingCtbPersonContact: {
+							...editingCtbPersonContact,
+							[e.target.name]: e.target.value,
+						},
+					});
+				}
+
+				render() {
+					const { ctbPersonContacts, editingCtbPersonContact } = this.state;
+					return (
+						<div>
+							<h1>App Ctb Person Contact </h1>
+							<div>{JSON.stringify(this.state)}</div>
+							<ul>
+								{ctbPersonContacts.map((ctbPersonContact) => (
+									<li key={ctbPersonContact.id}>
+										{ctbPersonContact.fromDate} - {ctbPersonContact.toDate}
+										<button
+											onClick={() =>
+												this.handleUiEditCtbPersonContact(ctbPersonContact)
+											}
+										>
+											Edit
+										</button>
+									</li>
+								))}
+							</ul>
+							{editingCtbPersonContact && (
+								<div>
+									Text: {this.state.editingCtbPersonContact.fromDate} <br />
+									Link: {this.state.editingCtbPersonContact.toDate}
+								</div>
+							)}
+							{editingCtbPersonContact && (
+								<form onSubmit={this.handleApiUpdateCtbPersonContact}>
+									<input
+										type='text'
+										name='fromDate'
+										placeholder='fromDate'
+										value={editingCtbPersonContact.fromDate}
+										onChange={
+											this.handleHumanEditingCtbPersonContactStateChange
+										}
+									/>
+									<input
+										type='text'
+										name='toDate'
+										placeholder='toDate'
+										value={editingCtbPersonContact.toDate}
+										onChange={
+											this.handleHumanEditingCtbPersonContactStateChange
+										}
+									/>
+									<button type='submit'>Update Ctb Person Contact</button>
+									<button
+										onClick={() =>
+											this.setState({ editingCtbPersonContact: null })
+										}
+									>
+										Cancel
+									</button>
+								</form>
+							)}
+						</div>
+					);
+				}
+			}
+
+			ReactDOM.render(
+				<CtbPersonContactList />,
+				document.getElementById('root')
+			);
+		</script>
+	</body>
+</html>

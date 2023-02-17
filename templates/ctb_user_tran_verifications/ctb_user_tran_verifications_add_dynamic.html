@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<script
+			crossorigin
+			src="https://unpkg.com/react@17/umd/react.development.js"
+		></script>
+		<script
+			crossorigin
+			src="https://unpkg.com/react-dom@17/umd/react-dom.development.js"
+		></script>
+		<script src="https://unpkg.com/babel-standalone@6.15.0/babel.min.js"></script>
+	</head>
+	<body>
+		<div id="root"></div>
+		<script type="text/babel">
+			class CtbUserTranVerificationsAdd extends React.Component {
+				constructor(props) {
+					super(props);
+					this.state = {
+						newvStatus: '',
+						newVerifyDate: '',
+					};
+					this.handleApiAddCtbUserTranVerifications =
+						this.handleApiAddCtbUserTranVerifications.bind(this);
+					this.handleHumanInputChange = this.handleHumanInputChange.bind(this);
+				}
+
+				componentDidMount() {}
+
+				fetchCtbUserTranVerifications() {
+					console.log('fetchCtbUserTranVerifications', this.state);
+				}
+
+				handleApiAddCtbUserTranVerifications(e) {
+					e.preventDefault();
+					const { newvStatus, newVerifyDate } = this.state;
+					if (!newvStatus || !newVerifyDate) {
+						return;
+					}
+					var query_request = `
+						mutation {
+							createCtbUserTranVerification(vStatus:"${newvStatus}", verifyDate:"${newVerifyDate}"){
+								ctbUserTranVerification{
+								id,
+								vStatus,
+								verifyDate
+								}
+							}
+							}`;
+					fetch('/graphql', {
+						method: 'POST',
+						headers: { 'Content-Type': 'application/json' },
+						body: JSON.stringify({
+							query: query_request,
+						}),
+					})
+						.then((response) => response.json())
+						.then((data) => {
+							this.fetchCtbUserTranVerifications();
+							this.setState({ newvStatus: '', newVerifyDate: '' });
+						});
+				}
+
+				handleHumanInputChange(e) {
+					console.log('handleHumanInputChange', this.state, 'e', e);
+					this.setState({ [e.target.name]: e.target.value });
+				}
+
+				render() {
+					const { newvStatus, newVerifyDate } = this.state;
+					return (
+						<div>
+							<h1>App Ctb User Tran Verifications Add</h1>
+							<div>{JSON.stringify(this.state)}</div>
+
+							<input
+								type='text'
+								name='newvStatus'
+								placeholder='newvStatus'
+								value={newvStatus}
+								onChange={this.handleHumanInputChange}
+							/>
+							<input
+								type='text'
+								name='newVerifyDate'
+								placeholder='newVerifyDate'
+								value={newVerifyDate}
+								onChange={this.handleHumanInputChange}
+							/>
+							<button
+								type='submit'
+								onClick={this.handleApiAddCtbUserTranVerifications}
+							>
+								Add Ctb User Tran Verifications
+							</button>
+						</div>
+					);
+				}
+			}
+
+			ReactDOM.render(
+				<CtbUserTranVerificationsAdd />,
+				document.getElementById('root')
+			);
+		</script>
+	</body>
+</html>

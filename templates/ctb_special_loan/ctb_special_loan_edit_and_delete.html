@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<script
+			crossorigin
+			src="https://unpkg.com/react@17/umd/react.development.js"
+		></script>
+		<script
+			crossorigin
+			src="https://unpkg.com/react-dom@17/umd/react-dom.development.js"
+		></script>
+		<script src="https://unpkg.com/babel-standalone@6.15.0/babel.min.js"></script>
+	</head>
+	<body>
+		<div id="root"></div>
+		<script type="text/babel">
+			class CtbSpecialLoanEditAndDelete extends React.Component {
+				constructor(props) {
+					super(props);
+					this.state = {
+						ctbSpecialLoans: [],
+						editingCtbSpecialLoan: null,
+					};
+					this.handleUiEditCtbSpecialLoan =
+						this.handleUiEditCtbSpecialLoan.bind(this);
+					this.handleApiUpdateCtbSpecialLoan =
+						this.handleApiUpdateCtbSpecialLoan.bind(this);
+					this.handleApiDeleteCtbSpecialLoan =
+						this.handleApiDeleteCtbSpecialLoan.bind(this);
+					this.handleHumanEditingCtbSpecialLoanStateChange =
+						this.handleHumanEditingCtbSpecialLoanStateChange.bind(this);
+				}
+
+				componentDidMount() {
+					this.fetchCtbSpecialLoans();
+				}
+
+				fetchCtbSpecialLoans() {
+					var query_request = `
+						query {
+							ctbSpecialLoans{
+								id,
+								chequeDate,
+								chequeNo
+							}
+						}`;
+					fetch('/graphql', {
+						method: 'POST',
+						headers: { 'Content-Type': 'application/json' },
+						body: JSON.stringify({
+							query: query_request,
+						}),
+					})
+						.then((response) => response.json())
+						.then((res) => {
+							this.setState({
+								ctbSpecialLoans: res.data.ctbSpecialLoans,
+							});
+						});
+				}
+
+				handleUiEditCtbSpecialLoan(ctbSpecialLoan) {
+					this.setState({ editingCtbSpecialLoan: ctbSpecialLoan });
+				}
+
+				handleApiUpdateCtbSpecialLoan(e) {
+					console.log('handleApiUpdateCtbSpecialLoan', this.state);
+					e.preventDefault();
+					const { editingCtbSpecialLoan } = this.state;
+					if (!editingCtbSpecialLoan) {
+						return;
+					}
+					var query_request = `
+						mutation {
+							createCtbSpecialLoan(chequeDate:"${editingCtbSpecialLoan.chequeDate}", chequeNo:"${editingCtbSpecialLoan.chequeNo}"){
+								ctbSpecialLoan{
+								id,
+								chequeDate,
+								chequeNo
+								}
+							}
+						}`;
+					fetch('/graphql', {
+						method: 'POST',
+						headers: { 'Content-Type': 'application/json' },
+						body: JSON.stringify({
+							query: query_request,
+						}),
+					})
+						.then((response) => response.json())
+						.then((data) => {
+							this.fetchCtbSpecialLoans();
+							this.setState({ newChequeDate: '', newChequeNo: '' });
+							this.setState({ editingCtbSpecialLoan: null });
+						});
+				}
+
+				handleApiDeleteCtbSpecialLoan(ctbSpecialLoan) {
+					console.log('handleApiDeleteCtbSpecialLoan', this.state);
+					var query_request = `
+						mutation {
+							createCtbSpecialLoan(chequeDate:"${ctbSpecialLoan.chequeDate}", chequeNo:"${ctbSpecialLoan.chequeNo}"){
+								ctbSpecialLoan{
+								id,
+								chequeDate,
+								chequeNo
+								}
+							}
+						}`;
+					fetch('/graphql', {
+						method: 'POST',
+						headers: { 'Content-Type': 'application/json' },
+						body: JSON.stringify({
+							query: query_request,
+						}),
+					})
+						.then((response) => response.json())
+						.then((data) => {
+							this.fetchCtbSpecialLoans();
+						});
+				}
+
+				handleHumanEditingCtbSpecialLoanStateChange(e) {
+					const { editingCtbSpecialLoan } = this.state;
+					this.setState({
+						editingCtbSpecialLoan: {
+							...editingCtbSpecialLoan,
+							[e.target.name]: e.target.value,
+						},
+					});
+				}
+
+				render() {
+					const { ctbSpecialLoans, editingCtbSpecialLoan } = this.state;
+					return (
+						<div>
+							<h1>App Ctb Special Loan </h1>
+							<div>{JSON.stringify(this.state)}</div>
+							<ul>
+								{ctbSpecialLoans.map((ctbSpecialLoan) => (
+									<li key={ctbSpecialLoan.id}>
+										{ctbSpecialLoan.chequeDate} - {ctbSpecialLoan.chequeNo}
+										<button
+											onClick={() =>
+												this.handleUiEditCtbSpecialLoan(ctbSpecialLoan)
+											}
+										>
+											Edit
+										</button>
+										<button
+											onClick={() =>
+												this.handleApiDeleteCtbSpecialLoan(ctbSpecialLoan)
+											}
+										>
+											Delete
+										</button>
+									</li>
+								))}
+							</ul>
+							{editingCtbSpecialLoan && (
+								<div>
+									Text: {this.state.editingCtbSpecialLoan.chequeDate} <br />
+									Link: {this.state.editingCtbSpecialLoan.chequeNo}
+								</div>
+							)}
+							{editingCtbSpecialLoan && (
+								<form onSubmit={this.handleApiUpdateCtbSpecialLoan}>
+									<input
+										type='text'
+										name='chequeDate'
+										placeholder='chequeDate'
+										value={editingCtbSpecialLoan.chequeDate}
+										onChange={this.handleHumanEditingCtbSpecialLoanStateChange}
+									/>
+									<input
+										type='text'
+										name='chequeNo'
+										placeholder='chequeNo'
+										value={editingCtbSpecialLoan.chequeNo}
+										onChange={this.handleHumanEditingCtbSpecialLoanStateChange}
+									/>
+									<button type='submit'>Update Ctb Special Loan</button>
+									<button
+										onClick={() =>
+											this.setState({ editingCtbSpecialLoan: null })
+										}
+									>
+										Cancel
+									</button>
+								</form>
+							)}
+						</div>
+					);
+				}
+			}
+
+			ReactDOM.render(
+				<CtbSpecialLoanEditAndDelete />,
+				document.getElementById('root')
+			);
+		</script>
+	</body>
+</html>

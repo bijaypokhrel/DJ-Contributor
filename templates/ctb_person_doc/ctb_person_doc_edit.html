@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<script
+			crossorigin
+			src="https://unpkg.com/react@17/umd/react.development.js"
+		></script>
+		<script
+			crossorigin
+			src="https://unpkg.com/react-dom@17/umd/react-dom.development.js"
+		></script>
+		<script src="https://unpkg.com/babel-standalone@6.15.0/babel.min.js"></script>
+	</head>
+	<body>
+		<div id="root"></div>
+		<script type="text/babel">
+			class CtbPersonDocList extends React.Component {
+				constructor(props) {
+					super(props);
+					this.state = {
+						ctbPersonDocs: [],
+						editingCtbPersonDoc: null,
+					};
+					this.handleUiEditCtbPersonDoc =
+						this.handleUiEditCtbPersonDoc.bind(this);
+					this.handleApiUpdateCtbPersonDoc =
+						this.handleApiUpdateCtbPersonDoc.bind(this);
+					this.handleHumanEditingCtbPersonDocStateChange =
+						this.handleHumanEditingCtbPersonDocStateChange.bind(this);
+				}
+
+				componentDidMount() {
+					this.fetchCtbPersonDocs();
+				}
+
+				fetchCtbPersonDocs() {
+					var query_request = `
+						query{
+							ctbPersonDocs{
+								id,
+								fromDate,
+								toDate
+							}
+						}`;
+					fetch('/graphql', {
+						method: 'POST',
+						headers: { 'Content-Type': 'application/json' },
+						body: JSON.stringify({
+							query: query_request,
+						}),
+					})
+						.then((response) => response.json())
+						.then((res) => {
+							this.setState({
+								ctbPersonDocs: res.data.ctbPersonDocs,
+							});
+						});
+				}
+
+				handleApiUpdateCtbPersonDoc(e) {
+					console.log('handleApiUpdateCtbPersonDoc', this.state);
+					e.preventDefault();
+					const { editingCtbPersonDoc } = this.state;
+					if (!editingCtbPersonDoc) {
+						return;
+					}
+					var query_request = `
+						mutation {
+							createCtbPersonDoc(fromDate:"${editingCtbPersonDoc.fromDate}", toDate:"${editingCtbPersonDoc.toDate}"){
+								ctbPersonDoc{
+								id,
+								fromDate, 
+								toDate
+								}
+							}
+						}`;
+					fetch('/graphql', {
+						method: 'POST',
+						headers: { 'Content-Type': 'application/json' },
+						body: JSON.stringify({
+							query: query_request,
+						}),
+					})
+						.then((response) => response.json())
+						.then((data) => {
+							this.fetchCtbPersonDocs();
+							this.setState({ newFromDate: '', newToDate: '' });
+							this.setState({ editingCtbPersonDoc: null });
+						});
+				}
+
+				handleUiEditCtbPersonDoc(ctbPersonDoc) {
+					this.setState({ editingCtbPersonDoc: ctbPersonDoc });
+				}
+
+				handleHumanEditingCtbPersonDocStateChange(e) {
+					const { editingCtbPersonDoc } = this.state;
+					this.setState({
+						editingCtbPersonDoc: {
+							...editingCtbPersonDoc,
+							[e.target.name]: e.target.value,
+						},
+					});
+				}
+
+				render() {
+					const { ctbPersonDocs, editingCtbPersonDoc } = this.state;
+					return (
+						<div>
+							<h1>App Ctb Person Doc </h1>
+							<div>{JSON.stringify(this.state)}</div>
+							<ul>
+								{ctbPersonDocs.map((ctbPersonDoc) => (
+									<li key={ctbPersonDoc.id}>
+										{ctbPersonDoc.fromDate} - {ctbPersonDoc.toDate}
+										<button
+											onClick={() =>
+												this.handleUiEditCtbPersonDoc(ctbPersonDoc)
+											}
+										>
+											Edit
+										</button>
+									</li>
+								))}
+							</ul>
+							{editingCtbPersonDoc && (
+								<div>
+									Text: {this.state.editingCtbPersonDoc.fromDate} <br />
+									Link: {this.state.editingCtbPersonDoc.toDate}
+								</div>
+							)}
+							{editingCtbPersonDoc && (
+								<form onSubmit={this.handleApiUpdateCtbPersonDoc}>
+									<input
+										type='text'
+										name='fromDate'
+										placeholder='fromDate'
+										value={editingCtbPersonDoc.fromDate}
+										onChange={this.handleHumanEditingCtbPersonDocStateChange}
+									/>
+									<input
+										type='text'
+										name='toDate'
+										placeholder='toDate'
+										value={editingCtbPersonDoc.toDate}
+										onChange={this.handleHumanEditingCtbPersonDocStateChange}
+									/>
+									<button type='submit'>Update Ctb Person Doc</button>
+									<button
+										onClick={() => this.setState({ editingCtbPersonDoc: null })}
+									>
+										Cancel
+									</button>
+								</form>
+							)}
+						</div>
+					);
+				}
+			}
+
+			ReactDOM.render(<CtbPersonDocList />, document.getElementById('root'));
+		</script>
+	</body>
+</html>
