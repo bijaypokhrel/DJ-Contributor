@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<script
+			crossorigin
+			src="https://unpkg.com/react@17/umd/react.development.js"
+		></script>
+		<script
+			crossorigin
+			src="https://unpkg.com/react-dom@17/umd/react-dom.development.js"
+		></script>
+		<script src="https://unpkg.com/babel-standalone@6.15.0/babel.min.js"></script>
+	</head>
+	<body>
+		<div id="root"></div>
+		<script type="text/babel">
+			class StbContributorSalDetEditAndDelete extends React.Component {
+				constructor(props) {
+					super(props);
+					this.state = {
+						stbContributorSalDets: [],
+						editingStbContributorSalDet: null,
+					};
+					this.handleUiEditStbContributorSalDet =
+						this.handleUiEditStbContributorSalDet.bind(this);
+					this.handleApiUpdateStbContributorSalDet =
+						this.handleApiUpdateStbContributorSalDet.bind(this);
+					this.handleApiDeleteStbContributorSalDet =
+						this.handleApiDeleteStbContributorSalDet.bind(this);
+					this.handleHumanEditingStbContributorSalDetStateChange =
+						this.handleHumanEditingStbContributorSalDetStateChange.bind(this);
+				}
+
+				componentDidMount() {
+					this.fetchStbContributorSalDets();
+				}
+
+				fetchStbContributorSalDets() {
+					var query_request = `
+						query {
+							stbContributorSalDets{
+								id,
+								fromDate,
+								toDate
+							}
+						}`;
+					fetch('/graphql', {
+						method: 'POST',
+						headers: { 'Content-Type': 'application/json' },
+						body: JSON.stringify({
+							query: query_request,
+						}),
+					})
+						.then((response) => response.json())
+						.then((res) => {
+							this.setState({
+								stbContributorSalDets: res.data.stbContributorSalDets,
+							});
+						});
+				}
+
+				handleUiEditStbContributorSalDet(stbContributorSalDet) {
+					this.setState({ editingStbContributorSalDet: stbContributorSalDet });
+				}
+
+				handleApiUpdateStbContributorSalDet(e) {
+					console.log('handleApiUpdateStbContributorSalDet', this.state);
+					e.preventDefault();
+					const { editingStbContributorSalDet } = this.state;
+					if (!editingStbContributorSalDet) {
+						return;
+					}
+					var query_request = `
+						mutation {
+							createStbContributorSalDet(fromDate:"${editingStbContributorSalDet.fromDate}", toDate:"${editingStbContributorSalDet.toDate}"){
+								stbContributorSalDet{
+									id,
+									fromDate,
+									toDate
+								}
+							}
+						}`;
+					fetch('/graphql', {
+						method: 'POST',
+						headers: { 'Content-Type': 'application/json' },
+						body: JSON.stringify({
+							query: query_request,
+						}),
+					})
+						.then((response) => response.json())
+						.then((data) => {
+							this.fetchStbContributorSalDets();
+							this.setState({ newFromDate: '', newToDate: '' });
+							this.setState({ editingStbContributorSalDet: null });
+						});
+				}
+
+				handleApiDeleteStbContributorSalDet(stbContributorSalDet) {
+					console.log('handleApiDeleteStbContributorSalDet', this.state);
+					var query_request = `
+						mutation {
+							createStbContributorSalDet(fromDate:"${stbContributorSalDet.fromDate}", toDate:"${stbContributorSalDet.toDate}"){
+								stbContributorSalDet{
+									id,
+									fromDate,
+									toDate
+								}
+							}
+						}`;
+					fetch('/graphql', {
+						method: 'POST',
+						headers: { 'Content-Type': 'application/json' },
+						body: JSON.stringify({
+							query: query_request,
+						}),
+					})
+						.then((response) => response.json())
+						.then((data) => {
+							this.fetchStbContributorSalDets();
+						});
+				}
+
+				handleHumanEditingStbContributorSalDetStateChange(e) {
+					const { editingStbContributorSalDet } = this.state;
+					this.setState({
+						editingStbContributorSalDet: {
+							...editingStbContributorSalDet,
+							[e.target.name]: e.target.value,
+						},
+					});
+				}
+
+				render() {
+					const { stbContributorSalDets, editingStbContributorSalDet } =
+						this.state;
+					return (
+						<div>
+							<h1>App Stb Contributor Sal Dets </h1>
+							<div>{JSON.stringify(this.state)}</div>
+							<ul>
+								{stbContributorSalDets.map((stbContributorSalDet) => (
+									<li key={stbContributorSalDet.id}>
+										{stbContributorSalDet.fromDate} -{' '}
+										{stbContributorSalDet.toDate}
+										<button
+											onClick={() =>
+												this.handleUiEditStbContributorSalDet(
+													stbContributorSalDet
+												)
+											}
+										>
+											Edit
+										</button>
+										<button
+											onClick={() =>
+												this.handleApiDeleteStbContributorSalDet(
+													stbContributorSalDet
+												)
+											}
+										>
+											Delete
+										</button>
+									</li>
+								))}
+							</ul>
+							{editingStbContributorSalDet && (
+								<div>
+									Text: {this.state.editingStbContributorSalDet.fromDate} <br />
+									Link: {this.state.editingStbContributorSalDet.toDate}
+								</div>
+							)}
+							{editingStbContributorSalDet && (
+								<form onSubmit={this.handleApiUpdateStbContributorSalDet}>
+									<input
+										type='text'
+										name='fromDate'
+										placeholder='fromDate'
+										value={editingStbContributorSalDet.fromDate}
+										onChange={
+											this.handleHumanEditingStbContributorSalDetStateChange
+										}
+									/>
+									<input
+										type='text'
+										name='toDate'
+										placeholder='toDate'
+										value={editingStbContributorSalDet.toDate}
+										onChange={
+											this.handleHumanEditingStbContributorSalDetStateChange
+										}
+									/>
+									<button type='submit'>Update Stb Contributor Sal Dets</button>
+									<button
+										onClick={() =>
+											this.setState({ editingStbContributorSalDet: null })
+										}
+									>
+										Cancel
+									</button>
+								</form>
+							)}
+						</div>
+					);
+				}
+			}
+
+			ReactDOM.render(
+				<StbContributorSalDetEditAndDelete />,
+				document.getElementById('root')
+			);
+		</script>
+	</body>
+</html>

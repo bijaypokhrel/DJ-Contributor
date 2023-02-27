@@ -56,11 +56,9 @@
 					console.log('handleApiDeleteCtbPersonContact', this.state);
 					var query_request = `
 						mutation {
-							createCtbPersonContact(fromDate:"${ctbPersonContact.fromDate}", toDate:"${ctbPersonContact.toDate}"){
+							deleteCtbPersonContact(id:${ctbPersonContact.id}){
 								ctbPersonContact{
-								id,
-								fromDate, 
-								toDate
+								id
 								}
 							}
 						}`;

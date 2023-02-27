@@ -62,13 +62,15 @@
 						return;
 					}
 					var query_request = `
-						mutation{createCtbPerson(fnameNep:"${editingCtbPerson.fnameNep}",mnameNep:"${editingCtbPerson.mnameNep}"){
-							ctbPerson{
-								fnameNep,
-								mnameNep
+						mutation {
+							updateCtbPerson(id:${editingCtbPerson.pId}, fnameNep:"${editingCtbPerson.fnameNep}", mnameNep:"${editingCtbPerson.mnameNep}"){
+								ctbPerson{
+									pId,
+									fnameNep,
+									mnameNep
+								}
 							}
-						}
-					}`;
+						}`;
 					fetch('/graphql', {
 						method: 'POST',
 						headers: { 'Content-Type': 'application/json' },

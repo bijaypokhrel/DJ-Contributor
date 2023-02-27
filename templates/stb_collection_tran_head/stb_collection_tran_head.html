@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<script
+			crossorigin
+			src="https://unpkg.com/react@17/umd/react.development.js"
+		></script>
+		<script
+			crossorigin
+			src="https://unpkg.com/react-dom@17/umd/react-dom.development.js"
+		></script>
+		<script src="https://unpkg.com/babel-standalone@6.15.0/babel.min.js"></script>
+	</head>
+	<body>
+		<div id="root"></div>
+		<script type="text/babel">
+			class StbCollectionTranHead extends React.Component {
+				constructor(props) {
+					super(props);
+					this.state = {
+						newEntryBy: '',
+						newrStatus: '',
+						stbCollectionTranHeads: [],
+						editingStbCollectionTranHead: null,
+					};
+					this.handleApiAddStbCollectionTranHead =
+						this.handleApiAddStbCollectionTranHead.bind(this);
+					this.handleUiEditStbCollectionTranHead =
+						this.handleUiEditStbCollectionTranHead.bind(this);
+					this.handleApiUpdateStbCollectionTranHead =
+						this.handleApiUpdateStbCollectionTranHead.bind(this);
+					this.handleApiDeleteStbCollectionTranHead =
+						this.handleApiDeleteStbCollectionTranHead.bind(this);
+					this.handleHumanInputChange = this.handleHumanInputChange.bind(this);
+					this.handleHumanEditingStbCollectionTranHeadStateChange =
+						this.handleHumanEditingStbCollectionTranHeadStateChange.bind(this);
+				}
+
+				componentDidMount() {
+					this.fetchStbCollectionTranHeads();
+				}
+
+				fetchStbCollectionTranHeads() {
+					var query_request = `
+						query {
+							stbCollectionTranHeads{
+								id,
+								entryBy,
+								rStatus
+							}
+						}`;
+					fetch('/graphql', {
+						method: 'POST',
+						headers: { 'Content-Type': 'application/json' },
+						body: JSON.stringify({
+							query: query_request,
+						}),
+					})
+						.then((response) => response.json())
+						.then((res) => {
+							this.setState({
+								stbCollectionTranHeads: res.data.stbCollectionTranHeads,
+							});
+						});
+				}
+
+				handleApiAddStbCollectionTranHead(e) {
+					e.preventDefault();
+					const { newEntryBy, newrStatus } = this.state;
+					if (!newEntryBy || !newrStatus) {
+						return;
+					}
+					var query_request = `
+						mutation {
+							createStbCollectionTranHead(entryBy:"${newEntryBy}", rStatus:"${newrStatus}"){
+								stbCollectionTranHead{
+									id,
+									entryBy,
+									rStatus
+								}
+							}
+						}`;
+					fetch('/graphql', {
+						method: 'POST',
+						headers: { 'Content-Type': 'application/json' },
+						body: JSON.stringify({
+							query: query_request,
+						}),
+					})
+						.then((response) => response.json())
+						.then((data) => {
+							this.fetchStbCollectionTranHeads();
+							this.setState({ newEntryBy: '', newrStatus: '' });
+						});
+				}
+
+				handleUiEditStbCollectionTranHead(stbCollectionTranHead) {
+					this.setState({
+						editingStbCollectionTranHead: stbCollectionTranHead,
+					});
+				}
+
+				handleApiUpdateStbCollectionTranHead(e) {
+					console.log('handleApiUpdateStbCollectionTranHead', this.state);
+					e.preventDefault();
+					const { editingStbCollectionTranHead } = this.state;
+					if (!editingStbCollectionTranHead) {
+						return;
+					}
+					var query_request = `
+						mutation {
+							createStbCollectionTranHead(entryBy:"${editingStbCollectionTranHead.entryBy}", rStatus:"${editingStbCollectionTranHead.rStatus}"){
+								stbCollectionTranHead{
+									id,
+									entryBy,
+									rStatus
+								}
+							}
+						}`;
+					fetch('/graphql', {
+						method: 'POST',
+						headers: { 'Content-Type': 'application/json' },
+						body: JSON.stringify({
+							query: query_request,
+						}),
+					})
+						.then((response) => response.json())
+						.then((data) => {
+							this.fetchStbCollectionTranHeads();
+							this.setState({ newEntryBy: '', newrStatus: '' });
+							this.setState({ editingStbCollectionTranHead: null });
+						});
+				}
+
+				handleApiDeleteStbCollectionTranHead(stbCollectionTranHead) {
+					console.log('handleApiDeleteStbCollectionTranHead', this.state);
+					var query_request = `
+						mutation {
+							createStbCollectionTranHead(entryBy:"${stbCollectionTranHead.entryBy}", rStatus:"${stbCollectionTranHead.rStatus}"){
+								stbCollectionTranHead{
+									id,
+									entryBy,
+									rStatus
+								}
+							}
+						}`;
+					fetch('/graphql', {
+						method: 'POST',
+						headers: { 'Content-Type': 'application/json' },
+						body: JSON.stringify({
+							query: query_request,
+						}),
+					})
+						.then((response) => response.json())
+						.then((data) => {
+							this.fetchStbCollectionTranHeads();
+						});
+				}
+
+				handleHumanInputChange(e) {
+					console.log('handleHumanInputChange', this.state, 'e', e);
+					this.setState({ [e.target.name]: e.target.value });
+				}
+
+				handleHumanEditingStbCollectionTranHeadStateChange(e) {
+					const { editingStbCollectionTranHead } = this.state;
+					this.setState({
+						editingStbCollectionTranHead: {
+							...editingStbCollectionTranHead,
+							[e.target.name]: e.target.value,
+						},
+					});
+				}
+
+				render() {
+					const {
+						newEntryBy,
+						newrStatus,
+						stbCollectionTranHeads,
+						editingStbCollectionTranHead,
+					} = this.state;
+					return (
+						<div>
+							<h1>App Stb Collection Tran Head</h1>
+							<div>{JSON.stringify(this.state)}</div>
+							<input
+								type='text'
+								name='newEntryBy'
+								placeholder='newEntryBy'
+								value={newEntryBy}
+								onChange={this.handleHumanInputChange}
+							/>
+							<input
+								type='text'
+								name='newrStatus'
+								placeholder='newrStatus'
+								value={newrStatus}
+								onChange={this.handleHumanInputChange}
+							/>
+							<button
+								type='submit'
+								onClick={this.handleApiAddStbCollectionTranHead}
+							>
+								Add Stb Collection Tran Head
+							</button>
+
+							<ul>
+								{stbCollectionTranHeads.map((stbCollectionTranHead) => (
+									<li key={stbCollectionTranHead.id}>
+										{stbCollectionTranHead.entryBy} -{' '}
+										{stbCollectionTranHead.rStatus}
+										<button
+											onClick={() =>
+												this.handleUiEditStbCollectionTranHead(
+													stbCollectionTranHead
+												)
+											}
+										>
+											Edit
+										</button>
+										<button
+											onClick={() =>
+												this.handleApiDeleteStbCollectionTranHead(
+													stbCollectionTranHead
+												)
+											}
+										>
+											Delete
+										</button>
+									</li>
+								))}
+							</ul>
+
+							{editingStbCollectionTranHead && (
+								<div>
+									Text: {this.state.editingStbCollectionTranHead.entryBy} <br />
+									Link: {this.state.editingStbCollectionTranHead.rStatus}
+								</div>
+							)}
+
+							{editingStbCollectionTranHead && (
+								<form onSubmit={this.handleApiUpdateStbCollectionTranHead}>
+									<input
+										type='text'
+										name='entryBy'
+										placeholder='entryBy'
+										value={editingStbCollectionTranHead.entryBy}
+										onChange={
+											this.handleHumanEditingStbCollectionTranHeadStateChange
+										}
+									/>
+									<input
+										type='text'
+										name='rStatus'
+										placeholder='rStatus'
+										value={editingStbCollectionTranHead.rStatus}
+										onChange={
+											this.handleHumanEditingStbCollectionTranHeadStateChange
+										}
+									/>
+									<button type='submit'>Update Stb Collection Tran Head</button>
+									<button
+										onClick={() =>
+											this.setState({ editingStbCollectionTranHead: null })
+										}
+									>
+										Cancel
+									</button>
+								</form>
+							)}
+						</div>
+					);
+				}
+			}
+
+			ReactDOM.render(
+				<StbCollectionTranHead />,
+				document.getElementById('root')
+			);
+		</script>
+	</body>
+</html>

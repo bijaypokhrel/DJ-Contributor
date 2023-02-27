@@ -37,6 +37,22 @@ class CreateAtb_Gltran_MastMutation(graphene.Mutation):
         return CreateAtb_Gltran_MastMutation(atb_gltran_mast=atb_gltran_mast)
 
 
+class UpdateAtb_Gltran_MastMutation(graphene.Mutation):
+    class Arguments:
+        id = graphene.ID()
+        tran_date = String()
+        tran_user_id = String()
+
+    atb_gltran_mast = graphene.Field(lambda: Atb_Gltran_MastType)
+
+    def mutate(self, info, id, tran_date, tran_user_id):
+        atb_gltran_mast = Atb_Gltran_Mast.objects.get(pk=id)
+        atb_gltran_mast.tran_date = tran_date
+        atb_gltran_mast.tran_user_id = tran_user_id
+        atb_gltran_mast.save()
+        return UpdateAtb_Gltran_MastMutation(atb_gltran_mast=atb_gltran_mast)
+
+
 class CreateAtb_Gltran_DetlMutation(graphene.Mutation):
     class Arguments:
         inst_code = String()

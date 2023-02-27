@@ -1,0 +1,274 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<script
+			crossorigin
+			src="https://unpkg.com/react@17/umd/react.development.js"
+		></script>
+		<script
+			crossorigin
+			src="https://unpkg.com/react-dom@17/umd/react-dom.development.js"
+		></script>
+		<script src="https://unpkg.com/babel-standalone@6.15.0/babel.min.js"></script>
+	</head>
+	<body>
+		<div id="root"></div>
+		<script type="text/babel">
+			class StbClaimAnusuchi6 extends React.Component {
+				constructor(props) {
+					super(props);
+					this.state = {
+						newDepFname: '',
+						newDepMname: '',
+						stbClaimAnusuchi6s: [],
+						editingStbClaimAnusuchi6: null,
+					};
+					this.handleApiAddStbClaimAnusuchi6 =
+						this.handleApiAddStbClaimAnusuchi6.bind(this);
+					this.handleUiEditStbClaimAnusuchi6 =
+						this.handleUiEditStbClaimAnusuchi6.bind(this);
+					this.handleApiUpdateStbClaimAnusuchi6 =
+						this.handleApiUpdateStbClaimAnusuchi6.bind(this);
+					this.handleApiDeleteStbClaimAnusuchi6 =
+						this.handleApiDeleteStbClaimAnusuchi6.bind(this);
+					this.handleHumanInputChange = this.handleHumanInputChange.bind(this);
+					this.handleHumanEditingStbClaimAnusuchi6StateChange =
+						this.handleHumanEditingStbClaimAnusuchi6StateChange.bind(this);
+				}
+
+				componentDidMount() {
+					this.fetchStbClaimAnusuchi6s();
+				}
+
+				fetchStbClaimAnusuchi6s() {
+					var query_request = `
+						query {
+							stbClaimAnusuchi6s{
+								id,
+								depFname,
+								depMname
+							}
+						}`;
+					fetch('/graphql', {
+						method: 'POST',
+						headers: { 'Content-Type': 'application/json' },
+						body: JSON.stringify({
+							query: query_request,
+						}),
+					})
+						.then((response) => response.json())
+						.then((res) => {
+							this.setState({
+								stbClaimAnusuchi6s: res.data.stbClaimAnusuchi6s,
+							});
+						});
+				}
+
+				handleApiAddStbClaimAnusuchi6(e) {
+					e.preventDefault();
+					const { newDepFname, newDepMname } = this.state;
+					if (!newDepFname || !newDepMname) {
+						return;
+					}
+					var query_request = `
+						mutation {
+							createStbClaimAnusuchi6(depFname:"${newDepFname}", depMname:"${newDepMname}"){
+								stbClaimAnusuchi6{
+									id,
+									depFname,
+									depMname
+								}
+							}
+						}`;
+					fetch('/graphql', {
+						method: 'POST',
+						headers: { 'Content-Type': 'application/json' },
+						body: JSON.stringify({
+							query: query_request,
+						}),
+					})
+						.then((response) => response.json())
+						.then((data) => {
+							this.fetchStbClaimAnusuchi6s();
+							this.setState({ newDepFname: '', newDepMname: '' });
+						});
+				}
+
+				handleUiEditStbClaimAnusuchi6(stbClaimAnusuchi6) {
+					this.setState({
+						editingStbClaimAnusuchi6: stbClaimAnusuchi6,
+					});
+				}
+
+				handleApiUpdateStbClaimAnusuchi6(e) {
+					console.log('handleApiUpdateStbClaimAnusuchi6', this.state);
+					e.preventDefault();
+					const { editingStbClaimAnusuchi6 } = this.state;
+					if (!editingStbClaimAnusuchi6) {
+						return;
+					}
+					var query_request = `
+						mutation {
+							createStbClaimAnusuchi6(depFname:"${editingStbClaimAnusuchi6.depFname}", depMname:"${editingStbClaimAnusuchi6.depMname}"){
+								stbClaimAnusuchi6{
+									id,
+									depFname,
+									depMname
+								}
+							}
+						}`;
+					fetch('/graphql', {
+						method: 'POST',
+						headers: { 'Content-Type': 'application/json' },
+						body: JSON.stringify({
+							query: query_request,
+						}),
+					})
+						.then((response) => response.json())
+						.then((data) => {
+							this.fetchStbClaimAnusuchi6s();
+							this.setState({ newDepFname: '', newDepMname: '' });
+							this.setState({ editingStbClaimAnusuchi6: null });
+						});
+				}
+
+				handleApiDeleteStbClaimAnusuchi6(stbClaimAnusuchi6) {
+					console.log('handleApiDeleteStbClaimAnusuchi6', this.state);
+					var query_request = `
+						mutation {
+							createStbClaimAnusuchi6(depFname:"${stbClaimAnusuchi6.depFname}", depMname:"${stbClaimAnusuchi6.depMname}"){
+								stbClaimAnusuchi6{
+									id,
+									depFname,
+									depMname
+								}
+							}
+						}`;
+					fetch('/graphql', {
+						method: 'POST',
+						headers: { 'Content-Type': 'application/json' },
+						body: JSON.stringify({
+							query: query_request,
+						}),
+					})
+						.then((response) => response.json())
+						.then((data) => {
+							this.fetchStbClaimAnusuchi6s();
+						});
+				}
+
+				handleHumanInputChange(e) {
+					console.log('handleHumanInputChange', this.state, 'e', e);
+					this.setState({ [e.target.name]: e.target.value });
+				}
+
+				handleHumanEditingStbClaimAnusuchi6StateChange(e) {
+					const { editingStbClaimAnusuchi6 } = this.state;
+					this.setState({
+						editingStbClaimAnusuchi6: {
+							...editingStbClaimAnusuchi6,
+							[e.target.name]: e.target.value,
+						},
+					});
+				}
+
+				render() {
+					const {
+						newDepFname,
+						newDepMname,
+						stbClaimAnusuchi6s,
+						editingStbClaimAnusuchi6,
+					} = this.state;
+					return (
+						<div>
+							<h1>App Stb Claim Anusuchi6</h1>
+							<div>{JSON.stringify(this.state)}</div>
+							<input
+								type='text'
+								name='newDepFname'
+								placeholder='newDepFname'
+								value={newDepFname}
+								onChange={this.handleHumanInputChange}
+							/>
+							<input
+								type='text'
+								name='newDepMname'
+								placeholder='newDepMname'
+								value={newDepMname}
+								onChange={this.handleHumanInputChange}
+							/>
+							<button
+								type='submit'
+								onClick={this.handleApiAddStbClaimAnusuchi6}
+							>
+								Add Stb Claim Anusuchi6
+							</button>
+
+							<ul>
+								{stbClaimAnusuchi6s.map((stbClaimAnusuchi6) => (
+									<li key={stbClaimAnusuchi6.id}>
+										{stbClaimAnusuchi6.depFname} - {stbClaimAnusuchi6.depMname}
+										<button
+											onClick={() =>
+												this.handleUiEditStbClaimAnusuchi6(stbClaimAnusuchi6)
+											}
+										>
+											Edit
+										</button>
+										<button
+											onClick={() =>
+												this.handleApiDeleteStbClaimAnusuchi6(stbClaimAnusuchi6)
+											}
+										>
+											Delete
+										</button>
+									</li>
+								))}
+							</ul>
+
+							{editingStbClaimAnusuchi6 && (
+								<div>
+									Text: {this.state.editingStbClaimAnusuchi6.depFname} <br />
+									Link: {this.state.editingStbClaimAnusuchi6.depMname}
+								</div>
+							)}
+
+							{editingStbClaimAnusuchi6 && (
+								<form onSubmit={this.handleApiUpdateStbClaimAnusuchi6}>
+									<input
+										type='text'
+										name='depFname'
+										placeholder='depFname'
+										value={editingStbClaimAnusuchi6.depFname}
+										onChange={
+											this.handleHumanEditingStbClaimAnusuchi6StateChange
+										}
+									/>
+									<input
+										type='text'
+										name='depMname'
+										placeholder='depMname'
+										value={editingStbClaimAnusuchi6.depMname}
+										onChange={
+											this.handleHumanEditingStbClaimAnusuchi6StateChange
+										}
+									/>
+									<button type='submit'>Update Stb Claim Anusuchi6</button>
+									<button
+										onClick={() =>
+											this.setState({ editingStbClaimAnusuchi6: null })
+										}
+									>
+										Cancel
+									</button>
+								</form>
+							)}
+						</div>
+					);
+				}
+			}
+
+			ReactDOM.render(<StbClaimAnusuchi6 />, document.getElementById('root'));
+		</script>
+	</body>
+</html>

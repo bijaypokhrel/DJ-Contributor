@@ -177,13 +177,37 @@ class Mutation(graphene.ObjectType):
     create_bank = CreateBankMutation.Field()
     # Registration
     create_ctb_address = CreateCtb_AddressMutation.Field()
+    update_ctb_address = UpdateCtb_AddressMutation.Field()
+    delete_ctb_address = DeleteCtb_AddressMutation.Field()
+
     create_ctb_person = CreateCtb_PersonMutation.Field()
+    update_ctb_person = UpdateCtb_PersonMutation.Field()
+    delete_ctb_person = DeleteCtb_PersonMutation.Field()
+
     create_ctb_person_address = CreateCtb_Person_AddressMutation.Field()
+    update_ctb_person_address = UpdateCtb_Person_AddressMutation.Field()
+    delete_ctb_person_address = DeleteCtb_Person_AddressMutation.Field()
+
     create_ctb_person_dependent = CreateCtb_Person_DependentMutation.Field()
+    update_ctb_person_dependent = UpdateCtb_Person_DependentMutation.Field()
+    delete_ctb_person_dependent = DeleteCtb_Person_DependentMutation.Field()
+
     create_ctb_person_nominee = CreateCtb_Person_NomineeMutation.Field()
+    update_ctb_person_nominee = UpdateCtb_Person_NomineeMutation.Field()
+    delete_ctb_person_nominee = DeleteCtb_Person_NomineeMutation.Field()
+
     create_ctb_person_contact = CreateCtb_Person_ContactMutation.Field()
+    update_ctb_person_contact = UpdateCtb_Person_ContactMutation.Field()
+    delete_ctb_person_contact = DeleteCtb_Person_ContactMutation.Field()
+
     create_ctb_person_doc = CreateCtb_Person_DocMutation.Field()
+    update_ctb_person_doc = UpdateCtb_Person_DocMutation.Field()
+    delete_ctb_person_doc = DeleteCtb_Person_DocMutation.Field()
+
     create_ctb_contributor = CreateCtb_ContributorMutation.Field()
+    update_ctb_contributor = UpdateCtb_ContributorMutation.Field()
+    delete_ctb_contributor = DeleteCtb_ContributorMutation.Field()
+
     # Claim
     create_stb_claim_head = CreateStb_Claim_HeadMutation.Field()
     create_stb_claim_anusuchi6 = CreateStb_Claim_Anusuchi6Mutation.Field()
@@ -210,6 +234,7 @@ class Mutation(graphene.ObjectType):
 
     # Account
     create_atb_gltran_mast = CreateAtb_Gltran_MastMutation.Field()
+    update_atb_gltran_mast = UpdateAtb_Gltran_MastMutation.Field()
     create_atb_gltran_detl = CreateAtb_Gltran_DetlMutation.Field()
     create_atb_account_ledger = CreateAtb_Account_LedgerMutation.Field()
 

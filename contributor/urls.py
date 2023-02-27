@@ -6,7 +6,6 @@ from . import views
 
 urlpatterns = [
 
-
     path('links', views.links, name="links"),
 
     #     path('', views.home, name="home"),
@@ -239,4 +238,112 @@ urlpatterns = [
 
     path('atb_disbursement_process_edit_and_delete', views.atb_disbursement_process_edit_and_delete,
          name="atb_disbursement_process_edit_and_delete"),
+
+    # Ctb Emp Contact
+
+    path('ctb_emp_contact_add_dynamic', views.ctb_emp_contact_add_dynamic,
+         name="ctb_emp_contact_add_dynamic"),
+
+    path('ctb_emp_contact_edit_and_delete', views.ctb_emp_contact_edit_and_delete,
+         name="ctb_emp_contact_edit_and_delete"),
+
+
+    # Ctb Employer
+
+    path('ctb_employer_add_dynamic', views.ctb_employer_add_dynamic,
+         name="ctb_employer_add_dynamic"),
+
+    path('ctb_employer_edit_and_delete', views.ctb_employer_edit_and_delete,
+         name="ctb_employer_edit_and_delete"),
+
+    # Ctb Emp Doc
+
+    path('ctb_emp_doc_add_dynamic', views.ctb_emp_doc_add_dynamic,
+         name="ctb_emp_doc_add_dynamic"),
+
+    path('ctb_emp_doc_edit_and_delete', views.ctb_emp_doc_edit_and_delete,
+         name="ctb_emp_doc_edit_and_delete"),
+
+    # Ctb Emp Address
+
+    path('ctb_emp_address_add_dynamic', views.ctb_emp_address_add_dynamic,
+         name="ctb_emp_address_add_dynamic"),
+
+    path('ctb_emp_address_edit_and_delete', views.ctb_emp_address_edit_and_delete,
+         name="ctb_emp_address_edit_and_delete"),
+
+    # Ctb Emp Official
+
+    path('ctb_emp_official_add_dynamic', views.ctb_emp_official_add_dynamic,
+         name="ctb_emp_official_add_dynamic"),
+
+    path('ctb_emp_official_edit_and_delete', views.ctb_emp_official_edit_and_delete,
+         name="ctb_emp_official_edit_and_delete"),
+
+    # Stb Coll Voucher Info
+
+    path('stb_coll_voucher_info_add_dynamic', views.stb_coll_voucher_info_add_dynamic,
+         name="stb_coll_voucher_info_add_dynamic"),
+
+    path('stb_coll_voucher_info_edit_and_delete', views.stb_coll_voucher_info_edit_and_delete,
+         name="stb_coll_voucher_info_edit_and_delete"),
+
+    # Stb Contributor Sal Det
+
+    path('stb_contributor_sal_det_add_dynamic', views.stb_contributor_sal_det_add_dynamic,
+         name="stb_contributor_sal_det_add_dynamic"),
+    path('stb_contributor_sal_det_edit_and_delete', views.stb_contributor_sal_det_edit_and_delete,
+         name="stb_contributor_sal_det_edit_and_delete"),
+
+    # Stb Collection Tran Head
+
+    path('stb_collection_tran_head', views.stb_collection_tran_head,
+         name="stb_collection_tran_head"),
+
+    # Stb Coll Tran Details
+
+    path('stb_coll_tran_details', views.stb_coll_tran_details,
+         name="stb_coll_tran_details"),
+
+    # Stb Scheme Application
+
+    path('stb_scheme_application', views.stb_scheme_application,
+         name="stb_scheme_application"),
+
+    # Stb Claim Head
+
+    path('stb_claim_head', views.stb_claim_head,
+         name="stb_claim_head"),
+
+    # Stb Claim Anusuchi6
+
+    path('stb_claim_anusuchi6', views.stb_claim_anusuchi6,
+         name="stb_claim_anusuchi6"),
+
+    # Stb Claim App Amount
+
+    path('stb_claim_app_amount', views.stb_claim_app_amount,
+         name="stb_claim_app_amount"),
+
+    # Stb Claim Doc
+
+    path('stb_claim_doc', views.stb_claim_doc,
+         name="stb_claim_doc"),
+
+    # Atb Gltran Mast
+
+    path('atb_gltran_mast', views.atb_gltran_mast,
+         name="atb_gltran_mast"),
+
+    # Atb Gltran Detl
+
+    path('atb_gltran_detl', views.atb_gltran_detl,
+         name="atb_gltran_detl"),
+
+    # Atb Account Ledger
+
+    path('atb_account_ledger', views.atb_account_ledger,
+         name="atb_account_ledger"),
+
+
 ]

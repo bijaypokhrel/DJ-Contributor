@@ -56,10 +56,9 @@
 					console.log('handleApiDeleteCtbPersonDependent', this.state);
 					var query_request = `
 						mutation {
-							createCtbPersonDependent(entryBy:"${ctbPersonDependent.entryBy}", rStatus:"${ctbPersonDependent.rStatus}"){
+							deleteCtbPersonDependent(id:${ctbPersonDependent.orderNo}){
 								ctbPersonDependent{
-									entryBy,
-									rStatus,
+								orderNo
 								}
 							}
 						}`;

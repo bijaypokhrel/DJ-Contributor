@@ -53,13 +53,13 @@
 				handleApiDeleteCtbPerson(ctbPerson) {
 					console.log('handleApiDeleteCtbPerson', this.state);
 					var query_request = `
-						mutation{createCtbPerson(fnameNep:"${ctbPerson.fnameNep}",mnameNep:"${ctbPerson.mnameNep}"){
-							ctbPerson{
-								fnameNep,
-								mnameNep
+						mutation {
+							deleteCtbPerson(id:${ctbPerson.pId}){
+								ctbPerson {
+								pId
+								}
 							}
-						}
-					}`;
+						}`;
 					fetch('/graphql', {
 						method: 'POST',
 						headers: { 'Content-Type': 'application/json' },

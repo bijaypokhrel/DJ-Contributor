@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<script
+			crossorigin
+			src="https://unpkg.com/react@17/umd/react.development.js"
+		></script>
+		<script
+			crossorigin
+			src="https://unpkg.com/react-dom@17/umd/react-dom.development.js"
+		></script>
+		<script src="https://unpkg.com/babel-standalone@6.15.0/babel.min.js"></script>
+	</head>
+	<body>
+		<div id="root"></div>
+		<script type="text/babel">
+			class CtbEmpContactEditAndDelete extends React.Component {
+				constructor(props) {
+					super(props);
+					this.state = {
+						ctbEmpContacts: [],
+						editingCtbEmpContact: null,
+					};
+					this.handleUiEditCtbEmpContact =
+						this.handleUiEditCtbEmpContact.bind(this);
+					this.handleApiUpdateCtbEmpContact =
+						this.handleApiUpdateCtbEmpContact.bind(this);
+					this.handleApiDeleteCtbEmpContact =
+						this.handleApiDeleteCtbEmpContact.bind(this);
+					this.handleHumanEditingCtbEmpContactStateChange =
+						this.handleHumanEditingCtbEmpContactStateChange.bind(this);
+				}
+
+				componentDidMount() {
+					this.fetchCtbEmpContacts();
+				}
+
+				fetchCtbEmpContacts() {
+					var query_request = `
+						query {
+							ctbEmpContacts{
+								id,
+								fromDate,
+								toDate
+							}
+						}`;
+					fetch('/graphql', {
+						method: 'POST',
+						headers: { 'Content-Type': 'application/json' },
+						body: JSON.stringify({
+							query: query_request,
+						}),
+					})
+						.then((response) => response.json())
+						.then((res) => {
+							this.setState({
+								ctbEmpContacts: res.data.ctbEmpContacts,
+							});
+						});
+				}
+
+				handleUiEditCtbEmpContact(ctbEmpContact) {
+					this.setState({ editingCtbEmpContact: ctbEmpContact });
+				}
+
+				handleApiUpdateCtbEmpContact(e) {
+					console.log('handleApiUpdateCtbEmpContact', this.state);
+					e.preventDefault();
+					const { editingCtbEmpContact } = this.state;
+					if (!editingCtbEmpContact) {
+						return;
+					}
+					var query_request = `
+						mutation {
+							createCtbEmpContact(fromDate:"${editingCtbEmpContact.fromDate}", toDate:"${editingCtbEmpContact.toDate}"){
+									ctbEmpContact{
+										id,
+										fromDate,
+										toDate
+									}
+								}
+							}`;
+					fetch('/graphql', {
+						method: 'POST',
+						headers: { 'Content-Type': 'application/json' },
+						body: JSON.stringify({
+							query: query_request,
+						}),
+					})
+						.then((response) => response.json())
+						.then((data) => {
+							this.fetchCtbEmpContacts();
+							this.setState({ newFromDate: '', newToDate: '' });
+							this.setState({ editingCtbEmpContact: null });
+						});
+				}
+
+				handleApiDeleteCtbEmpContact(ctbEmpContact) {
+					console.log('handleApiDeleteCtbEmpContact', this.state);
+					var query_request = `
+						mutation {
+								createCtbEmpContact(fromDate:"${ctbEmpContact.fromDate}", toDate:"${ctbEmpContact.toDate}"){
+								ctbEmpContact{
+								id,
+								fromDate,
+								toDate
+								}
+							}
+						}`;
+					fetch('/graphql', {
+						method: 'POST',
+						headers: { 'Content-Type': 'application/json' },
+						body: JSON.stringify({
+							query: query_request,
+						}),
+					})
+						.then((response) => response.json())
+						.then((data) => {
+							this.fetchCtbEmpContacts();
+						});
+				}
+
+				handleHumanEditingCtbEmpContactStateChange(e) {
+					const { editingCtbEmpContact } = this.state;
+					this.setState({
+						editingCtbEmpContact: {
+							...editingCtbEmpContact,
+							[e.target.name]: e.target.value,
+						},
+					});
+				}
+
+				render() {
+					const { ctbEmpContacts, editingCtbEmpContact } = this.state;
+					return (
+						<div>
+							<h1>App Ctb Emp Contact </h1>
+							<div>{JSON.stringify(this.state)}</div>
+							<ul>
+								{ctbEmpContacts.map((ctbEmpContact) => (
+									<li key={ctbEmpContact.id}>
+										{ctbEmpContact.fromDate} - {ctbEmpContact.fromDate}
+										<button
+											onClick={() =>
+												this.handleUiEditCtbEmpContact(ctbEmpContact)
+											}
+										>
+											Edit
+										</button>
+										<button
+											onClick={() =>
+												this.handleApiDeleteCtbEmpContact(ctbEmpContact)
+											}
+										>
+											Delete
+										</button>
+									</li>
+								))}
+							</ul>
+							{editingCtbEmpContact && (
+								<div>
+									Text: {this.state.editingCtbEmpContact.fromDate} <br />
+									Link: {this.state.editingCtbEmpContact.toDate}
+								</div>
+							)}
+							{editingCtbEmpContact && (
+								<form onSubmit={this.handleApiUpdateCtbEmpContact}>
+									<input
+										type='text'
+										name='fromDate'
+										placeholder='fromDate'
+										value={editingCtbEmpContact.fromDate}
+										onChange={this.handleHumanEditingCtbEmpContactStateChange}
+									/>
+									<input
+										type='text'
+										name='toDate'
+										placeholder='toDate'
+										value={editingCtbEmpContact.toDate}
+										onChange={this.handleHumanEditingCtbEmpContactStateChange}
+									/>
+									<button type='submit'>Update Ctb Emp Contact</button>
+									<button
+										onClick={() =>
+											this.setState({ editingCtbEmpContact: null })
+										}
+									>
+										Cancel
+									</button>
+								</form>
+							)}
+						</div>
+					);
+				}
+			}
+
+			ReactDOM.render(
+				<CtbEmpContactEditAndDelete />,
+				document.getElementById('root')
+			);
+		</script>
+	</body>
+</html>

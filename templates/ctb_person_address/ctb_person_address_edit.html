@@ -66,13 +66,14 @@
 					}
 					var query_request = `
 						mutation {
-							createCtbPersonAddress(fromDate:"${editingCtbPersonAddress.fromDate}", toDate:"${editingCtbPersonAddress.toDate}"){
+							updateCtbPersonAddress(id:${editingCtbPersonAddress.id}, fromDate:"${editingCtbPersonAddress.fromDate}", toDate:"${editingCtbPersonAddress.toDate}"){
 								ctbPersonAddress{
+									id,
 									fromDate,
 									toDate
 								}
-						}
-					}`;
+							}
+						}`;
 					fetch('/graphql', {
 						method: 'POST',
 						headers: { 'Content-Type': 'application/json' },

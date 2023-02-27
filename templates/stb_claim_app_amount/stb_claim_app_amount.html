@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<script
+			crossorigin
+			src="https://unpkg.com/react@17/umd/react.development.js"
+		></script>
+		<script
+			crossorigin
+			src="https://unpkg.com/react-dom@17/umd/react-dom.development.js"
+		></script>
+		<script src="https://unpkg.com/babel-standalone@6.15.0/babel.min.js"></script>
+	</head>
+	<body>
+		<div id="root"></div>
+		<script type="text/babel">
+			class StbClaimAppAmount extends React.Component {
+				constructor(props) {
+					super(props);
+					this.state = {
+						newClaimAppDate: '',
+						newPssid: '',
+						stbClaimAppAmounts: [],
+						editingStbClaimAppAmount: null,
+					};
+					this.handleApiAddStbClaimAppAmount =
+						this.handleApiAddStbClaimAppAmount.bind(this);
+					this.handleUiEditStbClaimAppAmount =
+						this.handleUiEditStbClaimAppAmount.bind(this);
+					this.handleApiUpdateStbClaimAppAmount =
+						this.handleApiUpdateStbClaimAppAmount.bind(this);
+					this.handleApiDeleteStbClaimAppAmount =
+						this.handleApiDeleteStbClaimAppAmount.bind(this);
+					this.handleHumanInputChange = this.handleHumanInputChange.bind(this);
+					this.handleHumanEditingStbClaimAppAmountStateChange =
+						this.handleHumanEditingStbClaimAppAmountStateChange.bind(this);
+				}
+
+				componentDidMount() {
+					this.fetchStbClaimAppAmounts();
+				}
+
+				fetchStbClaimAppAmounts() {
+					var query_request = `
+						query {
+							stbClaimAppAmounts {
+								id,
+								claimAppDate,
+								pSsid
+							}
+						}`;
+					fetch('/graphql', {
+						method: 'POST',
+						headers: { 'Content-Type': 'application/json' },
+						body: JSON.stringify({
+							query: query_request,
+						}),
+					})
+						.then((response) => response.json())
+						.then((res) => {
+							this.setState({
+								stbClaimAppAmounts: res.data.stbClaimAppAmounts,
+							});
+						});
+				}
+
+				handleApiAddStbClaimAppAmount(e) {
+					e.preventDefault();
+					const { newClaimAppDate, newPssid } = this.state;
+					if (!newClaimAppDate || !newPssid) {
+						return;
+					}
+					var query_request = `
+						mutation {
+							createStbClaimAppAmount (claimAppDate:"${newClaimAppDate}", pSsid:"${newPssid}"){
+								stbClaimAppAmount {
+									id,
+									claimAppDate,
+									pSsid
+								}
+							}
+						}`;
+					fetch('/graphql', {
+						method: 'POST',
+						headers: { 'Content-Type': 'application/json' },
+						body: JSON.stringify({
+							query: query_request,
+						}),
+					})
+						.then((response) => response.json())
+						.then((data) => {
+							this.fetchStbClaimAppAmounts();
+							this.setState({ newClaimAppDate: '', newPssid: '' });
+						});
+				}
+
+				handleUiEditStbClaimAppAmount(stbClaimAppAmount) {
+					this.setState({
+						editingStbClaimAppAmount: stbClaimAppAmount,
+					});
+				}
+
+				handleApiUpdateStbClaimAppAmount(e) {
+					console.log('handleApiUpdateStbClaimAppAmount', this.state);
+					e.preventDefault();
+					const { editingStbClaimAppAmount } = this.state;
+					if (!editingStbClaimAppAmount) {
+						return;
+					}
+					var query_request = `
+						mutation {
+							createStbClaimAppAmount (claimAppDate:"${editingStbClaimAppAmount.claimAppDate}", pSsid:"${editingStbClaimAppAmount.pSsid}"){
+								stbClaimAppAmount {
+									id,
+									claimAppDate,
+									pSsid
+								}
+							}
+						}`;
+					fetch('/graphql', {
+						method: 'POST',
+						headers: { 'Content-Type': 'application/json' },
+						body: JSON.stringify({
+							query: query_request,
+						}),
+					})
+						.then((response) => response.json())
+						.then((data) => {
+							this.fetchStbClaimAppAmounts();
+							this.setState({ newClaimAppDate: '', newPssid: '' });
+							this.setState({ editingStbClaimAppAmount: null });
+						});
+				}
+
+				handleApiDeleteStbClaimAppAmount(stbClaimAppAmount) {
+					console.log('handleApiDeleteStbClaimAppAmount', this.state);
+					var query_request = `
+						mutation {
+							createStbClaimAppAmount (claimAppDate:"${stbClaimAppAmount.claimAppDate}", pSsid:"${stbClaimAppAmount.pSsid}"){
+								stbClaimAppAmount {
+									id,
+									claimAppDate,
+									pSsid
+								}
+							}
+						}`;
+					fetch('/graphql', {
+						method: 'POST',
+						headers: { 'Content-Type': 'application/json' },
+						body: JSON.stringify({
+							query: query_request,
+						}),
+					})
+						.then((response) => response.json())
+						.then((data) => {
+							this.fetchStbClaimAppAmounts();
+						});
+				}
+
+				handleHumanInputChange(e) {
+					console.log('handleHumanInputChange', this.state, 'e', e);
+					this.setState({ [e.target.name]: e.target.value });
+				}
+
+				handleHumanEditingStbClaimAppAmountStateChange(e) {
+					const { editingStbClaimAppAmount } = this.state;
+					this.setState({
+						editingStbClaimAppAmount: {
+							...editingStbClaimAppAmount,
+							[e.target.name]: e.target.value,
+						},
+					});
+				}
+
+				render() {
+					const {
+						newClaimAppDate,
+						newPssid,
+						stbClaimAppAmounts,
+						editingStbClaimAppAmount,
+					} = this.state;
+					return (
+						<div>
+							<h1>App Stb Claim App Amount</h1>
+							<div>{JSON.stringify(this.state)}</div>
+							<input
+								type='text'
+								name='newClaimAppDate'
+								placeholder='newClaimAppDate'
+								value={newClaimAppDate}
+								onChange={this.handleHumanInputChange}
+							/>
+							<input
+								type='text'
+								name='newPssid'
+								placeholder='newPssid'
+								value={newPssid}
+								onChange={this.handleHumanInputChange}
+							/>
+							<button
+								type='submit'
+								onClick={this.handleApiAddStbClaimAppAmount}
+							>
+								Add Stb Claim App Amount
+							</button>
+
+							<ul>
+								{stbClaimAppAmounts.map((stbClaimAppAmount) => (
+									<li key={stbClaimAppAmount.id}>
+										{stbClaimAppAmount.claimAppDate} - {stbClaimAppAmount.pSsid}
+										<button
+											onClick={() =>
+												this.handleUiEditStbClaimAppAmount(stbClaimAppAmount)
+											}
+										>
+											Edit
+										</button>
+										<button
+											onClick={() =>
+												this.handleApiDeleteStbClaimAppAmount(stbClaimAppAmount)
+											}
+										>
+											Delete
+										</button>
+									</li>
+								))}
+							</ul>
+
+							{editingStbClaimAppAmount && (
+								<div>
+									Text: {this.state.editingStbClaimAppAmount.claimAppDate}{' '}
+									<br />
+									Link: {this.state.editingStbClaimAppAmount.pSsid}
+								</div>
+							)}
+
+							{editingStbClaimAppAmount && (
+								<form onSubmit={this.handleApiUpdateStbClaimAppAmount}>
+									<input
+										type='text'
+										name='claimAppDate'
+										placeholder='claimAppDate'
+										value={editingStbClaimAppAmount.claimAppDate}
+										onChange={
+											this.handleHumanEditingStbClaimAppAmountStateChange
+										}
+									/>
+									<input
+										type='text'
+										name='pSsid'
+										placeholder='pSsid'
+										value={editingStbClaimAppAmount.pSsid}
+										onChange={
+											this.handleHumanEditingStbClaimAppAmountStateChange
+										}
+									/>
+									<button type='submit'>Update Stb Claim App Amount</button>
+									<button
+										onClick={() =>
+											this.setState({ editingStbClaimAppAmount: null })
+										}
+									>
+										Cancel
+									</button>
+								</form>
+							)}
+						</div>
+					);
+				}
+			}
+
+			ReactDOM.render(<StbClaimAppAmount />, document.getElementById('root'));
+		</script>
+	</body>
+</html>

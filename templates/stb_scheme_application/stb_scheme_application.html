@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<script
+			crossorigin
+			src="https://unpkg.com/react@17/umd/react.development.js"
+		></script>
+		<script
+			crossorigin
+			src="https://unpkg.com/react-dom@17/umd/react-dom.development.js"
+		></script>
+		<script src="https://unpkg.com/babel-standalone@6.15.0/babel.min.js"></script>
+	</head>
+	<body>
+		<div id="root"></div>
+		<script type="text/babel">
+			class StbSchemeApplication extends React.Component {
+				constructor(props) {
+					super(props);
+					this.state = {
+						newCollType: '',
+						newUsedBy: '',
+						stbSchemeApplications: [],
+						editingStbSchemeApplication: null,
+					};
+					this.handleApiAddStbSchemeApplication =
+						this.handleApiAddStbSchemeApplication.bind(this);
+					this.handleUiEditStbSchemeApplication =
+						this.handleUiEditStbSchemeApplication.bind(this);
+					this.handleApiUpdateStbSchemeApplication =
+						this.handleApiUpdateStbSchemeApplication.bind(this);
+					this.handleApiDeleteStbSchemeApplication =
+						this.handleApiDeleteStbSchemeApplication.bind(this);
+					this.handleHumanInputChange = this.handleHumanInputChange.bind(this);
+					this.handleHumanEditingStbSchemeApplicationStateChange =
+						this.handleHumanEditingStbSchemeApplicationStateChange.bind(this);
+				}
+
+				componentDidMount() {
+					this.fetchStbSchemeApplications();
+				}
+
+				fetchStbSchemeApplications() {
+					var query_request = `
+						query {
+							stbSchemeApplications{
+								id,
+								collType,
+								usedBy
+							}
+						}`;
+					fetch('/graphql', {
+						method: 'POST',
+						headers: { 'Content-Type': 'application/json' },
+						body: JSON.stringify({
+							query: query_request,
+						}),
+					})
+						.then((response) => response.json())
+						.then((res) => {
+							this.setState({
+								stbSchemeApplications: res.data.stbSchemeApplications,
+							});
+						});
+				}
+
+				handleApiAddStbSchemeApplication(e) {
+					e.preventDefault();
+					const { newCollType, newUsedBy } = this.state;
+					if (!newCollType || !newUsedBy) {
+						return;
+					}
+					var query_request = `
+						mutation {
+							createStbSchemeApplication(collType:"${newCollType}", usedBy:"${newUsedBy}"){
+								stbSchemeApplication {
+									id,
+									collType,
+									usedBy
+								}
+							}
+						}`;
+					fetch('/graphql', {
+						method: 'POST',
+						headers: { 'Content-Type': 'application/json' },
+						body: JSON.stringify({
+							query: query_request,
+						}),
+					})
+						.then((response) => response.json())
+						.then((data) => {
+							this.fetchStbSchemeApplications();
+							this.setState({ newCollType: '', newUsedBy: '' });
+						});
+				}
+
+				handleUiEditStbSchemeApplication(stbSchemeApplication) {
+					this.setState({
+						editingStbSchemeApplication: stbSchemeApplication,
+					});
+				}
+
+				handleApiUpdateStbSchemeApplication(e) {
+					console.log('handleApiUpdateStbSchemeApplication', this.state);
+					e.preventDefault();
+					const { editingStbSchemeApplication } = this.state;
+					if (!editingStbSchemeApplication) {
+						return;
+					}
+					var query_request = `
+						mutation {
+							createStbSchemeApplication(collType:"${editingStbSchemeApplication.collType}", usedBy:"${editingStbSchemeApplication.usedBy}"){
+								stbSchemeApplication {
+									id,
+									collType,
+									usedBy
+								}
+							}
+						}`;
+					fetch('/graphql', {
+						method: 'POST',
+						headers: { 'Content-Type': 'application/json' },
+						body: JSON.stringify({
+							query: query_request,
+						}),
+					})
+						.then((response) => response.json())
+						.then((data) => {
+							this.fetchStbSchemeApplications();
+							this.setState({ newCollType: '', newUsedBy: '' });
+							this.setState({ editingStbSchemeApplication: null });
+						});
+				}
+
+				handleApiDeleteStbSchemeApplication(stbSchemeApplication) {
+					console.log('handleApiDeleteStbSchemeApplication', this.state);
+					var query_request = `
+						mutation {
+							createStbSchemeApplication(collType:"${stbSchemeApplication.collType}", usedBy:"${stbSchemeApplication.usedBy}"){
+								stbSchemeApplication {
+									id,
+									collType,
+									usedBy
+								}
+							}
+						}`;
+					fetch('/graphql', {
+						method: 'POST',
+						headers: { 'Content-Type': 'application/json' },
+						body: JSON.stringify({
+							query: query_request,
+						}),
+					})
+						.then((response) => response.json())
+						.then((data) => {
+							this.fetchStbSchemeApplications();
+						});
+				}
+
+				handleHumanInputChange(e) {
+					console.log('handleHumanInputChange', this.state, 'e', e);
+					this.setState({ [e.target.name]: e.target.value });
+				}
+
+				handleHumanEditingStbSchemeApplicationStateChange(e) {
+					const { editingStbSchemeApplication } = this.state;
+					this.setState({
+						editingStbSchemeApplication: {
+							...editingStbSchemeApplication,
+							[e.target.name]: e.target.value,
+						},
+					});
+				}
+
+				render() {
+					const {
+						newCollType,
+						newUsedBy,
+						stbSchemeApplications,
+						editingStbSchemeApplication,
+					} = this.state;
+					return (
+						<div>
+							<h1>App Stb Scheme Application</h1>
+							<div>{JSON.stringify(this.state)}</div>
+							<input
+								type='text'
+								name='newCollType'
+								placeholder='newCollType'
+								value={newCollType}
+								onChange={this.handleHumanInputChange}
+							/>
+							<input
+								type='text'
+								name='newUsedBy'
+								placeholder='newUsedBy'
+								value={newUsedBy}
+								onChange={this.handleHumanInputChange}
+							/>
+							<button
+								type='submit'
+								onClick={this.handleApiAddStbSchemeApplication}
+							>
+								Add Stb Scheme Application
+							</button>
+
+							<ul>
+								{stbSchemeApplications.map((stbSchemeApplication) => (
+									<li key={stbSchemeApplication.id}>
+										{stbSchemeApplication.collType} -{' '}
+										{stbSchemeApplication.usedBy}
+										<button
+											onClick={() =>
+												this.handleUiEditStbSchemeApplication(
+													stbSchemeApplication
+												)
+											}
+										>
+											Edit
+										</button>
+										<button
+											onClick={() =>
+												this.handleApiDeleteStbSchemeApplication(
+													stbSchemeApplication
+												)
+											}
+										>
+											Delete
+										</button>
+									</li>
+								))}
+							</ul>
+
+							{editingStbSchemeApplication && (
+								<div>
+									Text: {this.state.editingStbSchemeApplication.collType} <br />
+									Link: {this.state.editingStbSchemeApplication.usedBy}
+								</div>
+							)}
+
+							{editingStbSchemeApplication && (
+								<form onSubmit={this.handleApiUpdateStbSchemeApplication}>
+									<input
+										type='text'
+										name='collType'
+										placeholder='collType'
+										value={editingStbSchemeApplication.collType}
+										onChange={
+											this.handleHumanEditingStbSchemeApplicationStateChange
+										}
+									/>
+									<input
+										type='text'
+										name='usedBy'
+										placeholder='usedBy'
+										value={editingStbSchemeApplication.usedBy}
+										onChange={
+											this.handleHumanEditingStbSchemeApplicationStateChange
+										}
+									/>
+									<button type='submit'>Update Stb Scheme Application</button>
+									<button
+										onClick={() =>
+											this.setState({ editingStbSchemeApplication: null })
+										}
+									>
+										Cancel
+									</button>
+								</form>
+							)}
+						</div>
+					);
+				}
+			}
+
+			ReactDOM.render(
+				<StbSchemeApplication />,
+				document.getElementById('root')
+			);
+		</script>
+	</body>
+</html>

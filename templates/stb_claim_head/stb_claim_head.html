@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<script
+			crossorigin
+			src="https://unpkg.com/react@17/umd/react.development.js"
+		></script>
+		<script
+			crossorigin
+			src="https://unpkg.com/react-dom@17/umd/react-dom.development.js"
+		></script>
+		<script src="https://unpkg.com/babel-standalone@6.15.0/babel.min.js"></script>
+	</head>
+	<body>
+		<div id="root"></div>
+		<script type="text/babel">
+			class StbClaimHead extends React.Component {
+				constructor(props) {
+					super(props);
+					this.state = {
+						newAccountNumber: '',
+						newAccountType: '',
+						stbClaimHeads: [],
+						editingStbClaimHead: null,
+					};
+					this.handleApiAddStbClaimHead =
+						this.handleApiAddStbClaimHead.bind(this);
+					this.handleUiEditStbClaimHead =
+						this.handleUiEditStbClaimHead.bind(this);
+					this.handleApiUpdateStbClaimHead =
+						this.handleApiUpdateStbClaimHead.bind(this);
+					this.handleApiDeleteStbClaimHead =
+						this.handleApiDeleteStbClaimHead.bind(this);
+					this.handleHumanInputChange = this.handleHumanInputChange.bind(this);
+					this.handleHumanEditingStbClaimHeadStateChange =
+						this.handleHumanEditingStbClaimHeadStateChange.bind(this);
+				}
+
+				componentDidMount() {
+					this.fetchStbClaimHeads();
+				}
+
+				fetchStbClaimHeads() {
+					var query_request = `
+						query {
+							stbClaimHeads{
+								id,
+								accountNumber,
+								accountType
+							}
+						}`;
+					fetch('/graphql', {
+						method: 'POST',
+						headers: { 'Content-Type': 'application/json' },
+						body: JSON.stringify({
+							query: query_request,
+						}),
+					})
+						.then((response) => response.json())
+						.then((res) => {
+							this.setState({
+								stbClaimHeads: res.data.stbClaimHeads,
+							});
+						});
+				}
+
+				handleApiAddStbClaimHead(e) {
+					e.preventDefault();
+					const { newAccountNumber, newAccountType } = this.state;
+					if (!newAccountNumber || !newAccountType) {
+						return;
+					}
+					var query_request = `
+						mutation {
+							createStbClaimHead(accountNumber:"${newAccountNumber}", accountType:"${newAccountType}"){
+								stbClaimHead{
+									id,
+									accountNumber,
+									accountType
+								}
+							}
+						}`;
+					fetch('/graphql', {
+						method: 'POST',
+						headers: { 'Content-Type': 'application/json' },
+						body: JSON.stringify({
+							query: query_request,
+						}),
+					})
+						.then((response) => response.json())
+						.then((data) => {
+							this.fetchStbClaimHeads();
+							this.setState({ newAccountNumber: '', newAccountType: '' });
+						});
+				}
+
+				handleUiEditStbClaimHead(stbClaimHead) {
+					this.setState({
+						editingStbClaimHead: stbClaimHead,
+					});
+				}
+
+				handleApiUpdateStbClaimHead(e) {
+					console.log('handleApiUpdateStbClaimHead', this.state);
+					e.preventDefault();
+					const { editingStbClaimHead } = this.state;
+					if (!editingStbClaimHead) {
+						return;
+					}
+					var query_request = `
+						mutation {
+							createStbClaimHead(accountNumber:"${editingStbClaimHead.accountNumber}", accountType:"${editingStbClaimHead.accountType}"){
+								stbClaimHead{
+									id,
+									accountNumber,
+									accountType
+								}
+							}
+						}`;
+					fetch('/graphql', {
+						method: 'POST',
+						headers: { 'Content-Type': 'application/json' },
+						body: JSON.stringify({
+							query: query_request,
+						}),
+					})
+						.then((response) => response.json())
+						.then((data) => {
+							this.fetchStbClaimHeads();
+							this.setState({ newAccountNumber: '', newAccountType: '' });
+							this.setState({ editingStbClaimHead: null });
+						});
+				}
+
+				handleApiDeleteStbClaimHead(stbClaimHead) {
+					console.log('handleApiDeleteStbClaimHead', this.state);
+					var query_request = `
+						mutation {
+							createStbClaimHead(accountNumber:"${stbClaimHead.accountNumber}", accountType:"${stbClaimHead.accountType}"){
+								stbClaimHead{
+									id,
+									accountNumber,
+									accountType
+								}
+							}
+						}`;
+					fetch('/graphql', {
+						method: 'POST',
+						headers: { 'Content-Type': 'application/json' },
+						body: JSON.stringify({
+							query: query_request,
+						}),
+					})
+						.then((response) => response.json())
+						.then((data) => {
+							this.fetchStbClaimHeads();
+						});
+				}
+
+				handleHumanInputChange(e) {
+					console.log('handleHumanInputChange', this.state, 'e', e);
+					this.setState({ [e.target.name]: e.target.value });
+				}
+
+				handleHumanEditingStbClaimHeadStateChange(e) {
+					const { editingStbClaimHead } = this.state;
+					this.setState({
+						editingStbClaimHead: {
+							...editingStbClaimHead,
+							[e.target.name]: e.target.value,
+						},
+					});
+				}
+
+				render() {
+					const {
+						newAccountNumber,
+						newAccountType,
+						stbClaimHeads,
+						editingStbClaimHead,
+					} = this.state;
+					return (
+						<div>
+							<h1>App Stb Claim Head</h1>
+							<div>{JSON.stringify(this.state)}</div>
+							<input
+								type='text'
+								name='newAccountNumber'
+								placeholder='newAccountNumber'
+								value={newAccountNumber}
+								onChange={this.handleHumanInputChange}
+							/>
+							<input
+								type='text'
+								name='newAccountType'
+								placeholder='newAccountType'
+								value={newAccountType}
+								onChange={this.handleHumanInputChange}
+							/>
+							<button type='submit' onClick={this.handleApiAddStbClaimHead}>
+								Add Stb Claim Head
+							</button>
+
+							<ul>
+								{stbClaimHeads.map((stbClaimHead) => (
+									<li key={stbClaimHead.id}>
+										{stbClaimHead.accountNumber} - {stbClaimHead.accountType}
+										<button
+											onClick={() =>
+												this.handleUiEditStbClaimHead(stbClaimHead)
+											}
+										>
+											Edit
+										</button>
+										<button
+											onClick={() =>
+												this.handleApiDeleteStbClaimHead(stbClaimHead)
+											}
+										>
+											Delete
+										</button>
+									</li>
+								))}
+							</ul>
+
+							{editingStbClaimHead && (
+								<div>
+									Text: {this.state.editingStbClaimHead.accountNumber} <br />
+									Link: {this.state.editingStbClaimHead.accountType}
+								</div>
+							)}
+
+							{editingStbClaimHead && (
+								<form onSubmit={this.handleApiUpdateStbClaimHead}>
+									<input
+										type='text'
+										name='accountNumber'
+										placeholder='accountNumber'
+										value={editingStbClaimHead.accountNumber}
+										onChange={this.handleHumanEditingStbClaimHeadStateChange}
+									/>
+									<input
+										type='text'
+										name='accountType'
+										placeholder='accountType'
+										value={editingStbClaimHead.accountType}
+										onChange={this.handleHumanEditingStbClaimHeadStateChange}
+									/>
+									<button type='submit'>Update Stb Claim Head</button>
+									<button
+										onClick={() => this.setState({ editingStbClaimHead: null })}
+									>
+										Cancel
+									</button>
+								</form>
+							)}
+						</div>
+					);
+				}
+			}
+
+			ReactDOM.render(<StbClaimHead />, document.getElementById('root'));
+		</script>
+	</body>
+</html>

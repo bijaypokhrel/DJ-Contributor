@@ -66,10 +66,10 @@
 					}
 					var query_request = `
 						mutation {
-							createCtbPersonContact(fromDate:"${editingCtbPersonContact.fromDate}", toDate:"${editingCtbPersonContact.toDate}"){
+							updateCtbPersonContact(id:${editingCtbPersonContact.id}, fromDate:"${editingCtbPersonContact.fromDate}", toDate:"${editingCtbPersonContact.toDate}"){
 								ctbPersonContact{
 								id,
-								fromDate, 
+								fromDate,
 								toDate
 								}
 							}

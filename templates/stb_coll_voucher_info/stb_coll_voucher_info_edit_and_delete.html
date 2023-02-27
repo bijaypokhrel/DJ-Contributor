@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<script
+			crossorigin
+			src="https://unpkg.com/react@17/umd/react.development.js"
+		></script>
+		<script
+			crossorigin
+			src="https://unpkg.com/react-dom@17/umd/react-dom.development.js"
+		></script>
+		<script src="https://unpkg.com/babel-standalone@6.15.0/babel.min.js"></script>
+	</head>
+	<body>
+		<div id="root"></div>
+		<script type="text/babel">
+			class StbCollVoucherInfoEditAndDelete extends React.Component {
+				constructor(props) {
+					super(props);
+					this.state = {
+						stbCollVoucherInfos: [],
+						editingStbCollVoucherInfo: null,
+					};
+					this.handleUiEditStbCollVoucherInfo =
+						this.handleUiEditStbCollVoucherInfo.bind(this);
+					this.handleApiUpdateStbCollVoucherInfo =
+						this.handleApiUpdateStbCollVoucherInfo.bind(this);
+					this.handleApiDeleteStbCollVoucherInfo =
+						this.handleApiDeleteStbCollVoucherInfo.bind(this);
+					this.handleHumanEditingStbCollVoucherInfoStateChange =
+						this.handleHumanEditingStbCollVoucherInfoStateChange.bind(this);
+				}
+
+				componentDidMount() {
+					this.fetchStbCollVoucherInfos();
+				}
+
+				fetchStbCollVoucherInfos() {
+					var query_request = `
+						query {
+							stbCollVoucherInfos{
+								id,
+								accountNo,
+								voucherNo
+							}
+						}`;
+					fetch('/graphql', {
+						method: 'POST',
+						headers: { 'Content-Type': 'application/json' },
+						body: JSON.stringify({
+							query: query_request,
+						}),
+					})
+						.then((response) => response.json())
+						.then((res) => {
+							this.setState({
+								stbCollVoucherInfos: res.data.stbCollVoucherInfos,
+							});
+						});
+				}
+
+				handleUiEditStbCollVoucherInfo(stbCollVoucherInfo) {
+					this.setState({ editingStbCollVoucherInfo: stbCollVoucherInfo });
+				}
+
+				handleApiUpdateStbCollVoucherInfo(e) {
+					console.log('handleApiUpdateStbCollVoucherInfo', this.state);
+					e.preventDefault();
+					const { editingStbCollVoucherInfo } = this.state;
+					if (!editingStbCollVoucherInfo) {
+						return;
+					}
+					var query_request = `
+						mutation {
+							createStbCollVoucherInfo(accountNo:"${editingStbCollVoucherInfo.accountNo}", voucherNo:"${editingStbCollVoucherInfo.voucherNo}"){
+								stbCollVoucherInfo{
+									id,
+									accountNo,
+									voucherNo
+								}
+							}
+						}`;
+					fetch('/graphql', {
+						method: 'POST',
+						headers: { 'Content-Type': 'application/json' },
+						body: JSON.stringify({
+							query: query_request,
+						}),
+					})
+						.then((response) => response.json())
+						.then((data) => {
+							this.fetchStbCollVoucherInfos();
+							this.setState({ newAccountNo: '', newVoucherNo: '' });
+							this.setState({ editingStbCollVoucherInfo: null });
+						});
+				}
+
+				handleApiDeleteStbCollVoucherInfo(stbCollVoucherInfo) {
+					console.log('handleApiDeleteStbCollVoucherInfo', this.state);
+					var query_request = `
+						mutation {
+							createStbCollVoucherInfo(accountNo:"${stbCollVoucherInfo.accountNo}", voucherNo:"${stbCollVoucherInfo.voucherNo}"){
+								stbCollVoucherInfo{
+									id,
+									accountNo,
+									voucherNo
+								}
+							}
+						}`;
+					fetch('/graphql', {
+						method: 'POST',
+						headers: { 'Content-Type': 'application/json' },
+						body: JSON.stringify({
+							query: query_request,
+						}),
+					})
+						.then((response) => response.json())
+						.then((data) => {
+							this.fetchStbCollVoucherInfos();
+						});
+				}
+
+				handleHumanEditingStbCollVoucherInfoStateChange(e) {
+					const { editingStbCollVoucherInfo } = this.state;
+					this.setState({
+						editingStbCollVoucherInfo: {
+							...editingStbCollVoucherInfo,
+							[e.target.name]: e.target.value,
+						},
+					});
+				}
+
+				render() {
+					const { stbCollVoucherInfos, editingStbCollVoucherInfo } = this.state;
+					return (
+						<div>
+							<h1>App Stb Coll Voucher Info </h1>
+							<div>{JSON.stringify(this.state)}</div>
+							<ul>
+								{stbCollVoucherInfos.map((stbCollVoucherInfo) => (
+									<li key={stbCollVoucherInfo.id}>
+										{stbCollVoucherInfo.accountNo} -{' '}
+										{stbCollVoucherInfo.voucherNo}
+										<button
+											onClick={() =>
+												this.handleUiEditStbCollVoucherInfo(stbCollVoucherInfo)
+											}
+										>
+											Edit
+										</button>
+										<button
+											onClick={() =>
+												this.handleApiDeleteStbCollVoucherInfo(
+													stbCollVoucherInfo
+												)
+											}
+										>
+											Delete
+										</button>
+									</li>
+								))}
+							</ul>
+							{editingStbCollVoucherInfo && (
+								<div>
+									Text: {this.state.editingStbCollVoucherInfo.accountNo} <br />
+									Link: {this.state.editingStbCollVoucherInfo.voucherNo}
+								</div>
+							)}
+							{editingStbCollVoucherInfo && (
+								<form onSubmit={this.handleApiUpdateStbCollVoucherInfo}>
+									<input
+										type='text'
+										name='accountNo'
+										placeholder='accountNo'
+										value={editingStbCollVoucherInfo.accountNo}
+										onChange={
+											this.handleHumanEditingStbCollVoucherInfoStateChange
+										}
+									/>
+									<input
+										type='text'
+										name='voucherNo'
+										placeholder='voucherNo'
+										value={editingStbCollVoucherInfo.voucherNo}
+										onChange={
+											this.handleHumanEditingStbCollVoucherInfoStateChange
+										}
+									/>
+									<button type='submit'>Update Stb Coll Voucher Info</button>
+									<button
+										onClick={() =>
+											this.setState({ editingStbCollVoucherInfo: null })
+										}
+									>
+										Cancel
+									</button>
+								</form>
+							)}
+						</div>
+					);
+				}
+			}
+
+			ReactDOM.render(
+				<StbCollVoucherInfoEditAndDelete />,
+				document.getElementById('root')
+			);
+		</script>
+	</body>
+</html>

@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<script
+			crossorigin
+			src="https://unpkg.com/react@17/umd/react.development.js"
+		></script>
+		<script
+			crossorigin
+			src="https://unpkg.com/react-dom@17/umd/react-dom.development.js"
+		></script>
+		<script src="https://unpkg.com/babel-standalone@6.15.0/babel.min.js"></script>
+	</head>
+	<body>
+		<div id="root"></div>
+		<script type="text/babel">
+			class AtbGltranMast extends React.Component {
+				constructor(props) {
+					super(props);
+					this.state = {
+						newTranDate: '',
+						newTranUserId: '',
+						atbGltranMasts: [],
+						editingAtbGltranMast: null,
+					};
+					this.handleApiAddAtbGltranMast =
+						this.handleApiAddAtbGltranMast.bind(this);
+					this.handleUiEditAtbGltranMast =
+						this.handleUiEditAtbGltranMast.bind(this);
+					this.handleApiUpdateAtbGltranMast =
+						this.handleApiUpdateAtbGltranMast.bind(this);
+					this.handleApiDeleteAtbGltranMast =
+						this.handleApiDeleteAtbGltranMast.bind(this);
+					this.handleHumanInputChange = this.handleHumanInputChange.bind(this);
+					this.handleHumanEditingAtbGltranMastStateChange =
+						this.handleHumanEditingAtbGltranMastStateChange.bind(this);
+				}
+
+				componentDidMount() {
+					this.fetchAtbGltranMasts();
+				}
+
+				fetchAtbGltranMasts() {
+					var query_request = `
+						query {
+							atbGltranMasts{
+								id,
+								tranDate,
+								tranUserId
+							}
+						}`;
+					fetch('/graphql', {
+						method: 'POST',
+						headers: { 'Content-Type': 'application/json' },
+						body: JSON.stringify({
+							query: query_request,
+						}),
+					})
+						.then((response) => response.json())
+						.then((res) => {
+							this.setState({
+								atbGltranMasts: res.data.atbGltranMasts,
+							});
+						});
+				}
+
+				handleApiAddAtbGltranMast(e) {
+					e.preventDefault();
+					const { newTranDate, newTranUserId } = this.state;
+					if (!newTranDate || !newTranUserId) {
+						return;
+					}
+					var query_request = `
+						mutation {
+							createAtbGltranMast(tranDate:"${newTranDate}", tranUserId:"${newTranUserId}"){
+								atbGltranMast{
+									id,
+									tranDate,
+									tranUserId
+								}
+							}
+						}`;
+					fetch('/graphql', {
+						method: 'POST',
+						headers: { 'Content-Type': 'application/json' },
+						body: JSON.stringify({
+							query: query_request,
+						}),
+					})
+						.then((response) => response.json())
+						.then((data) => {
+							this.fetchAtbGltranMasts();
+							this.setState({ newTranDate: '', newTranUserId: '' });
+						});
+				}
+
+				handleUiEditAtbGltranMast(atbGltranMast) {
+					this.setState({
+						editingAtbGltranMast: atbGltranMast,
+					});
+				}
+
+				handleApiUpdateAtbGltranMast(e) {
+					console.log('handleApiUpdateAtbGltranMast', this.state);
+					e.preventDefault();
+					const { editingAtbGltranMast } = this.state;
+					if (!editingAtbGltranMast) {
+						return;
+					}
+					var query_request = `
+						mutation {
+							createAtbGltranMast(tranDate:"${editingAtbGltranMast.tranDate}", tranUserId:"${editingAtbGltranMast.tranUserId}"){
+								atbGltranMast{
+									id,
+									tranDate,
+									tranUserId
+								}
+							}
+						}`;
+					fetch('/graphql', {
+						method: 'POST',
+						headers: { 'Content-Type': 'application/json' },
+						body: JSON.stringify({
+							query: query_request,
+						}),
+					})
+						.then((response) => response.json())
+						.then((data) => {
+							this.fetchAtbGltranMasts();
+							this.setState({ newTranDate: '', newTranUserId: '' });
+							this.setState({ editingAtbGltranMast: null });
+						});
+				}
+
+				handleApiDeleteAtbGltranMast(atbGltranMast) {
+					console.log('handleApiDeleteAtbGltranMast', this.state);
+					var query_request = `
+						mutation {
+							createAtbGltranMast(tranDate:"${atbGltranMast.tranDate}", tranUserId:"${atbGltranMast.tranUserId}"){
+								atbGltranMast{
+									id,
+									tranDate,
+									tranUserId
+								}
+							}
+						}`;
+					fetch('/graphql', {
+						method: 'POST',
+						headers: { 'Content-Type': 'application/json' },
+						body: JSON.stringify({
+							query: query_request,
+						}),
+					})
+						.then((response) => response.json())
+						.then((data) => {
+							this.fetchAtbGltranMasts();
+						});
+				}
+
+				handleHumanInputChange(e) {
+					console.log('handleHumanInputChange', this.state, 'e', e);
+					this.setState({ [e.target.name]: e.target.value });
+				}
+
+				handleHumanEditingAtbGltranMastStateChange(e) {
+					const { editingAtbGltranMast } = this.state;
+					this.setState({
+						editingAtbGltranMast: {
+							...editingAtbGltranMast,
+							[e.target.name]: e.target.value,
+						},
+					});
+				}
+
+				render() {
+					const {
+						newTranDate,
+						newTranUserId,
+						atbGltranMasts,
+						editingAtbGltranMast,
+					} = this.state;
+					return (
+						<div>
+							<h1>App Atb Gltran Mast</h1>
+							<div>{JSON.stringify(this.state)}</div>
+							<input
+								type='text'
+								name='newTranDate'
+								placeholder='newTranDate'
+								value={newTranDate}
+								onChange={this.handleHumanInputChange}
+							/>
+							<input
+								type='text'
+								name='newTranUserId'
+								placeholder='newTranUserId'
+								value={newTranUserId}
+								onChange={this.handleHumanInputChange}
+							/>
+							<button type='submit' onClick={this.handleApiAddAtbGltranMast}>
+								Add Atb Gltran Mast
+							</button>
+
+							<ul>
+								{atbGltranMasts.map((atbGltranMast) => (
+									<li key={atbGltranMast.id}>
+										{atbGltranMast.tranDate} - {atbGltranMast.tranUserId}
+										<button
+											onClick={() =>
+												this.handleUiEditAtbGltranMast(atbGltranMast)
+											}
+										>
+											Edit
+										</button>
+										<button
+											onClick={() =>
+												this.handleApiDeleteAtbGltranMast(atbGltranMast)
+											}
+										>
+											Delete
+										</button>
+									</li>
+								))}
+							</ul>
+
+							{editingAtbGltranMast && (
+								<div>
+									Text: {this.state.editingAtbGltranMast.tranDate} <br />
+									Link: {this.state.editingAtbGltranMast.tranUserId}
+								</div>
+							)}
+
+							{editingAtbGltranMast && (
+								<form onSubmit={this.handleApiUpdateAtbGltranMast}>
+									<input
+										type='text'
+										name='tranDate'
+										placeholder='tranDate'
+										value={editingAtbGltranMast.tranDate}
+										onChange={this.handleHumanEditingAtbGltranMastStateChange}
+									/>
+									<input
+										type='text'
+										name='tranUserId'
+										placeholder='tranUserId'
+										value={editingAtbGltranMast.tranUserId}
+										onChange={this.handleHumanEditingAtbGltranMastStateChange}
+									/>
+									<button type='submit'>Update Atb Gltran Mast</button>
+									<button
+										onClick={() =>
+											this.setState({ editingAtbGltranMast: null })
+										}
+									>
+										Cancel
+									</button>
+								</form>
+							)}
+						</div>
+					);
+				}
+			}
+
+			ReactDOM.render(<AtbGltranMast />, document.getElementById('root'));
+		</script>
+	</body>
+</html>

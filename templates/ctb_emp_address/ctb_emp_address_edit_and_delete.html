@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<script
+			crossorigin
+			src="https://unpkg.com/react@17/umd/react.development.js"
+		></script>
+		<script
+			crossorigin
+			src="https://unpkg.com/react-dom@17/umd/react-dom.development.js"
+		></script>
+		<script src="https://unpkg.com/babel-standalone@6.15.0/babel.min.js"></script>
+	</head>
+	<body>
+		<div id="root"></div>
+		<script type="text/babel">
+			class CtbEmpAddressEditAndDelete extends React.Component {
+				constructor(props) {
+					super(props);
+					this.state = {
+						ctbEmpAddresses: [],
+						editingCtbEmpAddress: null,
+					};
+					this.handleUiEditCtbEmpAddress =
+						this.handleUiEditCtbEmpAddress.bind(this);
+					this.handleApiUpdateCtbEmpAddress =
+						this.handleApiUpdateCtbEmpAddress.bind(this);
+					this.handleApiDeleteCtbEmpAddress =
+						this.handleApiDeleteCtbEmpAddress.bind(this);
+					this.handleHumanEditingCtbEmpAddressStateChange =
+						this.handleHumanEditingCtbEmpAddressStateChange.bind(this);
+				}
+
+				componentDidMount() {
+					this.fetchCtbEmpAddresses();
+				}
+
+				fetchCtbEmpAddresses() {
+					var query_request = `
+						query{
+							ctbEmpAddresses{
+								id,
+								fromDate,
+								toDate
+							}
+						}`;
+					fetch('/graphql', {
+						method: 'POST',
+						headers: { 'Content-Type': 'application/json' },
+						body: JSON.stringify({
+							query: query_request,
+						}),
+					})
+						.then((response) => response.json())
+						.then((res) => {
+							this.setState({
+								ctbEmpAddresses: res.data.ctbEmpAddresses,
+							});
+						});
+				}
+
+				handleUiEditCtbEmpAddress(ctbEmpAddress) {
+					this.setState({ editingCtbEmpAddress: ctbEmpAddress });
+				}
+
+				handleApiUpdateCtbEmpAddress(e) {
+					console.log('handleApiUpdateCtbEmpAddress', this.state);
+					e.preventDefault();
+					const { editingCtbEmpAddress } = this.state;
+					if (!editingCtbEmpAddress) {
+						return;
+					}
+					var query_request = `
+						mutation {
+							createCtbEmpAddress(fromDate:"${editingCtbEmpAddress.fromDate}", toDate:"${editingCtbEmpAddress.toDate}"){
+									ctbEmpAddress{
+										id,
+										fromDate,
+										toDate
+									}
+								}
+							}`;
+					fetch('/graphql', {
+						method: 'POST',
+						headers: { 'Content-Type': 'application/json' },
+						body: JSON.stringify({
+							query: query_request,
+						}),
+					})
+						.then((response) => response.json())
+						.then((data) => {
+							this.fetchCtbEmpAddresses();
+							this.setState({ newFromDate: '', newToDate: '' });
+							this.setState({ editingCtbEmpAddress: null });
+						});
+				}
+
+				handleApiDeleteCtbEmpAddress(ctbEmpAddress) {
+					console.log('handleApiDeleteCtbEmpAddress', this.state);
+					var query_request = `
+						mutation {
+							createCtbEmpAddress(fromDate:"${ctbEmpAddress.fromDate}", toDate:"${ctbEmpAddress.toDate}"){
+									ctbEmpAddress{
+										id,
+										fromDate,
+										toDate
+									}
+								}
+							}`;
+					fetch('/graphql', {
+						method: 'POST',
+						headers: { 'Content-Type': 'application/json' },
+						body: JSON.stringify({
+							query: query_request,
+						}),
+					})
+						.then((response) => response.json())
+						.then((data) => {
+							this.fetchCtbEmpAddresses();
+						});
+				}
+
+				handleHumanEditingCtbEmpAddressStateChange(e) {
+					const { editingCtbEmpAddress } = this.state;
+					this.setState({
+						editingCtbEmpAddress: {
+							...editingCtbEmpAddress,
+							[e.target.name]: e.target.value,
+						},
+					});
+				}
+
+				render() {
+					const { ctbEmpAddresses, editingCtbEmpAddress } = this.state;
+					return (
+						<div>
+							<h1>App Ctb Emp Address </h1>
+							<div>{JSON.stringify(this.state)}</div>
+							<ul>
+								{ctbEmpAddresses.map((ctbEmpAddress) => (
+									<li key={ctbEmpAddress.id}>
+										{ctbEmpAddress.fromDate} - {ctbEmpAddress.toDate}
+										<button
+											onClick={() =>
+												this.handleUiEditCtbEmpAddress(ctbEmpAddress)
+											}
+										>
+											Edit
+										</button>
+										<button
+											onClick={() =>
+												this.handleApiDeleteCtbEmpAddress(ctbEmpAddress)
+											}
+										>
+											Delete
+										</button>
+									</li>
+								))}
+							</ul>
+							{editingCtbEmpAddress && (
+								<div>
+									Text: {this.state.editingCtbEmpAddress.fromDate} <br />
+									Link: {this.state.editingCtbEmpAddress.toDate}
+								</div>
+							)}
+							{editingCtbEmpAddress && (
+								<form onSubmit={this.handleApiUpdateCtbEmpAddress}>
+									<input
+										type='text'
+										name='fromDate'
+										placeholder='fromDate'
+										value={editingCtbEmpAddress.fromDate}
+										onChange={this.handleHumanEditingCtbEmpAddressStateChange}
+									/>
+									<input
+										type='text'
+										name='toDate'
+										placeholder='toDate'
+										value={editingCtbEmpAddress.toDate}
+										onChange={this.handleHumanEditingCtbEmpAddressStateChange}
+									/>
+									<button type='submit'>Update Ctb Emp Address</button>
+									<button
+										onClick={() =>
+											this.setState({ editingCtbEmpAddress: null })
+										}
+									>
+										Cancel
+									</button>
+								</form>
+							)}
+						</div>
+					);
+				}
+			}
+
+			ReactDOM.render(
+				<CtbEmpAddressEditAndDelete />,
+				document.getElementById('root')
+			);
+		</script>
+	</body>
+</html>

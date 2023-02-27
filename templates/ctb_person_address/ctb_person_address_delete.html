@@ -56,13 +56,12 @@
 					console.log('handleApiDeleteCtbPersonAddress', this.state);
 					var query_request = `
 						mutation {
-							createCtbPersonAddress(fromDate:"${ctbPersonAddress.fromDate}", toDate:"${ctbPersonAddress.toDate}"){
+							deleteCtbPersonAddress(id:${ctbPersonAddress.id}){
 								ctbPersonAddress{
-									fromDate,
-									toDate
+								id
 								}
-						}
-					}`;
+							}
+						}`;
 					fetch('/graphql', {
 						method: 'POST',
 						headers: { 'Content-Type': 'application/json' },

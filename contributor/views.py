@@ -7,6 +7,11 @@ from .models_menu_views import *
 from .models_bank_views import *
 from .models_registration_views import *
 from .models_loan_views import *
+from .models_employer_views import *
+from .models_contributor_views import *
+from .models_claim_views import *
+from .models_account_views import *
+
 
 # Create your views here.
 

@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<script
+			crossorigin
+			src="https://unpkg.com/react@17/umd/react.development.js"
+		></script>
+		<script
+			crossorigin
+			src="https://unpkg.com/react-dom@17/umd/react-dom.development.js"
+		></script>
+		<script src="https://unpkg.com/babel-standalone@6.15.0/babel.min.js"></script>
+	</head>
+	<body>
+		<div id="root"></div>
+		<script type="text/babel">
+			class StbCollTranDetails extends React.Component {
+				constructor(props) {
+					super(props);
+					this.state = {
+						newEntryBy: '',
+						newrStatus: '',
+						stbCollTranDetails: [],
+						editingStbCollTranDetails: null,
+					};
+					this.handleApiAddStbCollTranDetails =
+						this.handleApiAddStbCollTranDetails.bind(this);
+					this.handleUiEditStbCollTranDetails =
+						this.handleUiEditStbCollTranDetails.bind(this);
+					this.handleApiUpdateStbCollTranDetails =
+						this.handleApiUpdateStbCollTranDetails.bind(this);
+					this.handleApiDeleteStbCollTranDetails =
+						this.handleApiDeleteStbCollTranDetails.bind(this);
+					this.handleHumanInputChange = this.handleHumanInputChange.bind(this);
+					this.handleHumanEditingStbCollTranDetailsStateChange =
+						this.handleHumanEditingStbCollTranDetailsStateChange.bind(this);
+				}
+
+				componentDidMount() {
+					this.fetchStbCollTranDetails();
+				}
+
+				fetchStbCollTranDetails() {
+					var query_request = `
+						query {
+							stbCollTranDetails{
+								id,
+								entryBy,
+								rStatus
+							}
+						}`;
+					fetch('/graphql', {
+						method: 'POST',
+						headers: { 'Content-Type': 'application/json' },
+						body: JSON.stringify({
+							query: query_request,
+						}),
+					})
+						.then((response) => response.json())
+						.then((res) => {
+							this.setState({
+								stbCollTranDetails: res.data.stbCollTranDetails,
+							});
+						});
+				}
+
+				handleApiAddStbCollTranDetails(e) {
+					e.preventDefault();
+					const { newEntryBy, newrStatus } = this.state;
+					if (!newEntryBy || !newrStatus) {
+						return;
+					}
+					var query_request = `
+						mutation {
+							createStbCollTranDetail(entryBy:"${newEntryBy}", rStatus:"${newrStatus}"){
+								stbCollTranDetail{
+									id,
+									entryBy,
+									rStatus
+								}
+							}
+						}`;
+					fetch('/graphql', {
+						method: 'POST',
+						headers: { 'Content-Type': 'application/json' },
+						body: JSON.stringify({
+							query: query_request,
+						}),
+					})
+						.then((response) => response.json())
+						.then((data) => {
+							this.fetchStbCollTranDetails();
+							this.setState({ newEntryBy: '', newrStatus: '' });
+						});
+				}
+
+				handleUiEditStbCollTranDetails(stbCollTranDetail) {
+					this.setState({
+						editingStbCollTranDetails: stbCollTranDetail,
+					});
+				}
+
+				handleApiUpdateStbCollTranDetails(e) {
+					console.log('handleApiUpdateStbCollTranDetails', this.state);
+					e.preventDefault();
+					const { editingStbCollTranDetails } = this.state;
+					if (!editingStbCollTranDetails) {
+						return;
+					}
+					var query_request = `
+						mutation {
+							createStbCollTranDetail(entryBy:"${editingStbCollTranDetails.entryBy}", rStatus:"${editingStbCollTranDetails.rStatus}"){
+								stbCollTranDetail{
+									id,
+									entryBy,
+									rStatus
+								}
+							}
+						}`;
+					fetch('/graphql', {
+						method: 'POST',
+						headers: { 'Content-Type': 'application/json' },
+						body: JSON.stringify({
+							query: query_request,
+						}),
+					})
+						.then((response) => response.json())
+						.then((data) => {
+							this.fetchStbCollTranDetails();
+							this.setState({ newEntryBy: '', newrStatus: '' });
+							this.setState({ editingStbCollTranDetails: null });
+						});
+				}
+
+				handleApiDeleteStbCollTranDetails(stbCollTranDetail) {
+					console.log('handleApiDeleteStbCollTranDetails', this.state);
+					var query_request = `
+						mutation {
+							createStbCollTranDetail(entryBy:"${stbCollTranDetail.entryBy}", rStatus:"${stbCollTranDetail.rStatus}"){
+								stbCollTranDetail{
+									id,
+									entryBy,
+									rStatus
+								}
+							}
+						}`;
+					fetch('/graphql', {
+						method: 'POST',
+						headers: { 'Content-Type': 'application/json' },
+						body: JSON.stringify({
+							query: query_request,
+						}),
+					})
+						.then((response) => response.json())
+						.then((data) => {
+							this.fetchStbCollTranDetails();
+						});
+				}
+
+				handleHumanInputChange(e) {
+					console.log('handleHumanInputChange', this.state, 'e', e);
+					this.setState({ [e.target.name]: e.target.value });
+				}
+
+				handleHumanEditingStbCollTranDetailsStateChange(e) {
+					const { editingStbCollTranDetails } = this.state;
+					this.setState({
+						editingStbCollTranDetails: {
+							...editingStbCollTranDetails,
+							[e.target.name]: e.target.value,
+						},
+					});
+				}
+
+				render() {
+					const {
+						newEntryBy,
+						newrStatus,
+						stbCollTranDetails,
+						editingStbCollTranDetails,
+					} = this.state;
+					return (
+						<div>
+							<h1>App Stb Coll Tran Details</h1>
+							<div>{JSON.stringify(this.state)}</div>
+							<input
+								type='text'
+								name='newEntryBy'
+								placeholder='newEntryBy'
+								value={newEntryBy}
+								onChange={this.handleHumanInputChange}
+							/>
+							<input
+								type='text'
+								name='newrStatus'
+								placeholder='newrStatus'
+								value={newrStatus}
+								onChange={this.handleHumanInputChange}
+							/>
+							<button
+								type='submit'
+								onClick={this.handleApiAddStbCollTranDetails}
+							>
+								Add Stb Coll Tran Details
+							</button>
+
+							<ul>
+								{stbCollTranDetails.map((stbCollTranDetail) => (
+									<li key={stbCollTranDetail.id}>
+										{stbCollTranDetail.entryBy} - {stbCollTranDetail.rStatus}
+										<button
+											onClick={() =>
+												this.handleUiEditStbCollTranDetails(stbCollTranDetail)
+											}
+										>
+											Edit
+										</button>
+										<button
+											onClick={() =>
+												this.handleApiDeleteStbCollTranDetails(
+													stbCollTranDetail
+												)
+											}
+										>
+											Delete
+										</button>
+									</li>
+								))}
+							</ul>
+
+							{editingStbCollTranDetails && (
+								<div>
+									Text: {this.state.editingStbCollTranDetails.entryBy} <br />
+									Link: {this.state.editingStbCollTranDetails.rStatus}
+								</div>
+							)}
+
+							{editingStbCollTranDetails && (
+								<form onSubmit={this.handleApiUpdateStbCollTranDetails}>
+									<input
+										type='text'
+										name='entryBy'
+										placeholder='entryBy'
+										value={editingStbCollTranDetails.entryBy}
+										onChange={
+											this.handleHumanEditingStbCollTranDetailsStateChange
+										}
+									/>
+									<input
+										type='text'
+										name='rStatus'
+										placeholder='rStatus'
+										value={editingStbCollTranDetails.rStatus}
+										onChange={
+											this.handleHumanEditingStbCollTranDetailsStateChange
+										}
+									/>
+									<button type='submit'>Update Stb Coll Tran Details</button>
+									<button
+										onClick={() =>
+											this.setState({ editingStbCollTranDetails: null })
+										}
+									>
+										Cancel
+									</button>
+								</form>
+							)}
+						</div>
+					);
+				}
+			}
+
+			ReactDOM.render(<StbCollTranDetails />, document.getElementById('root'));
+		</script>
+	</body>
+</html>

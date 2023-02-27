@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<script
+			crossorigin
+			src="https://unpkg.com/react@17/umd/react.development.js"
+		></script>
+		<script
+			crossorigin
+			src="https://unpkg.com/react-dom@17/umd/react-dom.development.js"
+		></script>
+		<script src="https://unpkg.com/babel-standalone@6.15.0/babel.min.js"></script>
+	</head>
+	<body>
+		<div id="root"></div>
+		<script type="text/babel">
+			class StbClaimDoc extends React.Component {
+				constructor(props) {
+					super(props);
+					this.state = {
+						newDocPath: '',
+						newEntryBy: '',
+						stbClaimDocs: [],
+						editingStbClaimDoc: null,
+					};
+					this.handleApiAddStbClaimDoc =
+						this.handleApiAddStbClaimDoc.bind(this);
+					this.handleUiEditStbClaimDoc =
+						this.handleUiEditStbClaimDoc.bind(this);
+					this.handleApiUpdateStbClaimDoc =
+						this.handleApiUpdateStbClaimDoc.bind(this);
+					this.handleApiDeleteStbClaimDoc =
+						this.handleApiDeleteStbClaimDoc.bind(this);
+					this.handleHumanInputChange = this.handleHumanInputChange.bind(this);
+					this.handleHumanEditingStbClaimDocStateChange =
+						this.handleHumanEditingStbClaimDocStateChange.bind(this);
+				}
+
+				componentDidMount() {
+					this.fetchStbClaimDocs();
+				}
+
+				fetchStbClaimDocs() {
+					var query_request = `
+						query {
+							stbClaimDocs {
+								id,
+								docPath,
+								entryBy
+							}
+						}`;
+					fetch('/graphql', {
+						method: 'POST',
+						headers: { 'Content-Type': 'application/json' },
+						body: JSON.stringify({
+							query: query_request,
+						}),
+					})
+						.then((response) => response.json())
+						.then((res) => {
+							this.setState({
+								stbClaimDocs: res.data.stbClaimDocs,
+							});
+						});
+				}
+
+				handleApiAddStbClaimDoc(e) {
+					e.preventDefault();
+					const { newDocPath, newEntryBy } = this.state;
+					if (!newDocPath || !newEntryBy) {
+						return;
+					}
+					var query_request = `
+						mutation {
+							createStbClaimDoc(docPath:"${newDocPath}", entryBy:"${newEntryBy}"){
+								stbClaimDoc {
+									id,
+									docPath,
+									entryBy
+								}
+							}
+						}`;
+					fetch('/graphql', {
+						method: 'POST',
+						headers: { 'Content-Type': 'application/json' },
+						body: JSON.stringify({
+							query: query_request,
+						}),
+					})
+						.then((response) => response.json())
+						.then((data) => {
+							this.fetchStbClaimDocs();
+							this.setState({ newDocPath: '', newEntryBy: '' });
+						});
+				}
+
+				handleUiEditStbClaimDoc(stbClaimDoc) {
+					this.setState({
+						editingStbClaimDoc: stbClaimDoc,
+					});
+				}
+
+				handleApiUpdateStbClaimDoc(e) {
+					console.log('handleApiUpdateStbClaimDoc', this.state);
+					e.preventDefault();
+					const { editingStbClaimDoc } = this.state;
+					if (!editingStbClaimDoc) {
+						return;
+					}
+					var query_request = `
+						mutation {
+							createStbClaimDoc(docPath:"${editingStbClaimDoc.docPath}", entryBy:"${editingStbClaimDoc.entryBy}"){
+								stbClaimDoc {
+									id,
+									docPath,
+									entryBy
+								}
+							}
+						}`;
+					fetch('/graphql', {
+						method: 'POST',
+						headers: { 'Content-Type': 'application/json' },
+						body: JSON.stringify({
+							query: query_request,
+						}),
+					})
+						.then((response) => response.json())
+						.then((data) => {
+							this.fetchStbClaimDocs();
+							this.setState({ newDocPath: '', newEntryBy: '' });
+							this.setState({ editingStbClaimDoc: null });
+						});
+				}
+
+				handleApiDeleteStbClaimDoc(stbClaimDoc) {
+					console.log('handleApiDeleteStbClaimDoc', this.state);
+					var query_request = `
+						mutation {
+							createStbClaimDoc(docPath:"${stbClaimDoc.docPath}", entryBy:"${stbClaimDoc.entryBy}"){
+								stbClaimDoc {
+									id,
+									docPath,
+									entryBy
+								}
+							}
+						}`;
+					fetch('/graphql', {
+						method: 'POST',
+						headers: { 'Content-Type': 'application/json' },
+						body: JSON.stringify({
+							query: query_request,
+						}),
+					})
+						.then((response) => response.json())
+						.then((data) => {
+							this.fetchStbClaimDocs();
+						});
+				}
+
+				handleHumanInputChange(e) {
+					console.log('handleHumanInputChange', this.state, 'e', e);
+					this.setState({ [e.target.name]: e.target.value });
+				}
+
+				handleHumanEditingStbClaimDocStateChange(e) {
+					const { editingStbClaimDoc } = this.state;
+					this.setState({
+						editingStbClaimDoc: {
+							...editingStbClaimDoc,
+							[e.target.name]: e.target.value,
+						},
+					});
+				}
+
+				render() {
+					const { newDocPath, newEntryBy, stbClaimDocs, editingStbClaimDoc } =
+						this.state;
+					return (
+						<div>
+							<h1>App Stb Claim Doc</h1>
+							<div>{JSON.stringify(this.state)}</div>
+							<input
+								type='text'
+								name='newDocPath'
+								placeholder='newDocPath'
+								value={newDocPath}
+								onChange={this.handleHumanInputChange}
+							/>
+							<input
+								type='text'
+								name='newEntryBy'
+								placeholder='newEntryBy'
+								value={newEntryBy}
+								onChange={this.handleHumanInputChange}
+							/>
+							<button type='submit' onClick={this.handleApiAddStbClaimDoc}>
+								Add Stb Claim Doc
+							</button>
+
+							<ul>
+								{stbClaimDocs.map((stbClaimDoc) => (
+									<li key={stbClaimDoc.id}>
+										{stbClaimDoc.docPath} - {stbClaimDoc.entryBy}
+										<button
+											onClick={() => this.handleUiEditStbClaimDoc(stbClaimDoc)}
+										>
+											Edit
+										</button>
+										<button
+											onClick={() =>
+												this.handleApiDeleteStbClaimDoc(stbClaimDoc)
+											}
+										>
+											Delete
+										</button>
+									</li>
+								))}
+							</ul>
+
+							{editingStbClaimDoc && (
+								<div>
+									Text: {this.state.editingStbClaimDoc.docPath} <br />
+									Link: {this.state.editingStbClaimDoc.entryBy}
+								</div>
+							)}
+
+							{editingStbClaimDoc && (
+								<form onSubmit={this.handleApiUpdateStbClaimDoc}>
+									<input
+										type='text'
+										name='docPath'
+										placeholder='docPath'
+										value={editingStbClaimDoc.docPath}
+										onChange={this.handleHumanEditingStbClaimDocStateChange}
+									/>
+									<input
+										type='text'
+										name='entryBy'
+										placeholder='entryBy'
+										value={editingStbClaimDoc.entryBy}
+										onChange={this.handleHumanEditingStbClaimDocStateChange}
+									/>
+									<button type='submit'>Update Stb Claim Doc</button>
+									<button
+										onClick={() => this.setState({ editingStbClaimDoc: null })}
+									>
+										Cancel
+									</button>
+								</form>
+							)}
+						</div>
+					);
+				}
+			}
+
+			ReactDOM.render(<StbClaimDoc />, document.getElementById('root'));
+		</script>
+	</body>
+</html>

@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<script
+			crossorigin
+			src="https://unpkg.com/react@17/umd/react.development.js"
+		></script>
+		<script
+			crossorigin
+			src="https://unpkg.com/react-dom@17/umd/react-dom.development.js"
+		></script>
+		<script src="https://unpkg.com/babel-standalone@6.15.0/babel.min.js"></script>
+	</head>
+	<body>
+		<div id="root"></div>
+		<script type="text/babel">
+			class AtbGltranDetl extends React.Component {
+				constructor(props) {
+					super(props);
+					this.state = {
+						newInstCode: '',
+						newInstDate: '',
+						atbGltranDetls: [],
+						editingAtbGltranDetl: null,
+					};
+					this.handleApiAddAtbGltranDetl =
+						this.handleApiAddAtbGltranDetl.bind(this);
+					this.handleUiEditAtbGltranDetl =
+						this.handleUiEditAtbGltranDetl.bind(this);
+					this.handleApiUpdateAtbGltranDetl =
+						this.handleApiUpdateAtbGltranDetl.bind(this);
+					this.handleApiDeleteAtbGltranDetl =
+						this.handleApiDeleteAtbGltranDetl.bind(this);
+					this.handleHumanInputChange = this.handleHumanInputChange.bind(this);
+					this.handleHumanEditingAtbGltranDetlStateChange =
+						this.handleHumanEditingAtbGltranDetlStateChange.bind(this);
+				}
+
+				componentDidMount() {
+					this.fetchAtbGltranDetls();
+				}
+
+				fetchAtbGltranDetls() {
+					var query_request = `
+						query {
+							atbGltranDetls{
+								id,
+								instCode,
+								instDate
+							}
+						}`;
+					fetch('/graphql', {
+						method: 'POST',
+						headers: { 'Content-Type': 'application/json' },
+						body: JSON.stringify({
+							query: query_request,
+						}),
+					})
+						.then((response) => response.json())
+						.then((res) => {
+							this.setState({
+								atbGltranDetls: res.data.atbGltranDetls,
+							});
+						});
+				}
+
+				handleApiAddAtbGltranDetl(e) {
+					e.preventDefault();
+					const { newInstCode, newInstDate } = this.state;
+					if (!newInstCode || !newInstDate) {
+						return;
+					}
+					var query_request = `
+						mutation {
+							createAtbGltranDetl(instCode:"${newInstCode}", instDate:"${newInstDate}"){
+								atbGltranDetl{
+								id,
+								instCode,
+								instDate
+								}
+							}
+						}`;
+					fetch('/graphql', {
+						method: 'POST',
+						headers: { 'Content-Type': 'application/json' },
+						body: JSON.stringify({
+							query: query_request,
+						}),
+					})
+						.then((response) => response.json())
+						.then((data) => {
+							this.fetchAtbGltranDetls();
+							this.setState({ newInstCode: '', newInstDate: '' });
+						});
+				}
+
+				handleUiEditAtbGltranDetl(atbGltranDetl) {
+					this.setState({
+						editingAtbGltranDetl: atbGltranDetl,
+					});
+				}
+
+				handleApiUpdateAtbGltranDetl(e) {
+					console.log('handleApiUpdateAtbGltranDetl', this.state);
+					e.preventDefault();
+					const { editingAtbGltranDetl } = this.state;
+					if (!editingAtbGltranDetl) {
+						return;
+					}
+					var query_request = `
+						mutation {
+							createAtbGltranDetl(instCode:"${editingAtbGltranDetl.instCode}", instDate:"${editingAtbGltranDetl.instDate}"){
+								atbGltranDetl{
+								id,
+								instCode,
+								instDate
+								}
+							}
+						}`;
+					fetch('/graphql', {
+						method: 'POST',
+						headers: { 'Content-Type': 'application/json' },
+						body: JSON.stringify({
+							query: query_request,
+						}),
+					})
+						.then((response) => response.json())
+						.then((data) => {
+							this.fetchAtbGltranDetls();
+							this.setState({ newInstCode: '', newInstDate: '' });
+							this.setState({ editingAtbGltranDetl: null });
+						});
+				}
+
+				handleApiDeleteAtbGltranDetl(atbGltranDetl) {
+					console.log('handleApiDeleteAtbGltranDetl', this.state);
+					var query_request = `
+						mutation {
+							createAtbGltranDetl(instCode:"${atbGltranDetl.instCode}", instDate:"${atbGltranDetl.instDate}"){
+								atbGltranDetl{
+								id,
+								instCode,
+								instDate
+								}
+							}
+						}`;
+					fetch('/graphql', {
+						method: 'POST',
+						headers: { 'Content-Type': 'application/json' },
+						body: JSON.stringify({
+							query: query_request,
+						}),
+					})
+						.then((response) => response.json())
+						.then((data) => {
+							this.fetchAtbGltranDetls();
+						});
+				}
+
+				handleHumanInputChange(e) {
+					console.log('handleHumanInputChange', this.state, 'e', e);
+					this.setState({ [e.target.name]: e.target.value });
+				}
+
+				handleHumanEditingAtbGltranDetlStateChange(e) {
+					const { editingAtbGltranDetl } = this.state;
+					this.setState({
+						editingAtbGltranDetl: {
+							...editingAtbGltranDetl,
+							[e.target.name]: e.target.value,
+						},
+					});
+				}
+
+				render() {
+					const {
+						newInstCode,
+						newInstDate,
+						atbGltranDetls,
+						editingAtbGltranDetl,
+					} = this.state;
+					return (
+						<div>
+							<h1>App Atb Gltran Detl</h1>
+							<div>{JSON.stringify(this.state)}</div>
+							<input
+								type='text'
+								name='newInstCode'
+								placeholder='newInstCode'
+								value={newInstCode}
+								onChange={this.handleHumanInputChange}
+							/>
+							<input
+								type='text'
+								name='newInstDate'
+								placeholder='newInstDate'
+								value={newInstDate}
+								onChange={this.handleHumanInputChange}
+							/>
+							<button type='submit' onClick={this.handleApiAddAtbGltranDetl}>
+								Add Atb Gltran Detl
+							</button>
+
+							<ul>
+								{atbGltranDetls.map((atbGltranDetl) => (
+									<li key={atbGltranDetl.id}>
+										{atbGltranDetl.instCode} - {atbGltranDetl.instDate}
+										<button
+											onClick={() =>
+												this.handleUiEditAtbGltranDetl(atbGltranDetl)
+											}
+										>
+											Edit
+										</button>
+										<button
+											onClick={() =>
+												this.handleApiDeleteAtbGltranDetl(atbGltranDetl)
+											}
+										>
+											Delete
+										</button>
+									</li>
+								))}
+							</ul>
+
+							{editingAtbGltranDetl && (
+								<div>
+									Text: {this.state.editingAtbGltranDetl.instCode} <br />
+									Link: {this.state.editingAtbGltranDetl.instDate}
+								</div>
+							)}
+
+							{editingAtbGltranDetl && (
+								<form onSubmit={this.handleApiUpdateAtbGltranDetl}>
+									<input
+										type='text'
+										name='instCode'
+										placeholder='instCode'
+										value={editingAtbGltranDetl.instCode}
+										onChange={this.handleHumanEditingAtbGltranDetlStateChange}
+									/>
+									<input
+										type='text'
+										name='instDate'
+										placeholder='instDate'
+										value={editingAtbGltranDetl.instDate}
+										onChange={this.handleHumanEditingAtbGltranDetlStateChange}
+									/>
+									<button type='submit'>Update Atb Gltran Detl</button>
+									<button
+										onClick={() =>
+											this.setState({ editingAtbGltranDetl: null })
+										}
+									>
+										Cancel
+									</button>
+								</form>
+							)}
+						</div>
+					);
+				}
+			}
+
+			ReactDOM.render(<AtbGltranDetl />, document.getElementById('root'));
+		</script>
+	</body>
+</html>

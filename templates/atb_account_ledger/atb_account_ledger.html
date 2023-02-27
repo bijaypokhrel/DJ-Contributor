@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<script
+			crossorigin
+			src="https://unpkg.com/react@17/umd/react.development.js"
+		></script>
+		<script
+			crossorigin
+			src="https://unpkg.com/react-dom@17/umd/react-dom.development.js"
+		></script>
+		<script src="https://unpkg.com/babel-standalone@6.15.0/babel.min.js"></script>
+	</head>
+	<body>
+		<div id="root"></div>
+		<script type="text/babel">
+			class AtbAccountLedger extends React.Component {
+				constructor(props) {
+					super(props);
+					this.state = {
+						newFiscalYear: '',
+						newValueDate: '',
+						atbAccountLedgers: [],
+						editingAtbAccountLedger: null,
+					};
+					this.handleApiAddAtbAccountLedger =
+						this.handleApiAddAtbAccountLedger.bind(this);
+					this.handleUiEditAtbAccountLedger =
+						this.handleUiEditAtbAccountLedger.bind(this);
+					this.handleApiUpdateAtbAccountLedger =
+						this.handleApiUpdateAtbAccountLedger.bind(this);
+					this.handleApiDeleteAtbAccountLedger =
+						this.handleApiDeleteAtbAccountLedger.bind(this);
+					this.handleHumanInputChange = this.handleHumanInputChange.bind(this);
+					this.handleHumanEditingAtbAccountLedgerStateChange =
+						this.handleHumanEditingAtbAccountLedgerStateChange.bind(this);
+				}
+
+				componentDidMount() {
+					this.fetchAtbAccountLedgers();
+				}
+
+				fetchAtbAccountLedgers() {
+					var query_request = `
+						query {
+							atbAccountLedgers{
+								id,
+								fiscalYear,
+								valueDate
+							}
+						}`;
+					fetch('/graphql', {
+						method: 'POST',
+						headers: { 'Content-Type': 'application/json' },
+						body: JSON.stringify({
+							query: query_request,
+						}),
+					})
+						.then((response) => response.json())
+						.then((res) => {
+							this.setState({
+								atbAccountLedgers: res.data.atbAccountLedgers,
+							});
+						});
+				}
+
+				handleApiAddAtbAccountLedger(e) {
+					e.preventDefault();
+					const { newFiscalYear, newValueDate } = this.state;
+					if (!newFiscalYear || !newValueDate) {
+						return;
+					}
+					var query_request = `
+						mutation {
+							createAtbAccountLedger(fiscalYear:"${newFiscalYear}", valueDate:"${newValueDate}"){
+								atbAccountLedger{
+								id,
+								fiscalYear,
+								valueDate
+								}
+							}
+						}`;
+					fetch('/graphql', {
+						method: 'POST',
+						headers: { 'Content-Type': 'application/json' },
+						body: JSON.stringify({
+							query: query_request,
+						}),
+					})
+						.then((response) => response.json())
+						.then((data) => {
+							this.fetchAtbAccountLedgers();
+							this.setState({ newFiscalYear: '', newValueDate: '' });
+						});
+				}
+
+				handleUiEditAtbAccountLedger(atbAccountLedger) {
+					this.setState({
+						editingAtbAccountLedger: atbAccountLedger,
+					});
+				}
+
+				handleApiUpdateAtbAccountLedger(e) {
+					console.log('handleApiUpdateAtbAccountLedger', this.state);
+					e.preventDefault();
+					const { editingAtbAccountLedger } = this.state;
+					if (!editingAtbAccountLedger) {
+						return;
+					}
+					var query_request = `
+						mutation {
+							createAtbAccountLedger(fiscalYear:"${editingAtbAccountLedger.fiscalYear}", valueDate:"${editingAtbAccountLedger.valueDate}"){
+								atbAccountLedger{
+								id,
+								fiscalYear,
+								valueDate
+								}
+							}
+						}`;
+					fetch('/graphql', {
+						method: 'POST',
+						headers: { 'Content-Type': 'application/json' },
+						body: JSON.stringify({
+							query: query_request,
+						}),
+					})
+						.then((response) => response.json())
+						.then((data) => {
+							this.fetchAtbAccountLedgers();
+							this.setState({ newFiscalYear: '', newValueDate: '' });
+							this.setState({ editingAtbAccountLedger: null });
+						});
+				}
+
+				handleApiDeleteAtbAccountLedger(atbAccountLedger) {
+					console.log('handleApiDeleteAtbAccountLedger', this.state);
+					var query_request = `
+						mutation {
+							createAtbAccountLedger(fiscalYear:"${atbAccountLedger.fiscalYear}", valueDate:"${atbAccountLedger.valueDate}"){
+								atbAccountLedger{
+								id,
+								fiscalYear,
+								valueDate
+								}
+							}
+						}`;
+					fetch('/graphql', {
+						method: 'POST',
+						headers: { 'Content-Type': 'application/json' },
+						body: JSON.stringify({
+							query: query_request,
+						}),
+					})
+						.then((response) => response.json())
+						.then((data) => {
+							this.fetchAtbAccountLedgers();
+						});
+				}
+
+				handleHumanInputChange(e) {
+					console.log('handleHumanInputChange', this.state, 'e', e);
+					this.setState({ [e.target.name]: e.target.value });
+				}
+
+				handleHumanEditingAtbAccountLedgerStateChange(e) {
+					const { editingAtbAccountLedger } = this.state;
+					this.setState({
+						editingAtbAccountLedger: {
+							...editingAtbAccountLedger,
+							[e.target.name]: e.target.value,
+						},
+					});
+				}
+
+				render() {
+					const {
+						newFiscalYear,
+						newValueDate,
+						atbAccountLedgers,
+						editingAtbAccountLedger,
+					} = this.state;
+					return (
+						<div>
+							<h1>App Atb Account Ledger</h1>
+							<div>{JSON.stringify(this.state)}</div>
+							<input
+								type='text'
+								name='newFiscalYear'
+								placeholder='newFiscalYear'
+								value={newFiscalYear}
+								onChange={this.handleHumanInputChange}
+							/>
+							<input
+								type='text'
+								name='newValueDate'
+								placeholder='newValueDate'
+								value={newValueDate}
+								onChange={this.handleHumanInputChange}
+							/>
+							<button type='submit' onClick={this.handleApiAddAtbAccountLedger}>
+								Add Atb Account Ledger
+							</button>
+
+							<ul>
+								{atbAccountLedgers.map((atbAccountLedger) => (
+									<li key={atbAccountLedger.id}>
+										{atbAccountLedger.fiscalYear} - {atbAccountLedger.valueDate}
+										<button
+											onClick={() =>
+												this.handleUiEditAtbAccountLedger(atbAccountLedger)
+											}
+										>
+											Edit
+										</button>
+										<button
+											onClick={() =>
+												this.handleApiDeleteAtbAccountLedger(atbAccountLedger)
+											}
+										>
+											Delete
+										</button>
+									</li>
+								))}
+							</ul>
+
+							{editingAtbAccountLedger && (
+								<div>
+									Text: {this.state.editingAtbAccountLedger.fiscalYear} <br />
+									Link: {this.state.editingAtbAccountLedger.valueDate}
+								</div>
+							)}
+
+							{editingAtbAccountLedger && (
+								<form onSubmit={this.handleApiUpdateAtbAccountLedger}>
+									<input
+										type='text'
+										name='fiscalYear'
+										placeholder='fiscalYear'
+										value={editingAtbAccountLedger.fiscalYear}
+										onChange={
+											this.handleHumanEditingAtbAccountLedgerStateChange
+										}
+									/>
+									<input
+										type='text'
+										name='valueDate'
+										placeholder='valueDate'
+										value={editingAtbAccountLedger.valueDate}
+										onChange={
+											this.handleHumanEditingAtbAccountLedgerStateChange
+										}
+									/>
+									<button type='submit'>Update Atb Account Ledger</button>
+									<button
+										onClick={() =>
+											this.setState({ editingAtbAccountLedger: null })
+										}
+									>
+										Cancel
+									</button>
+								</form>
+							)}
+						</div>
+					);
+				}
+			}
+
+			ReactDOM.render(<AtbAccountLedger />, document.getElementById('root'));
+		</script>
+	</body>
+</html>

@@ -54,10 +54,9 @@
 					console.log('handleApiDeleteCtbAddress', this.state);
 					var query_request = `
 						mutation {
-							createCtbAddress(districtCd:"${ctbAddress.districtCd}", vdcCd:"${ctbAddress.vdcCd}"){
+							deleteCtbAddress(id:${ctbAddress.addressId}){
 								ctbAddress{
-									districtCd,
-									vdcCd
+								addressId
 								}
 							}
 						}`;
