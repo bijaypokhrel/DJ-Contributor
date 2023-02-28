@@ -75,12 +75,12 @@
 						return;
 					}
 					var query_request = `
-						mutation{
-							createCtbUserTranVerification(vStatus:"${editingCtbUserTranVerification.vStatus}", verifyDate:"${editingCtbUserTranVerification.verifyDate}"){
+						mutation {
+							updateCtbUserTranVerification(id:${editingCtbUserTranVerification.id}, vStatus:"${editingCtbUserTranVerification.vStatus}", verifyDate:"${editingCtbUserTranVerification.verifyDate}"){
 								ctbUserTranVerification{
-								id,
-								vStatus,
-								verifyDate
+									id,
+									vStatus,
+									verifyDate
 								}
 							}
 						}`;
@@ -102,12 +102,10 @@
 				handleApiDeleteCtbUserTranVerifications(ctbUserTranVerification) {
 					console.log('handleApiDeleteCtbUserTranVerifications', this.state);
 					var query_request = `
-						mutation{
-							createCtbUserTranVerification(vStatus:"${ctbUserTranVerification.vStatus}", verifyDate:"${ctbUserTranVerification.verifyDate}"){
+						mutation {
+							deleteCtbUserTranVerification(id:${ctbUserTranVerification.id}){
 								ctbUserTranVerification{
-								id,
-								vStatus,
-								verifyDate
+								id
 								}
 							}
 						}`;

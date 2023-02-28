@@ -56,11 +56,9 @@
 					console.log('handleApiDeleteCtbContributor', this.state);
 					var query_request = `
 						mutation {
-							createCtbContributor(fromDate:"${ctbContributor.fromDate}", toDate:"${ctbContributor.toDate}"){
+							deleteCtbContributor(id:${ctbContributor.id}){
 								ctbContributor{
-								id,
-								fromDate, 
-								toDate
+								id
 								}
 							}
 						}`;

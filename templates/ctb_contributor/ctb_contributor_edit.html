@@ -66,11 +66,11 @@
 					}
 					var query_request = `
 						mutation {
-							createCtbContributor(fromDate:"${editingCtbContributor.fromDate}", toDate:"${editingCtbContributor.toDate}"){
+							updateCtbContributor(id:${editingCtbContributor.id}, fromDate:"${editingCtbContributor.fromDate}", toDate:"${editingCtbContributor.toDate}"){
 								ctbContributor{
-								id,
-								fromDate, 
-								toDate
+									id,
+									fromDate,
+									toDate
 								}
 							}
 						}`;

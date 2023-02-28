@@ -228,8 +228,17 @@ class Mutation(graphene.ObjectType):
 
     # Loan
     create_ctb_special_loan = CreateCtb_Special_LoanMutation.Field()
+    update_ctb_special_loan = UpdateCtb_Special_LoanMutation.Field()
+    delete_ctb_special_loan = DeleteCtb_Special_LoanMutation.Field()
+
     create_ctb_user_tran_verification = CreateCtb_User_Tran_VerificationsMutation.Field()
+    update_ctb_user_tran_verification = UpdateCtb_User_Tran_VerificationsMutation.Field()
+    delete_ctb_user_tran_verification = DeleteCtb_User_Tran_VerificationsMutation.Field()
+
     create_dctb_submission = CreateDctb_SubmissionMutation.Field()
+    update_dctb_submission = UpdateDctb_SubmissionMutation.Field()
+    delete_dctb_submission = DeleteDctb_SubmissionMutation.Field()
+
     create_atb_disbursement_process = CreateAtb_Disbursement_ProcessMutation.Field()
 
     # Account

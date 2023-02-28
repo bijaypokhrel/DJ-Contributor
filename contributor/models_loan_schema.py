@@ -41,6 +41,34 @@ class CreateCtb_Special_LoanMutation(graphene.Mutation):
         return CreateCtb_Special_LoanMutation(ctb_special_loan=ctb_special_loan)
 
 
+class UpdateCtb_Special_LoanMutation(graphene.Mutation):
+    class Arguments:
+        id = graphene.ID()
+        cheque_no = String()
+        cheque_date = String()
+
+    ctb_special_loan = graphene.Field(lambda: Ctb_Special_LoanType)
+
+    def mutate(self, info, id, cheque_no, cheque_date):
+        ctb_special_loan = Ctb_Special_Loan.objects.get(pk=id)
+        ctb_special_loan.cheque_no = cheque_no
+        ctb_special_loan.cheque_date = cheque_date
+        ctb_special_loan.save()
+        return UpdateCtb_Special_LoanMutation(ctb_special_loan=ctb_special_loan)
+
+
+class DeleteCtb_Special_LoanMutation(graphene.Mutation):
+    class Arguments:
+        id = graphene.ID()
+
+    ctb_special_loan = graphene.Field(lambda: Ctb_Special_LoanType)
+
+    def mutate(self, info, id):
+        ctb_special_loan = Ctb_Special_Loan.objects.get(pk=id)
+        ctb_special_loan.delete()
+        return
+
+
 class CreateCtb_User_Tran_VerificationsMutation(graphene.Mutation):
     class Arguments:
         v_status = String()
@@ -55,6 +83,38 @@ class CreateCtb_User_Tran_VerificationsMutation(graphene.Mutation):
         return CreateCtb_User_Tran_VerificationsMutation(ctb_user_tran_verification=ctb_user_tran_verification)
 
 
+class UpdateCtb_User_Tran_VerificationsMutation(graphene.Mutation):
+    class Arguments:
+        id = graphene.ID()
+        v_status = String()
+        verify_date = String()
+
+    ctb_user_tran_verification = graphene.Field(
+        lambda: Ctb_User_Tran_VerificationsType)
+
+    def mutate(self, info, id, v_status, verify_date):
+        ctb_user_tran_verification = Ctb_User_Tran_Verifications.objects.get(
+            pk=id)
+        ctb_user_tran_verification.v_status = v_status
+        ctb_user_tran_verification.verify_date = verify_date
+        ctb_user_tran_verification.save()
+        return UpdateCtb_User_Tran_VerificationsMutation(ctb_user_tran_verification=ctb_user_tran_verification)
+
+
+class DeleteCtb_User_Tran_VerificationsMutation(graphene.Mutation):
+    class Arguments:
+        id = graphene.ID()
+
+    ctb_user_tran_verification = graphene.Field(
+        lambda: Ctb_User_Tran_VerificationsType)
+
+    def mutate(self, info, id):
+        ctb_user_tran_verification = Ctb_User_Tran_Verifications.objects.get(
+            pk=id)
+        ctb_user_tran_verification.delete()
+        return
+
+
 class CreateDctb_SubmissionMutation(graphene.Mutation):
     class Arguments:
         phone_no = String()
@@ -67,6 +127,36 @@ class CreateDctb_SubmissionMutation(graphene.Mutation):
         dctb_submission = Dctb_Submission.objects.create(
             phone_no=phone_no, email=email)
         return CreateDctb_SubmissionMutation(dctb_submission=dctb_submission)
+
+
+class UpdateDctb_SubmissionMutation(graphene.Mutation):
+    class Arguments:
+        id = graphene.ID()
+        phone_no = String()
+        email = String()
+
+    dctb_submission = graphene.Field(
+        lambda: Dctb_SubmissionType)
+
+    def mutate(self, info, id, phone_no, email):
+        dctb_submission = Dctb_Submission.objects.get(pk=id)
+        dctb_submission.phone_no = phone_no
+        dctb_submission.email = email
+        dctb_submission.save()
+        return UpdateDctb_SubmissionMutation(dctb_submission=dctb_submission)
+
+
+class DeleteDctb_SubmissionMutation(graphene.Mutation):
+    class Arguments:
+        id = graphene.ID()
+
+    dctb_submission = graphene.Field(
+        lambda: Dctb_SubmissionType)
+
+    def mutate(self, info, id):
+        dctb_submission = Dctb_Submission.objects.get(pk=id)
+        dctb_submission.delete()
+        return
 
 
 class CreateAtb_Disbursement_ProcessMutation(graphene.Mutation):
