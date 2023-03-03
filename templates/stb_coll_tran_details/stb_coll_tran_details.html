@@ -109,7 +109,7 @@
 					}
 					var query_request = `
 						mutation {
-							createStbCollTranDetail(entryBy:"${editingStbCollTranDetails.entryBy}", rStatus:"${editingStbCollTranDetails.rStatus}"){
+							updateStbCollTranDetail(id:${editingStbCollTranDetails.id}, entryBy:"${editingStbCollTranDetails.entryBy}", rStatus:"${editingStbCollTranDetails.rStatus}"){
 								stbCollTranDetail{
 									id,
 									entryBy,
@@ -135,12 +135,10 @@
 				handleApiDeleteStbCollTranDetails(stbCollTranDetail) {
 					console.log('handleApiDeleteStbCollTranDetails', this.state);
 					var query_request = `
-						mutation {
-							createStbCollTranDetail(entryBy:"${stbCollTranDetail.entryBy}", rStatus:"${stbCollTranDetail.rStatus}"){
+						 mutation {
+							deleteStbCollTranDetail(id:${stbCollTranDetail.id}){
 								stbCollTranDetail{
-									id,
-									entryBy,
-									rStatus
+									id
 								}
 							}
 						}`;

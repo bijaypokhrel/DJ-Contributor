@@ -171,3 +171,33 @@ class CreateAtb_Disbursement_ProcessMutation(graphene.Mutation):
         atb_disbursement_process = Atb_Disbursement_Process.objects.create(
             from_account=from_account, to_account=to_account)
         return CreateAtb_Disbursement_ProcessMutation(atb_disbursement_process=atb_disbursement_process)
+
+
+class UpdateAtb_Disbursement_ProcessMutation(graphene.Mutation):
+    class Arguments:
+        id = graphene.ID()
+        from_account = String()
+        to_account = String()
+
+    atb_disbursement_process = graphene.Field(
+        lambda: Atb_Disbursement_ProcessType)
+
+    def mutate(self, info, id, from_account, to_account):
+        atb_disbursement_process = Atb_Disbursement_Process.objects.get(pk=id)
+        atb_disbursement_process.from_account = from_account
+        atb_disbursement_process.to_account = to_account
+        atb_disbursement_process.save()
+        return UpdateAtb_Disbursement_ProcessMutation(atb_disbursement_process=atb_disbursement_process)
+
+
+class DeleteAtb_Disbursement_ProcessMutation(graphene.Mutation):
+    class Arguments:
+        id = graphene.ID()
+
+    atb_disbursement_process = graphene.Field(
+        lambda: Atb_Disbursement_ProcessType)
+
+    def mutate(self, info, id):
+        atb_disbursement_process = Atb_Disbursement_Process.objects.get(pk=id)
+        atb_disbursement_process.delete()
+        return

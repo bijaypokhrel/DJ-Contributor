@@ -109,7 +109,7 @@
 					}
 					var query_request = `
 						mutation {
-							createStbCollectionTranHead(entryBy:"${editingStbCollectionTranHead.entryBy}", rStatus:"${editingStbCollectionTranHead.rStatus}"){
+							updateStbCollectionTranHead(id:${editingStbCollectionTranHead.id}, entryBy:"${editingStbCollectionTranHead.entryBy}", rStatus:"${editingStbCollectionTranHead.rStatus}"){
 								stbCollectionTranHead{
 									id,
 									entryBy,
@@ -136,11 +136,9 @@
 					console.log('handleApiDeleteStbCollectionTranHead', this.state);
 					var query_request = `
 						mutation {
-							createStbCollectionTranHead(entryBy:"${stbCollectionTranHead.entryBy}", rStatus:"${stbCollectionTranHead.rStatus}"){
+							deleteStbCollectionTranHead(id:${stbCollectionTranHead.id}){
 								stbCollectionTranHead{
-									id,
-									entryBy,
-									rStatus
+									id
 								}
 							}
 						}`;

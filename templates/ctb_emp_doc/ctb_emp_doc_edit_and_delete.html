@@ -71,8 +71,8 @@
 					}
 					var query_request = `
 						mutation {
-							createCtbEmpDoc(fromDate:"${editingCtbEmpDoc.fromDate}", toDate:"${editingCtbEmpDoc.toDate}"){
-								ctbEmpDoc{
+							updateCtbEmpDoc(id:${editingCtbEmpDoc.id}, fromDate:"${editingCtbEmpDoc.fromDate}", toDate:"${editingCtbEmpDoc.toDate}"){
+								ctbEmpDoc {
 									id,
 									fromDate,
 									toDate
@@ -98,11 +98,9 @@
 					console.log('handleApiDeleteCtbEmpDoc', this.state);
 					var query_request = `
 						mutation {
-							createCtbEmpDoc(fromDate:"${ctbEmpDoc.fromDate}", toDate:"${ctbEmpDoc.toDate}"){
+							deleteCtbEmpDoc(id:${ctbEmpDoc.id}){
 								ctbEmpDoc{
-									id,
-									fromDate,
-									toDate
+									id
 								}
 							}
 						}`;

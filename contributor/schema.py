@@ -210,21 +210,53 @@ class Mutation(graphene.ObjectType):
 
     # Claim
     create_stb_claim_head = CreateStb_Claim_HeadMutation.Field()
+    update_stb_claim_head = UpdateStb_Claim_HeadMutation.Field()
+    delete_stb_claim_head = DeleteStb_Claim_HeadMutation.Field()
+
     create_stb_claim_anusuchi6 = CreateStb_Claim_Anusuchi6Mutation.Field()
     create_stb_claim_app_amount = CreateStb_Claim_App_AmountMutation.Field()
     create_stb_claim_doc = CreateStb_Claim_DocMutation.Field()
     # Employer
     create_ctb_emp_contact = CreateCtb_Emp_ContactMutation.Field()
+    update_ctb_emp_contact = UpdateCtb_Emp_ContactMutation.Field()
+    delete_ctb_emp_contact = DeleteCtb_Emp_ContactMutation.Field()
+
     create_ctb_employer = CreateCtb_EmployerMutation.Field()
+    update_ctb_employer = UpdateCtb_EmployerMutation.Field()
+    delete_ctb_employer = DeleteCtb_EmployerMutation.Field()
+
     create_ctb_emp_doc = CreateCtb_Emp_DocMutation.Field()
+    update_ctb_emp_doc = UpdateCtb_Emp_DocMutation.Field()
+    delete_ctb_emp_doc = DeleteCtb_Emp_DocMutation.Field()
+
     create_ctb_emp_address = CreateCtb_Emp_AddressMutation.Field()
+    update_ctb_emp_address = UpdateCtb_Emp_AddressMutation.Field()
+    delete_ctb_emp_address = DeleteCtb_Emp_AddressMutation.Field()
+
     create_ctb_emp_official = CreateCtb_Emp_OfficialMutation.Field()
+    update_ctb_emp_official = UpdateCtb_Emp_OfficialMutation.Field()
+    delete_ctb_emp_official = DeleteCtb_Emp_OfficialMutation.Field()
+
     # Contributor
     create_stb_coll_voucher_info = CreateStb_Coll_Voucher_InfoMutation.Field()
+    update_stb_coll_voucher_info = UpdateStb_Coll_Voucher_InfoMutation.Field()
+    delete_stb_coll_voucher_info = DeleteStb_Coll_Voucher_InfoMutation.Field()
+
     create_stb_contributor_sal_det = CreateStb_Contributor_Sal_DetMutation.Field()
+    update_stb_contributor_sal_det = UpdateStb_Contributor_Sal_DetMutation.Field()
+    delete_stb_contributor_sal_det = DeleteStb_Contributor_Sal_DetMutation.Field()
+
     create_stb_collection_tran_head = CreateStb_Collection_Tran_HeadMutation.Field()
+    update_stb_collection_tran_head = UpdateStb_Collection_Tran_HeadMutation.Field()
+    delete_stb_collection_tran_head = DeleteStb_Collection_Tran_HeadMutation.Field()
+
     create_stb_coll_tran_detail = CreateStb_Coll_Tran_DetailsMutation.Field()
+    update_stb_coll_tran_detail = UpdateStb_Coll_Tran_DetailsMutation.Field()
+    delete_stb_coll_tran_detail = DeleteStb_Coll_Tran_DetailsMutation.Field()
+
     create_stb_scheme_application = CreateStb_Scheme_ApplicationMutation.Field()
+    update_stb_scheme_application = UpdateStb_Scheme_ApplicationMutation.Field()
+    delete_stb_scheme_application = DeleteStb_Scheme_ApplicationMutation.Field()
 
     # Loan
     create_ctb_special_loan = CreateCtb_Special_LoanMutation.Field()
@@ -240,6 +272,8 @@ class Mutation(graphene.ObjectType):
     delete_dctb_submission = DeleteDctb_SubmissionMutation.Field()
 
     create_atb_disbursement_process = CreateAtb_Disbursement_ProcessMutation.Field()
+    update_atb_disbursement_process = UpdateAtb_Disbursement_ProcessMutation.Field()
+    delete_atb_disbursement_process = DeleteAtb_Disbursement_ProcessMutation.Field()
 
     # Account
     create_atb_gltran_mast = CreateAtb_Gltran_MastMutation.Field()

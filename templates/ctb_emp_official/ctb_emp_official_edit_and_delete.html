@@ -72,14 +72,14 @@
 					}
 					var query_request = `
 						mutation {
-							createCtbEmpOfficial(fromDate:"${editingCtbEmpOfficial.fromDate}", toDate:"${editingCtbEmpOfficial.toDate}"){
-									ctbEmpOfficial{
-										id,
-										fromDate,
-										toDate
-									}
+							updateCtbEmpOfficial (id:${editingCtbEmpOfficial.id}, fromDate:"${editingCtbEmpOfficial.fromDate}", toDate:"${editingCtbEmpOfficial.toDate}"){
+								ctbEmpOfficial{
+									id,
+									fromDate,
+									toDate
 								}
-							}`;
+							}
+						}`;
 					fetch('/graphql', {
 						method: 'POST',
 						headers: { 'Content-Type': 'application/json' },
@@ -91,7 +91,7 @@
 						.then((data) => {
 							this.fetchCtbEmpOfficials();
 							this.setState({ newFromDate: '', newToDate: '' });
-							this.setState({ editingCtbEmpContact: null });
+							this.setState({ editingCtbEmpOfficial: null });
 						});
 				}
 
@@ -99,14 +99,12 @@
 					console.log('handleApiDeleteCtbEmpOfficial', this.state);
 					var query_request = `
 						mutation {
-							createCtbEmpOfficial(fromDate:"${ctbEmpOfficial.fromDate}", toDate:"${ctbEmpOfficial.toDate}"){
-									ctbEmpOfficial{
-										id,
-										fromDate,
-										toDate
-									}
+							deleteCtbEmpOfficial(id:${ctbEmpOfficial.id}){
+								ctbEmpOfficial{
+									id
 								}
-							}`;
+							}
+						}`;
 					fetch('/graphql', {
 						method: 'POST',
 						headers: { 'Content-Type': 'application/json' },

@@ -72,7 +72,7 @@
 					}
 					var query_request = `
 						mutation {
-							createStbContributorSalDet(fromDate:"${editingStbContributorSalDet.fromDate}", toDate:"${editingStbContributorSalDet.toDate}"){
+							updateStbContributorSalDet(id:${editingStbContributorSalDet.id}, fromDate:"${editingStbContributorSalDet.fromDate}", toDate:"${editingStbContributorSalDet.toDate}"){
 								stbContributorSalDet{
 									id,
 									fromDate,
@@ -99,11 +99,9 @@
 					console.log('handleApiDeleteStbContributorSalDet', this.state);
 					var query_request = `
 						mutation {
-							createStbContributorSalDet(fromDate:"${stbContributorSalDet.fromDate}", toDate:"${stbContributorSalDet.toDate}"){
+							deleteStbContributorSalDet(id:${stbContributorSalDet.id}){
 								stbContributorSalDet{
-									id,
-									fromDate,
-									toDate
+								id
 								}
 							}
 						}`;

@@ -40,6 +40,34 @@ class CreateStb_Claim_HeadMutation(graphene.Mutation):
         return CreateStb_Claim_HeadMutation(stb_claim_head=stb_claim_head)
 
 
+class UpdateStb_Claim_HeadMutation(graphene.Mutation):
+    class Arguments:
+        id = graphene.ID()
+        account_type = String()
+        account_number = String()
+
+    stb_claim_head = graphene.Field(lambda: Stb_Claim_HeadType)
+
+    def mutate(self, info, id, account_type, account_number):
+        stb_claim_head = Stb_Claim_Head.objects.get(pk=id)
+        stb_claim_head.account_type = account_type
+        stb_claim_head.account_number = account_number
+        stb_claim_head.save()
+        return UpdateStb_Claim_HeadMutation(stb_claim_head=stb_claim_head)
+
+
+class DeleteStb_Claim_HeadMutation(graphene.Mutation):
+    class Arguments:
+        id = graphene.ID()
+
+    stb_claim_head = graphene.Field(lambda: Stb_Claim_HeadType)
+
+    def mutate(self, info, id):
+        stb_claim_head = Stb_Claim_Head.objects.get(pk=id)
+        stb_claim_head.delete()
+        return
+
+
 class CreateStb_Claim_Anusuchi6Mutation(graphene.Mutation):
     class Arguments:
         dep_fname = String()

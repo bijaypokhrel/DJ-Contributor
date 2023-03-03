@@ -72,11 +72,11 @@
 					}
 					var query_request = `
 						mutation {
-							createStbCollVoucherInfo(accountNo:"${editingStbCollVoucherInfo.accountNo}", voucherNo:"${editingStbCollVoucherInfo.voucherNo}"){
-								stbCollVoucherInfo{
+							updateStbCollVoucherInfo(id:${editingStbCollVoucherInfo.id}, voucherNo:"${editingStbCollVoucherInfo.voucherNo}", accountNo:"${editingStbCollVoucherInfo.accountNo}"){
+								stbCollVoucherInfo {
 									id,
-									accountNo,
-									voucherNo
+									voucherNo,
+									accountNo
 								}
 							}
 						}`;
@@ -99,11 +99,9 @@
 					console.log('handleApiDeleteStbCollVoucherInfo', this.state);
 					var query_request = `
 						mutation {
-							createStbCollVoucherInfo(accountNo:"${stbCollVoucherInfo.accountNo}", voucherNo:"${stbCollVoucherInfo.voucherNo}"){
+							deleteStbCollVoucherInfo(id:${stbCollVoucherInfo.id}){
 								stbCollVoucherInfo{
-									id,
-									accountNo,
-									voucherNo
+									id
 								}
 							}
 						}`;

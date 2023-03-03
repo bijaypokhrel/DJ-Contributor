@@ -109,7 +109,7 @@
 					}
 					var query_request = `
 						mutation {
-							createStbClaimHead(accountNumber:"${editingStbClaimHead.accountNumber}", accountType:"${editingStbClaimHead.accountType}"){
+							updateStbClaimHead(id:${editingStbClaimHead.id}, accountNumber:"${editingStbClaimHead.accountNumber}", accountType:"${editingStbClaimHead.accountType}"){
 								stbClaimHead{
 									id,
 									accountNumber,
@@ -136,11 +136,9 @@
 					console.log('handleApiDeleteStbClaimHead', this.state);
 					var query_request = `
 						mutation {
-							createStbClaimHead(accountNumber:"${stbClaimHead.accountNumber}", accountType:"${stbClaimHead.accountType}"){
+							deleteStbClaimHead(id:${stbClaimHead.id}){
 								stbClaimHead{
-									id,
-									accountNumber,
-									accountType
+									id
 								}
 							}
 						}`;

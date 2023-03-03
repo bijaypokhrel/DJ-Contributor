@@ -109,14 +109,14 @@
 					}
 					var query_request = `
 						mutation {
-							createStbSchemeApplication(collType:"${editingStbSchemeApplication.collType}", usedBy:"${editingStbSchemeApplication.usedBy}"){
-								stbSchemeApplication {
+							updateStbSchemeApplication(id:${editingStbSchemeApplication.id}, usedBy:"${editingStbSchemeApplication.usedBy}", collType:"${editingStbSchemeApplication.collType}"){
+								stbSchemeApplication{
 									id,
-									collType,
-									usedBy
+									usedBy,
+									collType
 								}
 							}
-						}`;
+							}`;
 					fetch('/graphql', {
 						method: 'POST',
 						headers: { 'Content-Type': 'application/json' },
@@ -136,11 +136,9 @@
 					console.log('handleApiDeleteStbSchemeApplication', this.state);
 					var query_request = `
 						mutation {
-							createStbSchemeApplication(collType:"${stbSchemeApplication.collType}", usedBy:"${stbSchemeApplication.usedBy}"){
-								stbSchemeApplication {
-									id,
-									collType,
-									usedBy
+							deleteStbSchemeApplication(id:${stbSchemeApplication.id}){
+								stbSchemeApplication{
+									id
 								}
 							}
 						}`;

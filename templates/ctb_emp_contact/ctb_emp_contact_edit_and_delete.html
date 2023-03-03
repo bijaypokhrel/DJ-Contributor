@@ -72,14 +72,14 @@
 					}
 					var query_request = `
 						mutation {
-							createCtbEmpContact(fromDate:"${editingCtbEmpContact.fromDate}", toDate:"${editingCtbEmpContact.toDate}"){
-									ctbEmpContact{
-										id,
-										fromDate,
-										toDate
-									}
+							updateCtbEmpContact(id:${editingCtbEmpContact.id}, fromDate:"${editingCtbEmpContact.fromDate}", toDate:"${editingCtbEmpContact.toDate}"){
+								ctbEmpContact{
+									id,
+									fromDate,
+									toDate
 								}
-							}`;
+							}
+						}`;
 					fetch('/graphql', {
 						method: 'POST',
 						headers: { 'Content-Type': 'application/json' },
@@ -99,11 +99,9 @@
 					console.log('handleApiDeleteCtbEmpContact', this.state);
 					var query_request = `
 						mutation {
-								createCtbEmpContact(fromDate:"${ctbEmpContact.fromDate}", toDate:"${ctbEmpContact.toDate}"){
+							deleteCtbEmpContact(id:${ctbEmpContact.id}){
 								ctbEmpContact{
-								id,
-								fromDate,
-								toDate
+									id
 								}
 							}
 						}`;
