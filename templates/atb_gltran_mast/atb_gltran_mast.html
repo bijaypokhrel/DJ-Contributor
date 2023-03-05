@@ -109,7 +109,7 @@
 					}
 					var query_request = `
 						mutation {
-							createAtbGltranMast(tranDate:"${editingAtbGltranMast.tranDate}", tranUserId:"${editingAtbGltranMast.tranUserId}"){
+							updateAtbGltranMast(id:${editingAtbGltranMast.id}, tranDate:"${editingAtbGltranMast.tranDate}", tranUserId:"${editingAtbGltranMast.tranUserId}"){
 								atbGltranMast{
 									id,
 									tranDate,
@@ -136,11 +136,9 @@
 					console.log('handleApiDeleteAtbGltranMast', this.state);
 					var query_request = `
 						mutation {
-							createAtbGltranMast(tranDate:"${atbGltranMast.tranDate}", tranUserId:"${atbGltranMast.tranUserId}"){
+							deleteAtbGltranMast(id:${atbGltranMast.id}){
 								atbGltranMast{
-									id,
-									tranDate,
-									tranUserId
+									id
 								}
 							}
 						}`;

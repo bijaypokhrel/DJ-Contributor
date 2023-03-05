@@ -109,8 +109,8 @@
 					}
 					var query_request = `
 						mutation {
-							createStbClaimDoc(docPath:"${editingStbClaimDoc.docPath}", entryBy:"${editingStbClaimDoc.entryBy}"){
-								stbClaimDoc {
+							updateStbClaimDoc(id:${editingStbClaimDoc.id}, docPath:"${editingStbClaimDoc.docPath}", entryBy:"${editingStbClaimDoc.entryBy}"){
+								stbClaimDoc{
 									id,
 									docPath,
 									entryBy
@@ -136,11 +136,9 @@
 					console.log('handleApiDeleteStbClaimDoc', this.state);
 					var query_request = `
 						mutation {
-							createStbClaimDoc(docPath:"${stbClaimDoc.docPath}", entryBy:"${stbClaimDoc.entryBy}"){
-								stbClaimDoc {
-									id,
-									docPath,
-									entryBy
+							deleteStbClaimDoc(id:${stbClaimDoc.id}){
+								stbClaimDoc{
+									id
 								}
 							}
 						}`;

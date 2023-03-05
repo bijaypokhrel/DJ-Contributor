@@ -109,11 +109,11 @@
 					}
 					var query_request = `
 						mutation {
-							createAtbAccountLedger(fiscalYear:"${editingAtbAccountLedger.fiscalYear}", valueDate:"${editingAtbAccountLedger.valueDate}"){
+							updateAtbAccountLedger(id:${editingAtbAccountLedger.id},valueDate:"${editingAtbAccountLedger.valueDate}", fiscalYear:"${editingAtbAccountLedger.fiscalYear}"){
 								atbAccountLedger{
-								id,
-								fiscalYear,
-								valueDate
+									id,
+									valueDate,
+									fiscalYear
 								}
 							}
 						}`;
@@ -136,11 +136,9 @@
 					console.log('handleApiDeleteAtbAccountLedger', this.state);
 					var query_request = `
 						mutation {
-							createAtbAccountLedger(fiscalYear:"${atbAccountLedger.fiscalYear}", valueDate:"${atbAccountLedger.valueDate}"){
+							deleteAtbAccountLedger(id:${atbAccountLedger.id}){
 								atbAccountLedger{
-								id,
-								fiscalYear,
-								valueDate
+									id
 								}
 							}
 						}`;

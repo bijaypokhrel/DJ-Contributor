@@ -109,11 +109,11 @@
 					}
 					var query_request = `
 						mutation {
-							createAtbGltranDetl(instCode:"${editingAtbGltranDetl.instCode}", instDate:"${editingAtbGltranDetl.instDate}"){
+							updateAtbGltranDetl(id:${editingAtbGltranDetl.id}, instCode:"${editingAtbGltranDetl.instCode}", instDate:"${editingAtbGltranDetl.instDate}"){
 								atbGltranDetl{
-								id,
-								instCode,
-								instDate
+									id,
+									instCode,
+									instDate
 								}
 							}
 						}`;
@@ -136,11 +136,9 @@
 					console.log('handleApiDeleteAtbGltranDetl', this.state);
 					var query_request = `
 						mutation {
-							createAtbGltranDetl(instCode:"${atbGltranDetl.instCode}", instDate:"${atbGltranDetl.instDate}"){
+							deleteAtbGltranDetl(id:${atbGltranDetl.id}){
 								atbGltranDetl{
-								id,
-								instCode,
-								instDate
+									id
 								}
 							}
 						}`;

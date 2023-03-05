@@ -109,11 +109,11 @@
 					}
 					var query_request = `
 						mutation {
-							createStbClaimAppAmount (claimAppDate:"${editingStbClaimAppAmount.claimAppDate}", pSsid:"${editingStbClaimAppAmount.pSsid}"){
-								stbClaimAppAmount {
-									id,
-									claimAppDate,
-									pSsid
+							updateStbClaimAppAmount(id:${editingStbClaimAppAmount.id}, pSsid:"${editingStbClaimAppAmount.pSsid}", claimAppDate:"${editingStbClaimAppAmount.claimAppDate}"){
+								stbClaimAppAmount{
+								id,
+								pSsid,
+								claimAppDate
 								}
 							}
 						}`;
@@ -136,11 +136,9 @@
 					console.log('handleApiDeleteStbClaimAppAmount', this.state);
 					var query_request = `
 						mutation {
-							createStbClaimAppAmount (claimAppDate:"${stbClaimAppAmount.claimAppDate}", pSsid:"${stbClaimAppAmount.pSsid}"){
-								stbClaimAppAmount {
-									id,
-									claimAppDate,
-									pSsid
+							deleteStbClaimAppAmount(id:${stbClaimAppAmount.id}){
+								stbClaimAppAmount{
+									id
 								}
 							}
 						}`;

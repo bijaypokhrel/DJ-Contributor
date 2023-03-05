@@ -109,7 +109,7 @@
 					}
 					var query_request = `
 						mutation {
-							createStbClaimAnusuchi6(depFname:"${editingStbClaimAnusuchi6.depFname}", depMname:"${editingStbClaimAnusuchi6.depMname}"){
+							updateStbClaimAnusuchi6(id:${editingStbClaimAnusuchi6.id}, depFname:"${editingStbClaimAnusuchi6.depFname}", depMname:"${editingStbClaimAnusuchi6.depMname}"){
 								stbClaimAnusuchi6{
 									id,
 									depFname,
@@ -136,11 +136,9 @@
 					console.log('handleApiDeleteStbClaimAnusuchi6', this.state);
 					var query_request = `
 						mutation {
-							createStbClaimAnusuchi6(depFname:"${stbClaimAnusuchi6.depFname}", depMname:"${stbClaimAnusuchi6.depMname}"){
+							deleteStbClaimAnusuchi6(id:${stbClaimAnusuchi6.id}){
 								stbClaimAnusuchi6{
-									id,
-									depFname,
-									depMname
+									id
 								}
 							}
 						}`;
