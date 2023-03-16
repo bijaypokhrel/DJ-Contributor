@@ -179,36 +179,42 @@ class Mutation(graphene.ObjectType):
     create_ctb_address = CreateCtb_AddressMutation.Field()
     update_ctb_address = UpdateCtb_AddressMutation.Field()
     delete_ctb_address = DeleteCtb_AddressMutation.Field()
-
-    save_ctb_contributor = SaveCtb_ContributorMutation.Field()
+    save_ctb_address = SaveCtb_AddressMutation.Field()
 
     create_ctb_person = CreateCtb_PersonMutation.Field()
     update_ctb_person = UpdateCtb_PersonMutation.Field()
     delete_ctb_person = DeleteCtb_PersonMutation.Field()
+    save_ctb_person = SaveCtb_PersonMutation.Field()
 
     create_ctb_person_address = CreateCtb_Person_AddressMutation.Field()
     update_ctb_person_address = UpdateCtb_Person_AddressMutation.Field()
     delete_ctb_person_address = DeleteCtb_Person_AddressMutation.Field()
+    save_ctb_person_address = SaveCtb_Person_AddressMutation.Field()
 
     create_ctb_person_dependent = CreateCtb_Person_DependentMutation.Field()
     update_ctb_person_dependent = UpdateCtb_Person_DependentMutation.Field()
     delete_ctb_person_dependent = DeleteCtb_Person_DependentMutation.Field()
+    save_ctb_person_dependent = SaveCtb_Person_DependentMutation.Field()
 
     create_ctb_person_nominee = CreateCtb_Person_NomineeMutation.Field()
     update_ctb_person_nominee = UpdateCtb_Person_NomineeMutation.Field()
     delete_ctb_person_nominee = DeleteCtb_Person_NomineeMutation.Field()
+    save_ctb_person_nominee = SaveCtb_Person_NomineeMutation.Field()
 
     create_ctb_person_contact = CreateCtb_Person_ContactMutation.Field()
     update_ctb_person_contact = UpdateCtb_Person_ContactMutation.Field()
     delete_ctb_person_contact = DeleteCtb_Person_ContactMutation.Field()
+    save_ctb_person_contact = SaveCtb_Person_ContactMutation.Field()
 
     create_ctb_person_doc = CreateCtb_Person_DocMutation.Field()
     update_ctb_person_doc = UpdateCtb_Person_DocMutation.Field()
     delete_ctb_person_doc = DeleteCtb_Person_DocMutation.Field()
+    save_ctb_person_doc = SaveCtb_Person_DocMutation.Field()
 
     create_ctb_contributor = CreateCtb_ContributorMutation.Field()
     update_ctb_contributor = UpdateCtb_ContributorMutation.Field()
     delete_ctb_contributor = DeleteCtb_ContributorMutation.Field()
+    save_ctb_contributor = SaveCtb_ContributorMutation.Field()
 
     # Claim
     create_stb_claim_head = CreateStb_Claim_HeadMutation.Field()
