@@ -1,5 +1,5 @@
 import graphene
-from graphene import ObjectType, String, Decimal
+from graphene import ObjectType, String, Decimal, Date
 from graphene_django import DjangoObjectType
 from .models import *
 
@@ -44,6 +44,28 @@ class Ctb_Person_DocType(DjangoObjectType):
 class Ctb_ContributorType(DjangoObjectType):
     class Meta:
         model = Ctb_Contributor
+
+
+class Ctb_ContributorInput(graphene.InputObjectType):
+    id = graphene.ID()
+    p_ssid = String()
+    employer_id = Decimal()
+    from_date = String()
+    to_date = String()
+    post = String()
+    emptype_id = Decimal()
+    joining_date = String()
+    termination_date = String()
+    termination_res = String()
+    entry_by = String()
+    entry_date = Date()
+    r_status = String()
+    tran_no = Decimal()
+    terminated_by = String()
+    new_tran = Decimal()
+    marking = String()
+    group_id = Decimal()
+    contributor_type = String()
 
 
 # Mutations
@@ -373,3 +395,22 @@ class DeleteCtb_ContributorMutation(graphene.Mutation):
         ctb_contributor = Ctb_Contributor.objects.get(pk=id)
         ctb_contributor.delete()
         return
+
+
+class SaveCtb_ContributorMutation(graphene.Mutation):
+    class Arguments:
+        data = Ctb_ContributorInput()
+
+    ctb_contributor = graphene.Field(lambda: Ctb_ContributorType)
+
+    def mutate(self, info, data):
+
+        id = data.id
+        if id:
+            ctb_contributor = Ctb_Contributor.objects.get(pk=id)
+            ctb_contributor.from_date = data.from_date
+            ctb_contributor.to_date = data.to_date
+            ctb_contributor.save()
+        else:
+            ctb_contributor = Ctb_Contributor.objects.create(**data)
+        return CreateCtb_ContributorMutation(ctb_contributor=ctb_contributor)

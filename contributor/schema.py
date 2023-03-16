@@ -180,6 +180,8 @@ class Mutation(graphene.ObjectType):
     update_ctb_address = UpdateCtb_AddressMutation.Field()
     delete_ctb_address = DeleteCtb_AddressMutation.Field()
 
+    save_ctb_contributor = SaveCtb_ContributorMutation.Field()
+
     create_ctb_person = CreateCtb_PersonMutation.Field()
     update_ctb_person = UpdateCtb_PersonMutation.Field()
     delete_ctb_person = DeleteCtb_PersonMutation.Field()
