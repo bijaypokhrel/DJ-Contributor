@@ -1,0 +1,28 @@
+<script>
+	function ServiceCtbAddressSave(args) {
+		var state = args.state;
+		var fnCallback = args?.fnCallback;
+		var query_request = `
+						mutation {
+							createCtbAddress(districtCd:"${state.newDistrictCd}", vdcCd:"${state.newVdcCd}"){
+								ctbAddress{
+									districtCd,
+									vdcCd
+								}
+							}
+						}`;
+		fetch('/graphql', {
+			method: 'POST',
+			headers: { 'Content-Type': 'application/json' },
+			body: JSON.stringify({
+				query: query_request,
+			}),
+		})
+			.then((response) => response.json())
+			.then((data) => {
+				if (fnCallback) {
+					fnCallback();
+				}
+			});
+	}
+</script>

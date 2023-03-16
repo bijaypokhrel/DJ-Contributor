@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<script
+			crossorigin
+			src="https://unpkg.com/react@17/umd/react.development.js"
+		></script>
+		<script
+			crossorigin
+			src="https://unpkg.com/react-dom@17/umd/react-dom.development.js"
+		></script>
+		<script src="https://unpkg.com/babel-standalone@6.15.0/babel.min.js"></script>
+	</head>
+	<body>
+		{% include 'ctb_address/ctb_address_service.html'%}
+		<div id="root"></div>
+		<script type="text/babel">
+			class CtbAddress extends React.Component {
+				constructor(props) {
+					super(props);
+					this.state = {
+						newDistrictCd: '',
+						newVdcCd: '',
+						ctbAddresses: [],
+						editingCtbAddress: null,
+					};
+					this.handleApiAddCtbAddress = this.handleApiAddCtbAddress.bind(this);
+					this.handleUiEditCtbAddress = this.handleUiEditCtbAddress.bind(this);
+					this.handleApiUpdateCtbAddress =
+						this.handleApiUpdateCtbAddress.bind(this);
+					this.handleApiDeleteCtbAddress =
+						this.handleApiDeleteCtbAddress.bind(this);
+					this.handleHumanInputChange = this.handleHumanInputChange.bind(this);
+					this.handleHumanEditingCtbAddressStateChange =
+						this.handleHumanEditingCtbAddressStateChange.bind(this);
+				}
+
+				componentDidMount() {
+					this.fetchCtbAddresses();
+				}
+
+				fetchCtbAddresses() {
+					var query_request = `
+						query {
+							ctbAddresses{
+								addressId,
+								districtCd,
+								vdcCd
+							}
+						}`;
+					fetch('/graphql', {
+						method: 'POST',
+						headers: { 'Content-Type': 'application/json' },
+						body: JSON.stringify({
+							query: query_request,
+						}),
+					})
+						.then((response) => response.json())
+						.then((res) => {
+							this.setState({
+								ctbAddresses: res.data.ctbAddresses,
+							});
+						});
+				}
+
+				handleApiAddCtbAddress(e) {
+					e.preventDefault();
+					ServiceCtbAddressSave({
+						state: this.state,
+						fnCallback: () => {
+							this.fetchCtbAddresses();
+							this.setState({ districtCd: '', vdcCd: '' });
+						},
+					});
+				}
+
+				handleUiEditCtbAddress(ctbAddress) {
+					this.setState({
+						editingCtbAddress: ctbAddress,
+					});
+				}
+
+				handleApiUpdateCtbAddress(e) {
+					console.log('handleApiUpdateCtbAddress', this.state);
+					e.preventDefault();
+					const { editingCtbAddress } = this.state;
+					if (!editingCtbAddress) {
+						return;
+					}
+					var query_request = `
+						mutation {
+							updateCtbAddress (id:${editingCtbAddress.addressId}, districtCd:"${editingCtbAddress.districtCd}", vdcCd:"${editingCtbAddress.vdcCd}"){
+								ctbAddress{
+								addressId,
+								districtCd,
+								vdcCd
+								}
+							}
+						}`;
+					fetch('/graphql', {
+						method: 'POST',
+						headers: { 'Content-Type': 'application/json' },
+						body: JSON.stringify({
+							query: query_request,
+						}),
+					})
+						.then((response) => response.json())
+						.then((data) => {
+							this.fetchCtbAddresses();
+							this.setState({ districtCd: '', vdcCd: '' });
+							this.setState({ editingCtbAddress: null });
+						});
+				}
+
+				handleApiDeleteCtbAddress(ctbAddress) {
+					console.log('handleApiDeleteCtbAddress', this.state);
+					var query_request = `
+						mutation {
+							deleteCtbAddress(id:${ctbAddress.addressId}){
+								ctbAddress{
+								addressId
+								}
+							}
+						}`;
+					fetch('/graphql', {
+						method: 'POST',
+						headers: { 'Content-Type': 'application/json' },
+						body: JSON.stringify({
+							query: query_request,
+						}),
+					})
+						.then((response) => response.json())
+						.then((data) => {
+							this.fetchCtbAddresses();
+						});
+				}
+
+				handleHumanInputChange(e) {
+					console.log('handleHumanInputChange', this.state, 'e', e);
+					this.setState({ [e.target.name]: e.target.value });
+				}
+
+				handleHumanEditingCtbAddressStateChange(e) {
+					const { editingCtbAddress } = this.state;
+					this.setState({
+						editingCtbAddress: {
+							...editingCtbAddress,
+							[e.target.name]: e.target.value,
+						},
+					});
+				}
+
+				render() {
+					const { newDistrictCd, newVdcCd, ctbAddresses, editingCtbAddress } =
+						this.state;
+					return (
+						<div>
+							<h1>App Ctb Addresses</h1>
+							<div>{JSON.stringify(this.state)}</div>
+							<input
+								type='text'
+								name='newDistrictCd'
+								placeholder='newDistrictCd'
+								value={newDistrictCd}
+								onChange={this.handleHumanInputChange}
+							/>
+							<input
+								type='text'
+								name='newVdcCd'
+								placeholder='newVdcCd'
+								value={newVdcCd}
+								onChange={this.handleHumanInputChange}
+							/>
+							<button type='submit' onClick={this.handleApiAddCtbAddress}>
+								Add Ctb Address
+							</button>
+
+							<ul>
+								{ctbAddresses.map((ctbAddress) => (
+									<li key={ctbAddress.id}>
+										{ctbAddress.districtCd} - {ctbAddress.vdcCd}
+										<button
+											onClick={() => this.handleUiEditCtbAddress(ctbAddress)}
+										>
+											Edit
+										</button>
+										<button
+											onClick={() => this.handleApiDeleteCtbAddress(ctbAddress)}
+										>
+											Delete
+										</button>
+									</li>
+								))}
+							</ul>
+
+							{editingCtbAddress && (
+								<div>
+									Text: {this.state.editingCtbAddress.districtCd} <br />
+									Link: {this.state.editingCtbAddress.vdcCd}
+								</div>
+							)}
+
+							{editingCtbAddress && (
+								<form onSubmit={this.handleApiUpdateCtbAddress}>
+									<input
+										type='text'
+										name='districtCd'
+										placeholder='districtCd'
+										value={editingCtbAddress.districtCd}
+										onChange={this.handleHumanEditingCtbAddressStateChange}
+									/>
+									<input
+										type='text'
+										name='vdcCd'
+										placeholder='vdcCd'
+										value={editingCtbAddress.vdcCd}
+										onChange={this.handleHumanEditingCtbAddressStateChange}
+									/>
+									<button type='submit'>Update Ctb Address</button>
+									<button
+										onClick={() => this.setState({ editingCtbAddress: null })}
+									>
+										Cancel
+									</button>
+								</form>
+							)}
+						</div>
+					);
+				}
+			}
+
+			ReactDOM.render(<CtbAddress />, document.getElementById('root'));
+		</script>
+	</body>
+</html>

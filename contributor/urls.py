@@ -46,35 +46,37 @@ urlpatterns = [
          name="bank_delete"),
 
     # Graphql
-    # Bank
+    # Bank and Link
     path('bank_graphql', views.bank_graphql, name="bank_graphql"),
-    # Ctb Address
-    path('ctb_address_graphql', views.ctb_address_graphql,
-         name="ctb_address_graphql"),
-
-    path('ctb_address_add', views.ctb_address_add,
-         name="ctb_address_add"),
-
-    path('ctb_address_add_static', views.ctb_address_add_static,
-         name="ctb_address_add_static"),
-
-    path('ctb_address_add_dynamic', views.ctb_address_add_dynamic,
-         name="ctb_address_add_dynamic"),
-
     path('links', views.links, name="links"),
+    # Ctb Address
+
+    path('ctb_address', views.ctb_address,
+         name="ctb_address"),
+    #     path('ctb_address_graphql', views.ctb_address_graphql,
+    #          name="ctb_address_graphql"),
+
+    #     path('ctb_address_add', views.ctb_address_add,
+    #          name="ctb_address_add"),
+
+    #     path('ctb_address_add_static', views.ctb_address_add_static,
+    #          name="ctb_address_add_static"),
+
+    #     path('ctb_address_add_dynamic', views.ctb_address_add_dynamic,
+    #          name="ctb_address_add_dynamic"),
 
 
-    path('ctb_address_list_only', views.ctb_address_list_only,
-         name="ctb_address_list_only"),
+    #     path('ctb_address_list_only', views.ctb_address_list_only,
+    #          name="ctb_address_list_only"),
 
-    path('ctb_address_list_edit', views.ctb_address_list_edit,
-         name="ctb_address_list_edit"),
+    #     path('ctb_address_list_edit', views.ctb_address_list_edit,
+    #          name="ctb_address_list_edit"),
 
-    path('ctb_address_edit', views.ctb_address_edit,
-         name="ctb_address_edit"),
+    #     path('ctb_address_edit', views.ctb_address_edit,
+    #          name="ctb_address_edit"),
 
-    path('ctb_address_delete', views.ctb_address_delete,
-         name="ctb_address_delete"),
+    #     path('ctb_address_delete', views.ctb_address_delete,
+    #          name="ctb_address_delete"),
 
     #     Ctb Person
 

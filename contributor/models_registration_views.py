@@ -3,36 +3,40 @@ from django.shortcuts import render
 # Ctb Address
 
 
-def ctb_address_graphql(request):
-    return render(request, 'ctb_address/ctb_address_graphql.html')
+def ctb_address(request):
+    return render(request, 'ctb_address/ctb_address.html')
 
 
-def ctb_address_add(request):
-    return render(request, 'ctb_address/ctb_address_add.html')
+# def ctb_address_graphql(request):
+#     return render(request, 'ctb_address/ctb_address_graphql.html')
 
 
-def ctb_address_add_static(request):
-    return render(request, 'ctb_address/ctb_address_add_static.html')
+# def ctb_address_add(request):
+#     return render(request, 'ctb_address/ctb_address_add.html')
 
 
-def ctb_address_add_dynamic(request):
-    return render(request, 'ctb_address/ctb_address_add_dynamic.html')
+# def ctb_address_add_static(request):
+#     return render(request, 'ctb_address/ctb_address_add_static.html')
 
 
-def ctb_address_list_only(request):
-    return render(request, 'ctb_address/ctb_address_list_only.html')
+# def ctb_address_add_dynamic(request):
+#     return render(request, 'ctb_address/ctb_address_add_dynamic.html')
 
 
-def ctb_address_list_edit(request):
-    return render(request, 'ctb_address/ctb_address_list_edit.html')
+# def ctb_address_list_only(request):
+#     return render(request, 'ctb_address/ctb_address_list_only.html')
 
 
-def ctb_address_edit(request):
-    return render(request, 'ctb_address/ctb_address_edit.html')
+# def ctb_address_list_edit(request):
+#     return render(request, 'ctb_address/ctb_address_list_edit.html')
 
 
-def ctb_address_delete(request):
-    return render(request, 'ctb_address/ctb_address_delete.html')
+# def ctb_address_edit(request):
+#     return render(request, 'ctb_address/ctb_address_edit.html')
+
+
+# def ctb_address_delete(request):
+#     return render(request, 'ctb_address/ctb_address_delete.html')
 
 
 # Ctb Person
