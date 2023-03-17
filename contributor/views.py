@@ -12,7 +12,6 @@ from .models_contributor_views import *
 from .models_claim_views import *
 from .models_account_views import *
 
-
 # Create your views here.
 
 
