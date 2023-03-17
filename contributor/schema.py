@@ -237,22 +237,27 @@ class Mutation(graphene.ObjectType):
     create_ctb_emp_contact = CreateCtb_Emp_ContactMutation.Field()
     update_ctb_emp_contact = UpdateCtb_Emp_ContactMutation.Field()
     delete_ctb_emp_contact = DeleteCtb_Emp_ContactMutation.Field()
+    save_ctb_emp_contact = SaveCtb_Emp_ContactMutation.Field()
 
     create_ctb_employer = CreateCtb_EmployerMutation.Field()
     update_ctb_employer = UpdateCtb_EmployerMutation.Field()
     delete_ctb_employer = DeleteCtb_EmployerMutation.Field()
+    save_ctb_employer = SaveCtb_EmployerMutation.Field()
 
     create_ctb_emp_doc = CreateCtb_Emp_DocMutation.Field()
     update_ctb_emp_doc = UpdateCtb_Emp_DocMutation.Field()
     delete_ctb_emp_doc = DeleteCtb_Emp_DocMutation.Field()
+    save_ctb_emp_doc = SaveCtb_Emp_DocMutation.Field()
 
     create_ctb_emp_address = CreateCtb_Emp_AddressMutation.Field()
     update_ctb_emp_address = UpdateCtb_Emp_AddressMutation.Field()
     delete_ctb_emp_address = DeleteCtb_Emp_AddressMutation.Field()
+    save_ctb_emp_address = SaveCtb_Emp_AddressMutation.Field()
 
     create_ctb_emp_official = CreateCtb_Emp_OfficialMutation.Field()
     update_ctb_emp_official = UpdateCtb_Emp_OfficialMutation.Field()
     delete_ctb_emp_official = DeleteCtb_Emp_OfficialMutation.Field()
+    save_ctb_emp_official = SaveCtb_Emp_OfficialMutation.Field()
 
     # Contributor
     create_stb_coll_voucher_info = CreateStb_Coll_Voucher_InfoMutation.Field()
