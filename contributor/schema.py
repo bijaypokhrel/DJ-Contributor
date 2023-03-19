@@ -314,14 +314,17 @@ class Mutation(graphene.ObjectType):
     create_atb_gltran_mast = CreateAtb_Gltran_MastMutation.Field()
     update_atb_gltran_mast = UpdateAtb_Gltran_MastMutation.Field()
     delete_atb_gltran_mast = DeleteAtb_Gltran_MastMutation.Field()
+    save_atb_gltran_mast = SaveAtb_Gltran_MastMutation.Field()
 
     create_atb_gltran_detl = CreateAtb_Gltran_DetlMutation.Field()
     update_atb_gltran_detl = UpdateAtb_Gltran_DetlMutation.Field()
     delete_atb_gltran_detl = DeleteAtb_Gltran_DetlMutation.Field()
+    save_atb_gltran_detl = SaveAtb_Gltran_DetlMutation.Field()
 
     create_atb_account_ledger = CreateAtb_Account_LedgerMutation.Field()
     update_atb_account_ledger = UpdateAtb_Account_LedgerMutation.Field()
     delete_atb_account_ledger = DeleteAtb_Account_LedgerMutation.Field()
+    save_atb_account_ledger = SaveAtb_Account_LedgerMutation.Field()
 
 
 schema = graphene.Schema(query=Query, mutation=Mutation)
