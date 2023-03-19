@@ -220,18 +220,22 @@ class Mutation(graphene.ObjectType):
     create_stb_claim_head = CreateStb_Claim_HeadMutation.Field()
     update_stb_claim_head = UpdateStb_Claim_HeadMutation.Field()
     delete_stb_claim_head = DeleteStb_Claim_HeadMutation.Field()
+    save_stb_claim_head = SaveStb_Claim_HeadMutation.Field()
 
     create_stb_claim_anusuchi6 = CreateStb_Claim_Anusuchi6Mutation.Field()
     update_stb_claim_anusuchi6 = UpdateStb_Claim_Anusuchi6Mutation.Field()
     delete_stb_claim_anusuchi6 = DeleteStb_Claim_Anusuchi6Mutation.Field()
+    save_stb_claim_anusuchi6 = SaveStb_Claim_Anusuchi6Mutation.Field()
 
     create_stb_claim_app_amount = CreateStb_Claim_App_AmountMutation.Field()
     update_stb_claim_app_amount = UpdateStb_Claim_App_AmountMutation.Field()
     delete_stb_claim_app_amount = DeleteStb_Claim_App_AmountMutation.Field()
+    save_stb_claim_app_amount = SaveStb_Claim_App_AmountMutation.Field()
 
     create_stb_claim_doc = CreateStb_Claim_DocMutation.Field()
     update_stb_claim_doc = UpdateStb_Claim_DocMutation.Field()
     delete_stb_claim_doc = DeleteStb_Claim_DocMutation.Field()
+    save_stb_claim_doc = SaveStb_Claim_DocMutation.Field()
 
     # Employer
     create_ctb_emp_contact = CreateCtb_Emp_ContactMutation.Field()
