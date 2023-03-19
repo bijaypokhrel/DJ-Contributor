@@ -263,22 +263,27 @@ class Mutation(graphene.ObjectType):
     create_stb_coll_voucher_info = CreateStb_Coll_Voucher_InfoMutation.Field()
     update_stb_coll_voucher_info = UpdateStb_Coll_Voucher_InfoMutation.Field()
     delete_stb_coll_voucher_info = DeleteStb_Coll_Voucher_InfoMutation.Field()
+    save_stb_coll_voucher_info = SaveStb_Coll_Voucher_InfoMutation.Field()
 
     create_stb_contributor_sal_det = CreateStb_Contributor_Sal_DetMutation.Field()
     update_stb_contributor_sal_det = UpdateStb_Contributor_Sal_DetMutation.Field()
     delete_stb_contributor_sal_det = DeleteStb_Contributor_Sal_DetMutation.Field()
+    save_stb_contributor_sal_det = SaveStb_Contributor_Sal_DetMutation.Field()
 
     create_stb_collection_tran_head = CreateStb_Collection_Tran_HeadMutation.Field()
     update_stb_collection_tran_head = UpdateStb_Collection_Tran_HeadMutation.Field()
     delete_stb_collection_tran_head = DeleteStb_Collection_Tran_HeadMutation.Field()
+    save_stb_collection_tran_head = SaveStb_Collection_Tran_HeadMutation.Field()
 
     create_stb_coll_tran_detail = CreateStb_Coll_Tran_DetailsMutation.Field()
     update_stb_coll_tran_detail = UpdateStb_Coll_Tran_DetailsMutation.Field()
     delete_stb_coll_tran_detail = DeleteStb_Coll_Tran_DetailsMutation.Field()
+    save_stb_coll_tran_detail = SaveStb_Coll_Tran_DetailsMutation.Field()
 
     create_stb_scheme_application = CreateStb_Scheme_ApplicationMutation.Field()
     update_stb_scheme_application = UpdateStb_Scheme_ApplicationMutation.Field()
     delete_stb_scheme_application = DeleteStb_Scheme_ApplicationMutation.Field()
+    save_stb_scheme_application = SaveStb_Scheme_ApplicationMutation.Field()
 
     # Loan
     create_ctb_special_loan = CreateCtb_Special_LoanMutation.Field()
