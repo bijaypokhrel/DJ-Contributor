@@ -660,13 +660,17 @@ class SaveCtb_ContributorMutation(graphene.Mutation):
     ctb_contributor = graphene.Field(lambda: Ctb_ContributorType)
 
     def mutate(self, info, data):
+        print("SaveCtb_ContributorMutation", data)
 
-        id = data.id
-        if id:
+        id = int(data.id)
+        if id and id > 0:
+            print(f"SaveCtb_ContributorMutation", id)
             ctb_contributor = Ctb_Contributor.objects.get(pk=id)
+            # ctb_contributor.from_date = "r"
             for key, value in data.items():
                 setattr(ctb_contributor, key, value)
             ctb_contributor.save()
         else:
+            data.pop('id')
             ctb_contributor = Ctb_Contributor.objects.create(**data)
         return SaveCtb_ContributorMutation(ctb_contributor=ctb_contributor)

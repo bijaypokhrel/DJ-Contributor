@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<script
+			crossorigin
+			src="https://unpkg.com/react@17/umd/react.development.js"
+		></script>
+		<script
+			crossorigin
+			src="https://unpkg.com/react-dom@17/umd/react-dom.development.js"
+		></script>
+		<script src="https://unpkg.com/babel-standalone@6.15.0/babel.min.js"></script>
+	</head>
+	<body>
+		{% include 'ctb_contributor/ctb_contributor_service.html'%}
+		<div id="root"></div>
+		<script type="text/babel">
+			class CtbContributor extends React.Component {
+				constructor(props) {
+					super(props);
+					this.state = {
+						newFromDate: '',
+						newToDate: '',
+						ctbContributors: [],
+						editingCtbContributor: null,
+					};
+					this.handleApiAddCtbContributor =
+						this.handleApiAddCtbContributor.bind(this);
+					this.handleUiEditCtbContributor =
+						this.handleUiEditCtbContributor.bind(this);
+					this.handleApiUpdateCtbContributor =
+						this.handleApiUpdateCtbContributor.bind(this);
+					this.handleApiDeleteCtbContributor =
+						this.handleApiDeleteCtbContributor.bind(this);
+					this.handleHumanInputChange = this.handleHumanInputChange.bind(this);
+					this.handleHumanEditingCtbContributorStateChange =
+						this.handleHumanEditingCtbContributorStateChange.bind(this);
+				}
+
+				componentDidMount() {
+					this.fetchCtbContributors();
+				}
+
+				fetchCtbContributors() {
+					var query_request = `
+						query{
+							ctbContributors{
+								id,
+								fromDate,
+								toDate
+							}
+						}`;
+					fetch('/graphql', {
+						method: 'POST',
+						headers: { 'Content-Type': 'application/json' },
+						body: JSON.stringify({
+							query: query_request,
+						}),
+					})
+						.then((response) => response.json())
+						.then((res) => {
+							this.setState({
+								ctbContributors: res.data.ctbContributors,
+							});
+						});
+				}
+
+				handleApiAddCtbContributor(e) {
+					e.preventDefault();
+					ServiceCtbContributorSave({
+						state: this.state,
+						fnCallback: () => {
+							this.fetchCtbContributors();
+							this.setState({ fromDate: '', toDate: '' });
+						},
+					});
+				}
+
+				handleUiEditCtbContributor(ctbContributor) {
+					this.setState({ editingCtbContributor: ctbContributor });
+				}
+
+				handleApiUpdateCtbContributor(e) {
+					console.log(
+						'handleApiUpdateCtbContributor',
+						this.state,
+						this.state.editingCtbContributor
+					);
+					e.preventDefault();
+					const { editingCtbContributor } = this.state;
+					if (!editingCtbContributor) {
+						return;
+					}
+					ServiceCtbContributorSave({
+						state: JSON.parse(JSON.stringify(this.state.editingCtbContributor)),
+						fnCallback: () => {
+							this.fetchCtbContributors();
+							this.setState({ fromDate: '', toDate: '' });
+						},
+					});
+				}
+
+				handleApiDeleteCtbContributor(ctbContributor) {
+					console.log('handleApiDeleteCtbContributor', this.state);
+					var query_request = `
+						mutation {
+							deleteCtbContributor(id:${ctbContributor.id}){
+								ctbContributor{
+								id
+								}
+							}
+						}`;
+					fetch('/graphql', {
+						method: 'POST',
+						headers: { 'Content-Type': 'application/json' },
+						body: JSON.stringify({
+							query: query_request,
+						}),
+					})
+						.then((response) => response.json())
+						.then((data) => {
+							this.fetchCtbContributors();
+						});
+				}
+
+				handleHumanInputChange(e) {
+					console.log('handleHumanInputChange', this.state, 'e', e);
+					this.setState({ [e.target.name]: e.target.value });
+				}
+
+				handleHumanEditingCtbContributorStateChange(e) {
+					const { editingCtbContributor } = this.state;
+					this.setState({
+						editingCtbContributor: {
+							...editingCtbContributor,
+							[e.target.name]: e.target.value,
+						},
+					});
+				}
+
+				render() {
+					const {
+						newFromDate,
+						newToDate,
+						ctbContributors,
+						editingCtbContributor,
+					} = this.state;
+					return (
+						<div>
+							<h1>App Ctb Contributors</h1>
+							<div>{JSON.stringify(this.state)}</div>
+							<input
+								type='text'
+								name='newFromDate'
+								placeholder='newFromDate'
+								value={newFromDate}
+								onChange={this.handleHumanInputChange}
+							/>
+							<input
+								type='text'
+								name='newToDate'
+								placeholder='newToDate'
+								value={newToDate}
+								onChange={this.handleHumanInputChange}
+							/>
+							<button type='submit' onClick={this.handleApiAddCtbContributor}>
+								Add Ctb Contributor
+							</button>
+
+							<ul>
+								{ctbContributors.map((ctbContributor) => (
+									<li key={ctbContributor.id}>
+										{ctbContributor.fromDate} - {ctbContributor.toDate}
+										<button
+											onClick={() =>
+												this.handleUiEditCtbContributor(ctbContributor)
+											}
+										>
+											Edit
+										</button>
+										<button
+											onClick={() =>
+												this.handleApiDeleteCtbContributor(ctbContributor)
+											}
+										>
+											Delete
+										</button>
+									</li>
+								))}
+							</ul>
+
+							{editingCtbContributor && (
+								<div>
+									Text: {this.state.editingCtbContributor.fromDate} <br />
+									Link: {this.state.editingCtbContributor.toDate}
+								</div>
+							)}
+
+							{editingCtbContributor && (
+								<form onSubmit={this.handleApiUpdateCtbContributor}>
+									<input
+										type='text'
+										name='fromDate'
+										placeholder='fromDate'
+										value={editingCtbContributor.fromDate}
+										onChange={this.handleHumanEditingCtbContributorStateChange}
+									/>
+									<input
+										type='text'
+										name='toDate'
+										placeholder='toDate'
+										value={editingCtbContributor.toDate}
+										onChange={this.handleHumanEditingCtbContributorStateChange}
+									/>
+									<button type='submit'>Update Ctb Contributor</button>
+									<button
+										onClick={() =>
+											this.setState({ editingCtbContributor: null })
+										}
+									>
+										Cancel
+									</button>
+								</form>
+							)}
+						</div>
+					);
+				}
+			}
+
+			ReactDOM.render(<CtbContributor />, document.getElementById('root'));
+		</script>
+	</body>
+</html>

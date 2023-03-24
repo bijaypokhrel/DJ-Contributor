@@ -1,0 +1,47 @@
+<script>
+	function ServiceCtbContributorSave(args) {
+		var state = args.state;
+		var fnCallback = args?.fnCallback;
+		var query_request = `
+						mutation {
+							createCtbContributor(fromDate:"${state.newFromDate}", toDate:"${state.newToDate}"){
+								ctbContributor{
+								id,
+								fromDate, 
+								toDate
+								}
+							}
+						}`;
+		var data = `
+            {
+                id:${state.id ?? 0},
+                fromDate:"${state.fromDate}", 
+                toDate:"${state.toDate}", 
+                entryBy:"${state.entryBy}"
+            }`;
+		var query_request = `
+            mutation {
+                saveCtbContributor(data:${data}){
+                    ctbContributor{
+                        id,
+                        fromDate,
+                        toDate,
+                        entryBy
+                    }
+                }
+            }`;
+		fetch('/graphql', {
+			method: 'POST',
+			headers: { 'Content-Type': 'application/json' },
+			body: JSON.stringify({
+				query: query_request,
+			}),
+		})
+			.then((response) => response.json())
+			.then((data) => {
+				if (fnCallback) {
+					fnCallback();
+				}
+			});
+	}
+</script>

@@ -189,6 +189,10 @@ def ctb_person_doc_delete(request):
 # Ctb Contributor
 
 
+def ctb_contributor(request):
+    return render(request, 'ctb_contributor/ctb_contributor.html')
+
+
 def ctb_contributor_add_dynamic(request):
     return render(request, 'ctb_contributor/ctb_contributor_add_dynamic.html')
 

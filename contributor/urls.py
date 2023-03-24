@@ -194,6 +194,9 @@ urlpatterns = [
 
     #     Ctb Contributor
 
+    path('ctb_contributor', views.ctb_contributor,
+         name="ctb_contributor"),
+
     path('ctb_contributor_add_dynamic', views.ctb_contributor_add_dynamic,
          name="ctb_contributor_add_dynamic"),
 
